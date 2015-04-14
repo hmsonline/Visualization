@@ -2,7 +2,7 @@
 //TODO : get maximum attempts from parent config
 (function () {
     "use strict";
-    var IE7_8_9_StylesheetLimit = 30;
+    var doc = document, head = doc.getElementsByTagName("head")[0], IE7_8_9_StylesheetLimit = 30;
     var css2 = {
         version: "0.1.0",
         maxAttempts: 10,
@@ -37,9 +37,9 @@
             try {
                 //workaround for loading IE 31 stylesheet limit
                 // (http://blogs.msdn.com/b/ieinternals/archive/2011/05/14/internet-explorer-stylesheet-rule-selector-import-sheet-limit-maximum.aspx)
-                if (document.createStyleSheet && document.styleSheets && document.styleSheets.length > IE7_8_9_StylesheetLimit) {
-                    var lastStylesheet = document.styleSheets[document.styleSheets.length - 1];
-                    lastStylesheet.addImport(url, document.styleSheets.length - 1);
+                if (doc.createStyleSheet && doc.styleSheets && doc.styleSheets.length > IE7_8_9_StylesheetLimit) {
+                    var lastStylesheet = doc.styleSheets[doc.styleSheets.length - 1];
+                    lastStylesheet.addImport(url, doc.styleSheets.length - 1);
                     loadedWithWorkaround = true;
                     callback();
 
@@ -56,7 +56,7 @@
             return "cssPreloader_" + Math.round(Math.random() * 9999999999);
         },
         _createLink: function (url) {
-            var link = document.createElement("link");
+            var link = doc.createElement("link");
             link.rel = "stylesheet"; link.type = "text/css"; link.id = this._getUniqueId(); link.href = url;
             return link;
         },
@@ -82,7 +82,6 @@
                 that._onerror(callback);
             };
 
-            var head = doc.getElementsByTagName("head")[0]
             head.appendChild(link);
         },
 
@@ -173,7 +172,6 @@
 
 
             var link = this._createLink(url);
-            var head = doc.getElementsByTagName("head")[0]
             head.appendChild(link);
             var that = this, attemptsCount = 0;
             //TODO : calculate setTimeout according to wait interval
@@ -204,8 +202,6 @@
 
         ///requireJS interface function  - called when css! is called
         load: function (name, parentConf, load, config, isBuild) {
-            if (isBuild) return load(null)
-
             try {
                 var url = parentConf.toUrl(name.search(/\.(css)$/i) === -1 ? name + ".css" : name);
                 css2.loadStylesheet(url, load);

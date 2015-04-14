@@ -1,15 +1,31 @@
 {
   "name": "vis",
   "version": "0.0.1",
+  "description": "Common visualization components",
+  "keywords": [
+    "visualization"
+  ],
+  "main": [
+    "dist/vis.css",
+    "dist/vis.js"
+  ],
+  "ignore": [
+    "rjs",
+    "src",
+    "demos",
+    "gulpfile.*",
+    ".gitignore"
+  ],
   "dependencies": {
-    "c3": "0.4.9",
+    "c3": "0.4.10",
     "colorbrewer": "1.0.0",
-    "crossfilter": "git@github.com:square/crossfilter.git@1.3.11",
-    "d3": "3.5.5",
+    "crossfilter": "git@github.com:square/crossfilter.git",
+    "d3": "3.5.0",
     "dagre": "0.7.1",
     "font-awesome": "4.3.0",
     "lodash": "3.0.0",
     "topojson": "1.6.18",
-    "d3-cloud": "git@github.com:jasondavies/d3-cloud.git@1.0.5"
-  }
+    "d3-cloud": "git@github.com:jasondavies/d3-cloud.git"
+  },
+  "license": "Apache"
 }
