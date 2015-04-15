@@ -1,5 +1,5 @@
 {
-  "name": "vis",
+  "name": "viz",
   "version": "0.0.1",
   "description": "Common visualization components",
   "keywords": [
@@ -27,5 +27,6 @@
     "topojson": "1.6.18",
     "d3-cloud": "git@github.com:jasondavies/d3-cloud.git"
   },
-  "license": "Apache"
+  "license": "Apache",
+  "authors": ["HPCC Systems"]
 }
