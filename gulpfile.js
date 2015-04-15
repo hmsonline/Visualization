@@ -12,7 +12,7 @@ const dir = require('node-dir')
 function css(minify) {
   return gulp.src('src/**/*.css')
     .pipe(sort())
-    .pipe(concatCss(minify ? 'vis.min.css' : 'vis.css'))
+    .pipe(concatCss(minify ? 'viz.min.css' : 'viz.css'))
     .pipe(minify ? minifyCss({keepBreaks:true}) : gutil.noop())
     .pipe(gulp.dest('dist'))
 }
@@ -24,6 +24,7 @@ gulp.task('default', ['css-combine', 'css-optimize'], function (done) {
   dir.files('src', function (err, files) {
     if (err) return done(err)
 
+    // TODO: build vis.map.js
     const excludes = {
       'src/config.js': true,
       'src/map/ChoroplethCountries.js': true,
@@ -64,8 +65,8 @@ gulp.task('default', ['css-combine', 'css-optimize'], function (done) {
     }
 
     async.parallel([
-      optimize.bind(null, _.extend({out: 'dist/vis.min.js'}, opts)),
-      optimize.bind(null, _.extend({out: 'dist/vis.js', optimize: 'none'}, opts))
+      optimize.bind(null, _.extend({out: 'dist/viz.min.js'}, opts)),
+      optimize.bind(null, _.extend({out: 'dist/viz.js', optimize: 'none'}, opts))
     ], done)
   })
 })

@@ -1636,334 +1636,6 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     return Step;
 }));
 
-define('async',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
-define('propertyParser',{});
-define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/Common.js',["d3/d3", "../common/HTMLWidget", "goog!visualization,1,packages:[corechart]"], factory);
-    } else {
-        root.Common = factory(root.d3, root.HTMLWidget);
-    }
-}(this, function (d3, HTMLWidget) {
-
-    function Common(tget) {
-        HTMLWidget.call(this);
-        this._class = "google_Common";
-
-        this._tag = "div";
-
-        this.columns([]);
-        this.data([]);
-        this._data_google = [];
-
-        this._chart = null;
-    };
-    Common.prototype = Object.create(HTMLWidget.prototype);
-
-    Common.prototype.publish("chartAreaWidth", "80%", "string", "Chart Area Width");
-    Common.prototype.publish("chartAreaHeight", "80%", "string", "Chart Area Height");
-
-    Common.prototype.publish("fontSize", null, "number", "Font Size");
-    Common.prototype.publish("fontName", null, "string", "Font Name");
-
-    Common.prototype.publish("legendShow", true, "boolean", "Show Legend");
-    Common.prototype.publish("legendAlignment", "center", "set", "Legend Alignment", ["", "start", "center", "end"]);
-    Common.prototype.publish("legendPosition", "right", "set", "Legend Position", ["", "bottom", "labeled", "left", "right", "top"]);
-    Common.prototype.publish("legendFontColor", "#000", "html-color", "Legend Font Color");
-    Common.prototype.publish("legendFontName", null, "string", "Legend Font Name");
-    Common.prototype.publish("legendFontSize", null, "number", "Legend Font Size");
-    Common.prototype.publish("legendFontBold", false, "boolean", "Legend Font Bold");
-    Common.prototype.publish("legendFontItalic", false, "boolean", "Legend Font Italic");
-
-    Common.prototype.publish("animationDuration", 0, "number", "Animation Duration");
-    Common.prototype.publish("animationOnStartup", true, "boolean", "Animate On Startup");
-    Common.prototype.publish("animationEasing", "linear", "set", "Animation Easing", ["", "linear", "in", "out", "inAndOut"]);
-
-    Common.prototype.data = function (_) {
-        var retVal = HTMLWidget.prototype.data.apply(this, arguments);
-        if (arguments.length) {
-            var data = null;
-            if (this._data.length) {
-                data = [this._columns].concat(this._data);
-            } else {
-                data = [
-                    ['', { role: 'annotation' }],
-                    ['', '']
-                ];
-            }
-            this._data_google = google.visualization.arrayToDataTable(data);
-        }
-        return retVal;
-    };
-
-    Common.prototype.getChartOptions = function () {
-        var colors = this._columns.filter(function (d, i) { return i > 0; }).map(function (row) {
-            return this._palette(row);
-        }, this);
-
-        return {
-            backgroundColor: "none",
-            width: this.width(),
-            height: this.height(),
-            colors: colors,
-            fontSize: this._fontSize,
-            fontName: this._fontName,
-            chartArea: {
-                width: this._chartAreaWidth,
-                height: this._chartAreaHeight
-            },
-            animation: {
-                duration: this._animationDuration,
-                startup: this._animationOnStartup,
-                easing: this._animationEasing
-            },
-            legend: {
-                alignment: this._legendAlignment,
-                position: this._legendShow ? this._legendPosition : "none",
-                maxLines: 2,
-                textStyle: {
-                    color: this._legendFontColor,
-                    fontName: this._legendFontName,
-                    fontSize: this._legendFontSize,
-                    bold: this._legendFontBold,
-                    italic: this._legendFontItalic
-                }
-            },
-        };
-    },
-
-    Common.prototype.enter = function (domNode, element) {
-        element.style("overflow", "hidden");
-
-        this._chart = new google.visualization[this._chartType](domNode);
-
-        var context = this;
-        google.visualization.events.addListener(this._chart, "select", function () {
-            var selectedItem = context._chart.getSelection()[0];
-            if (selectedItem) {
-                context.click(context.rowToObj(context._data[selectedItem.row]), context._columns[selectedItem.column]);
-            }
-        });
-    }
-
-    Common.prototype.update = function(domNode, element) {
-        HTMLWidget.prototype.update.apply(this, arguments);
-
-        this._chart.draw(this._data_google, this.getChartOptions());
-    };
-    
-    return Common;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/CommonND.js',["d3/d3", "../google/Common", "../chart/INDChart", "goog!visualization,1,packages:[corechart]"], factory);
-    } else {
-        root.CommonND = factory(root.d3, root.Common, root.INDChart);
-    }
-}(this, function (d3, Common, INDChart) {
-
-    function CommonND() {
-        Common.call(this);
-        INDChart.call(this);
-        this._class = "google_CommonND";
-    };
-    CommonND.prototype = Object.create(Common.prototype);
-    CommonND.prototype.implements(INDChart.prototype);
-
-    CommonND.prototype.publish("paletteID", "default", "set", "Palette ID", CommonND.prototype._palette.switch());
-
-    CommonND.prototype.update = function(domNode, element) {   
-        this._palette = this._palette.switch(this._paletteID);
-
-        Common.prototype.update.apply(this, arguments);
-    }
-
-    return CommonND;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/Bar.js',["d3/d3", "./CommonND"], factory);
-    } else {
-        root.Bar = factory(root.d3, root.CommonND);
-    }
-}(this, function (d3, CommonND) {
-
-    function Bar() {
-        CommonND.call(this);
-        this._class = "google_Bar";
-
-        this._chartType = "BarChart";
-    };
-    Bar.prototype = Object.create(CommonND.prototype);
-
-    //  TODO:  Publish Bar Properties Here
-   
-    Bar.prototype.getChartOptions = function () {
-        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
-        //  TODO:  Add Bar Properties Here
-        return retVal;
-    };
-
-    Bar.prototype.enter = function (domNode, element) {
-        CommonND.prototype.enter.apply(this, arguments);
-    };
-
-    Bar.prototype.update = function (domNode, element) {      
-        CommonND.prototype.update.apply(this, arguments);
-    };
-
-    return Bar;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/Column.js',["d3/d3", "./CommonND"], factory);
-    } else {
-        root.Column = factory(root.d3, root.CommonND);
-    }
-}(this, function (d3, CommonND) {
-
-    function Column() {
-        CommonND.call(this);
-        this._class = "google_Column";
-
-        this._chartType = "ColumnChart";
-    };
-    Column.prototype = Object.create(CommonND.prototype);
-    //  TODO:  Publish Column Properties Here
-
-    Column.prototype.getChartOptions = function () {
-        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
-        //  TODO:  Add Column Properties Here
-        return retVal;
-    };
-    
-    Column.prototype.enter = function (domNode, element) {
-        CommonND.prototype.enter.apply(this, arguments);
-    };
-
-    Column.prototype.update = function (domNode, element) {
-        CommonND.prototype.update.apply(this, arguments);
-    };
-
-    return Column;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/Common2D',["d3/d3", "../google/Common", "../chart/I2DChart", "goog!visualization,1,packages:[corechart]"], factory);
-    } else {
-        root.Common2D = factory(root.d3, root.Common, root.I2DChart);
-    }
-}(this, function (d3, Common, I2DChart) {
-
-    function Common2D() {
-        Common.call(this);
-        I2DChart.call(this);
-        this._class = "google_Common2D";
-    };
-    Common2D.prototype = Object.create(Common.prototype);
-    Common2D.prototype.implements(I2DChart.prototype);
-
-    Common2D.prototype.publish("paletteID", "default", "set", "Palette ID", Common2D.prototype._palette.switch());
-
-    Common2D.prototype.update = function(domNode, element) {
-        this._palette = this._palette.switch(this._paletteID);
-        
-        Common.prototype.update.apply(this, arguments);
-    }
-
-    return Common2D;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/Line.js',["d3/d3", "./CommonND"], factory);
-    } else {
-        root.Line = factory(root.d3, root.CommonND);
-    }
-}(this, function (d3, CommonND) {
-
-    function Line() {
-        CommonND.call(this);
-        this._class = "google_Line";
-
-        this._chartType = "LineChart";
-    };
-    Line.prototype = Object.create(CommonND.prototype);
-    //  TODO:  Publish Line Properties Here
-
-    Line.prototype.getChartOptions = function () {
-        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
-        //  TODO:  Add Line Properties Here
-        return retVal;
-    };
-
-    Line.prototype.enter = function (domNode, element) {
-        CommonND.prototype.enter.apply(this, arguments);
-    };
-
-    Line.prototype.update = function (domNode, element) {
-        CommonND.prototype.update.apply(this, arguments);
-    };
-    
-    return Line;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/Pie.js',["d3/d3", "./Common2D"], factory);
-    } else {
-        root.Pie = factory(root.d3, root.Common2D);
-    }
-}(this, function (d3, Common2D) {
-
-    function Pie() {
-        Common2D.call(this);
-        this._class = "google_Pie";
-
-        this._chartType = "PieChart";
-    };
-    Pie.prototype = Object.create(Common2D.prototype);
-    
-    Pie.prototype.publish("is3D", true, "boolean", "Enable 3D");
-    Pie.prototype.publish("pieHole", 0, "number", "Pie Hole Size");
-    Pie.prototype.publish("pieStartAngle", 0, "number", "Pie Start Angle");
-
-    Pie.prototype.getChartOptions = function () {
-        var retVal = Common2D.prototype.getChartOptions.apply(this, arguments);
-
-        retVal.colors = this._data.map(function (row) {
-            return this._palette(row[0]);
-        }, this);
-        retVal.is3D = this._is3D;
-        retVal.pieHole = this._pieHole;
-        retVal.pieStartAngle = this._pieStartAngle;
-        return retVal;
-    };
-    
-    Pie.prototype.enter = function (domNode, element) {
-        Common2D.prototype.enter.apply(this, arguments);
-    };
-
-    Pie.prototype.update = function (domNode, element) {
-        Common2D.prototype.update.apply(this, arguments);
-    };
-
-    return Pie;
-}));
-
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -2371,7 +2043,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('common/FAChar',["./SVGWidget", "./Text", "css!lib/Font-Awesome/css/font-awesome", "css!./FAChar"], factory);
+        define('common/FAChar.js',["./SVGWidget", "./Text", "css!lib/Font-Awesome/css/font-awesome", "css!./FAChar"], factory);
     } else {
         root.Entity = factory(root.SVGWidget, root.Text);
     }
@@ -2411,1027 +2083,6 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     };
 
     return FAChar;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/IList',[], factory);
-    } else {
-        root.IList = factory();
-    }
-}(this, function () {
-    function IList() {
-    };
-
-    //  Data ---
-    IList.prototype.testData = function () {
-        var data = ["This", "is a", "list", "of some text."];
-        this.data(data);
-        return this;
-    };
-
-    //  Properties  ---
-
-    //  Events  ---
-    IList.prototype.click = function (d) {
-        console.log("Click:  " + d);
-    };
-
-    return IList;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/IMenu',[], factory);
-    } else {
-        root.IMenu = factory();
-    }
-}(this, function () {
-    function IMenu() {
-    };
-
-    //  Data ---
-    IMenu.prototype.testData = function () {
-        var data = ["This", "is a", "list", "of some text."];
-        this.data(data);
-        return this;
-    };
-
-    //  Properties  ---
-
-    //  Events  ---
-    IMenu.prototype.click = function (d) {
-        console.log("Click:  " + d);
-    };
-    IMenu.prototype.preShowMenu = function () {
-        console.log("preShowMenu");
-    };
-    IMenu.prototype.postHideMenu = function (d) {
-        console.log("postHideMenu");
-    };
-
-    return IMenu;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/Shape.js',["./SVGWidget", "css!./Shape"], factory);
-    } else {
-        root.Entity = factory(root.SVGWidget);
-    }
-}(this, function (SVGWidget) {
-    function Shape() {
-        SVGWidget.call(this);
-        this._class = "common_Shape";
-    };
-    Shape.prototype = Object.create(SVGWidget.prototype);
-
-    Shape.prototype.publish("shape", "circle", "set", "Shape Type", ["circle", "square", "rect", "ellipse"]);
-    Shape.prototype.publish("width", 24, "number", "Width");
-    Shape.prototype.publish("height", 24, "number", "Height");
-    Shape.prototype.publish("color_stroke", null, "html-color", "Stroke Color", null);
-    Shape.prototype.publish("color_fill", null, "html-color", "Fill Color", null);
-
-    Shape.prototype.radius = function (_) {
-        if (!arguments.length) return Math.max(this._width, this._height) / 2;
-        this._width = _;
-        this._height = _;
-        return this;
-    };
-
-    Shape.prototype.testData = function () {
-        return this;
-    }
-
-    Shape.prototype.intersection = function (pointA, pointB) {
-        switch (this._shape) {
-            case "circle":
-                return this.intersectCircle(pointA, pointB);
-        }
-        return SVGWidget.prototype.intersection.apply(this, arguments);
-    };
-
-    Shape.prototype.update = function (domNode, element) {
-        var shape = element.selectAll("rect,circle,ellipse").data([this._shape], function (d) { return d; });
-        
-        shape.enter().append(this._shape === "square" ? "rect" : this._shape)
-            .attr("class", "common_Shape")
-        ;
-        var context = this;
-        shape.each(function (d) {
-            var element = d3.select(this);
-            element.style({
-                fill: context._color_fill !== context.__meta_color_fill.defaultValue ? context._color_fill : null,
-                stroke: context._color_stroke !== context.__meta_color_stroke.defaultValue ? context._color_stroke : null
-            });
-            switch (context._shape) {
-                case "circle":
-                    var radius = context.radius();
-                    element
-                        .attr("r", radius)
-                    ;
-                    break;
-                case "square":
-                    var width = Math.max(context._width, context._height);
-                    element
-                        .attr("x", -width / 2)
-                        .attr("y", -width / 2)
-                        .attr("width", width)
-                        .attr("height", width)
-                    ;
-                    break;
-                case "rect":
-                    element
-                        .attr("x", -context._width / 2)
-                        .attr("y", -context._height / 2)
-                        .attr("width", context._width)
-                        .attr("height", context._height)
-                    ;
-                    break;
-                case "ellipse":
-                    element
-                        .attr("rx", context._width / 2)
-                        .attr("ry", context._height / 2)
-                    ;
-                    break;
-            }
-        });
-        shape.exit().remove();
-    };
-
-    return Shape;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/Icon',["./SVGWidget", "./Shape", "./FAChar", "css!./Icon"], factory);
-    } else {
-        root.Entity = factory(root.SVGWidget, root.Shape, root.FAChar);
-    }
-}(this, function (SVGWidget, Shape, FAChar) {
-    function Icon() {
-        SVGWidget.call(this);
-        this._class = "common_Icon";
-
-        this._shapeWidget = new Shape();
-        this._faChar = new FAChar();
-    };
-    Icon.prototype = Object.create(SVGWidget.prototype);    
-
-    Icon.prototype.publish("shape", "circle", "set", "Shape Type", ["circle", "square"]);
-    Icon.prototype.publishProxy("faChar", "_faChar", "char");
-    Icon.prototype.publishProxy("image_color_fill", "_faChar", "color_fill");
-    Icon.prototype.publish("tooltip", "", "string", "Tooltip");
-    Icon.prototype.publish("diameter", 24, "number", "Diameter");
-    Icon.prototype.publish("padding_percent", 45, "number", "Padding Percent");
-    Icon.prototype.publishProxy("shape_color_fill", "_shapeWidget", "color_fill");
-    Icon.prototype.publishProxy("shape_color_stroke", "_shapeWidget", "color_stroke");
-
-    Icon.prototype.testData = function () {
-        this._faChar.testData();
-        return this;
-    };
-
-    Icon.prototype.intersection = function (pointA, pointB) {
-        return this._shapeWidget.intersection(pointA, pointB);
-    };
-
-    Icon.prototype.enter = function (domNode, element) {
-        SVGWidget.prototype.enter.apply(this, arguments);
-        this._shapeWidget
-            .target(domNode)
-            .render()
-        ;
-        this._faChar
-            .target(domNode)
-            .render()
-        ;
-        this._tooltipElement = element.append("title");
-    };
-
-    Icon.prototype.update = function (domNode, element) {
-        SVGWidget.prototype.update.apply(this, arguments);
-        this._faChar
-            .font_size(this._diameter * (100 - this._padding_percent) / 100)
-            .render()
-        ;
-        this._shapeWidget
-            .shape(this._shape)
-            .width(this._diameter)
-            .height(this._diameter)
-            .render()
-        ;
-        this._tooltipElement.text(this._tooltip);
-    };
-
-    return Icon;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/TextBox.js',["./SVGWidget", "./Shape", "./Text", "css!./TextBox"], factory);
-    } else {
-        root.Entity = factory(root.SVGWidget, root.Shape, root.Text);
-    }
-}(this, function (SVGWidget, Shape, Text) {
-    function TextBox() {
-        SVGWidget.call(this);
-        this._class = "common_TextBox";
-
-        this._shape = new Shape()
-            .shape("rect")
-        ;
-        this._text = new Text();
-    };
-    TextBox.prototype = Object.create(SVGWidget.prototype);
-    TextBox.prototype.publishProxy("text", "_text");
-    TextBox.prototype.publishProxy("shape_color_stroke", "_shape", "color_stroke");
-    TextBox.prototype.publishProxy("shape_color_fill", "_shape", "color_fill");
-    TextBox.prototype.publishProxy("text_color_fill", "_text", "color_fill");
-    TextBox.prototype.publish("padding_left", 4, "number", "Padding:  Left");
-    TextBox.prototype.publish("padding_right", 4, "number", "Padding:  Right");
-    TextBox.prototype.publish("padding_top", 4, "number", "Padding:  Top");
-    TextBox.prototype.publish("padding_bottom", 4, "number", "Padding:  Bottom");
-    TextBox.prototype.publishProxy("anchor", "_text");
-    TextBox.prototype.publish("fixedSize", null);
-
-    TextBox.prototype.padding = function (_) {
-        this._padding_left = _;
-        this._padding_right = _;
-        this._padding_top = _;
-        this._padding_bottom = _;
-        return this;
-    };
-
-    TextBox.prototype.testData = function () {
-        this._text.testData();
-        return this;
-    }
-
-    TextBox.prototype.enter = function (domNode, element) {
-        SVGWidget.prototype.enter.apply(this, arguments);
-        this._shape
-            .target(domNode)
-            .render()
-        ;
-        this._text
-            .target(domNode)
-            .render()
-        ;
-    };
-
-    TextBox.prototype.update = function (domNode, element) {
-        SVGWidget.prototype.update.apply(this, arguments);
-
-        this._text
-            .render()
-        ;
-        var textBBox = this._text.getBBox(true);
-        var size = {
-            width: this._fixedSize ? this._fixedSize.width : textBBox.width + this._padding_left + this._padding_right,
-            height: this._fixedSize ? this._fixedSize.height : textBBox.height + this._padding_top + this._padding_bottom
-        };
-        this._shape
-            .width(size.width)
-            .height(size.height)
-            .render()
-        ;
-        if (this._fixedSize) {
-            switch (this.anchor()) {
-                case "start":
-                    this._text
-                        .x(-this._fixedSize.width / 2 + textBBox.width / 2 + (this._padding_left + this._padding_right) / 2)
-                        .render()
-                    ;
-                    break;
-                case "end":
-                    this._text
-                        .x(this._fixedSize.width / 2 - textBBox.width / 2 - (this._padding_left + this._padding_right) / 2)
-                        .render()
-                    ;
-                    break;
-            }
-        }
-    };
-
-    return TextBox;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/List',["d3/d3", "../common/SVGWidget", "./IList", "../common/TextBox", "css!./List"], factory);
-    } else {
-        root.List = factory(root.d3, root.SVGWidget, root.IList, root.TextBox);
-    }
-}(this, function (d3, SVGWidget, IList, TextBox) {
-    function List(target) {
-        SVGWidget.call(this);
-        IList.call(this);
-        this._class = "common_List";
-
-        this._listWidgets = {};
-    };
-    List.prototype = Object.create(SVGWidget.prototype);
-    List.prototype.implements(IList.prototype);
-
-    List.prototype.publish("anchor", "start", "set", "Anchor Position", ["", "start", "middle", "end"]);
-
-    List.prototype.update = function (domNode, element) {
-        SVGWidget.prototype.update.apply(this, arguments);
-        var context = this;
-
-        var line = element.selectAll(".line").data(this._data, function (d) { return d; });
-        line.enter().append("g")
-            .attr("class", "line")
-            .each(function (d) {
-                var newTextBox = new TextBox()
-                    .target(this)
-                    .padding_top(0)
-                    .padding_bottom(0)
-                    .padding_left(8)
-                    .padding_right(8)
-                    .text(d)
-                    .render()
-                ;
-                newTextBox.element()
-                    .on("click", function (d) {
-                        context.click(d.text());
-                    })
-                ;
-                context._listWidgets[d] = newTextBox;
-            })
-        ;
-
-        var listHeight = 0;
-        var listWidth = 0;
-        var listCount = 0;
-        for (var key in this._listWidgets) {
-            var bbox = this._listWidgets[key].getBBox();
-            listHeight += bbox.height;
-            if (listWidth < bbox.width)
-                listWidth = bbox.width;
-            ++listCount;
-        }
-        var lineHeight = listHeight / listCount;
-
-        var xPos = -listWidth / 2;
-        var yPos = -listHeight / 2;// + lineHeight / 2;
-        line
-            .each(function (d) {
-                var widget = context._listWidgets[d];
-                var bbox = widget.getBBox();
-                widget
-                    .pos({ x: 0, y: yPos + bbox.height / 2 })
-                    .anchor(context._anchor)
-                    .fixedSize({ width: listWidth, height: bbox.height })
-                    .render()
-                ;
-                yPos += bbox.height;
-            })
-        ;
-        line.exit()
-            .remove()
-            .each(function (d) {
-                delete context._listWidgets[d];
-            })
-        ;
-    };
-
-    return List;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/Menu',["./SVGWidget", "./IMenu", "./Icon", "./List", "css!./Menu"], factory);
-    } else {
-        root.Entity = factory(root.SVGWidget, root.IMenu, root.Icon, root.List);
-    }
-}(this, function (SVGWidget, IMenu, Icon, List) {
-    function Menu() {
-        SVGWidget.call(this);
-        IMenu.call(this);
-        this._class = "common_Menu";
-
-        this._icon = new Icon()
-            .shape("rect")
-            .diameter(14)
-        ;
-        this._list = new List();
-
-        var context = this;
-        this._list.click = function (d) {
-            d3.event.stopPropagation();
-            context.hideMenu();
-            context.click(d);
-        };
-        this._visible = false;
-    };
-    Menu.prototype = Object.create(SVGWidget.prototype);
-    Menu.prototype.implements(IMenu.prototype);
-
-    Menu.prototype.publishProxy("faChar", "_icon", null, "\uf0c9");
-    Menu.prototype.publishProxy("padding_percent", "_icon", null, 10);
-
-    Menu.prototype.toggleMenu = function () {
-        if (!this._visible) {
-            this.showMenu();
-        } else {
-            this.hideMenu();
-        }
-    };
-
-    Menu.prototype.showMenu = function () {
-        this.preShowMenu();
-        this._visible = true;
-        this._list
-            .data(this._data)
-            .render()
-        ;
-
-        var bbox = this._icon.getBBox(true);
-        var menuBBox = this._list.getBBox(true);
-        var pos = {
-            x: bbox.width / 2 - menuBBox.width / 2,
-            y: bbox.height / 2 + menuBBox.height / 2
-        };
-        this._list
-            .move(pos)
-        ;
-        var context = this;
-        d3.select("body")
-            .on("click." + this._id, function () {
-                console.log("click:  body - " + context._id)
-                if (context._visible) {
-                    context.hideMenu();
-                }
-            })
-        ;
-    };
-
-    Menu.prototype.hideMenu = function () {
-        d3.select("body")
-            .on("click." + this._id, null)
-        ;
-        this._visible = false;
-        this._list
-            .data([])
-            .render()
-        ;
-        this.postHideMenu();
-    };
-
-    Menu.prototype.testData = function () {
-        this
-            .data(["Menu A", "And B", "a longer C"])
-        ;
-        return this;
-    }
-
-    Menu.prototype.enter = function (domNode, element) {
-        SVGWidget.prototype.enter.apply(this, arguments);
-
-        this._icon
-            .target(domNode)
-            .render()
-        ;
-
-        this._list
-            .target(domNode)
-            .render()
-        ;
-
-        var context = this;
-        this._icon.element()
-            .on("click", function (d) {
-                d3.event.stopPropagation();
-                context.toggleMenu();
-            })
-        ;
-    };
-
-    Menu.prototype.update = function (domNode, element) {
-        SVGWidget.prototype.update.apply(this, arguments);
-        element
-            .classed("disabled", this._data.length === 0)
-        ;
-
-        this._icon
-            .faChar(this.faChar())
-            .padding_percent(this.padding_percent())
-            .render()
-        ;
-    };
-
-    return Menu;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/Surface.js',["./SVGWidget", "./Icon", "./Shape", "./Text", "./FAChar", "./Menu", "css!./Surface"], factory);
-    } else {
-        root.Graph = factory(root.SVGWidget, root.Icon, root.Shape, root.Text, root.FAChar, root.Menu);
-    }
-}(this, function (SVGWidget, Icon, Shape, Text, FAChar, Menu) {
-    function Surface() {
-        SVGWidget.call(this);
-        this._class = "common_Surface";
-
-        this._menuPadding = 2;
-        this._icon = new Icon()
-            .faChar("\uf07b")
-            .padding_percent(50)
-        ;
-        this._container = new Shape()
-            .class("container")
-            .shape("rect")
-        ;
-        this._titleRect = new Shape()
-            .class("title")
-            .shape("rect")
-        ;
-        this._text = new Text()
-            .class("title")
-        ;
-        this._menu = new Menu()
-            .padding_percent(0)
-        ;
-        var context = this;
-        this._menu.preShowMenu = function () {
-            if (context._content && context._content.hasOverlay()) {
-                context._content.visible(false);
-            }
-        }
-        this._menu.postHideMenu = function () {
-            if (context._content && context._content.hasOverlay()) {
-                context._content.visible(true);
-            }
-        }
-
-        this._showContent = true;
-        this._content = null;
-    };
-    Surface.prototype = Object.create(SVGWidget.prototype);
-
-    Surface.prototype.publish("show_title", true, "boolean", "Show Title");
-    Surface.prototype.publish("title", "", "string", "Title");
-    Surface.prototype.publishProxy("title_font_size", "_text", "font_size");
-    Surface.prototype.publish("show_icon", true, "boolean", "Show Title");
-    Surface.prototype.publishProxy("icon_faChar", "_icon", "faChar");
-    Surface.prototype.publishProxy("icon_shape", "_icon", "shape");
-    //Surface.prototype.publish("menu");
-    Surface.prototype.publish("content", null, "widget", "Content");
-
-    Surface.prototype.menu = function (_) {
-        if (!arguments.length) return this._menu.data();
-        this._menu.data(_);
-        return this;
-    };
-
-    Surface.prototype.showContent = function (_) {
-        if (!arguments.length) return this._showContent;
-        this._showContent = _;
-        if (this._content) {
-            this._content.visible(this._showContent);
-        }
-        return this;
-    };
-
-    Surface.prototype.content = function (_) {
-        if (!arguments.length) return this._content;
-        this._content = _;
-        switch (this._content.class()) {
-            case "bar":
-                this.icon_faChar("\uf080")
-                break;
-            case "bubble":
-                this.icon_faChar("\uf192")
-                break;
-            case "pie":
-                this.icon_faChar("\uf200")
-                break;
-            case "table":
-                this.icon_faChar("\uf0ce")
-                break;
-        }
-
-        return this;
-    };
-
-    Surface.prototype.testData = function () {
-        this.title("Hello and welcome!");
-        this.menu(["aaa", "bbb", "ccc"]);
-        return this;
-    }
-
-    Surface.prototype.enter = function (_domNode, _element) {
-        SVGWidget.prototype.enter.apply(this, arguments);
-        var element = _element.append("g").attr("class", "frame");
-        var domNode = element.node();
-        this._clipRect = element.append("defs").append("clipPath")
-            .attr("id", this.id() + "_clip")
-            .append("rect")
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", this._size.width)
-                .attr("height", this._size.height)
-        ;
-        this._titleRect
-            .target(domNode)
-            .render()
-            .display(this._show_title && this._show_icon)
-        ;
-        this._icon
-            .target(domNode)
-            .render()
-        ;
-        var menuViz = false;
-        this._menu
-            .target(_domNode)
-        ;
-        this._text
-            .target(domNode)
-        ;
-        this._container
-            .target(domNode)
-        ;
-    };
-
-    Surface.prototype.update = function (domNode, element) {
-        SVGWidget.prototype.update.apply(this, arguments);
-
-        this._icon
-            .display(this._show_title && this._show_icon)
-            .render()
-        ;
-        this._menu
-            .render()
-        ;
-        this._text
-            .text(this._title)
-            .display(this._show_title)
-            .render()
-        ;
-        var iconClientSize = this._show_icon ? this._icon.getBBox(true) : {width:0, height: 0};
-        var textClientSize = this._text.getBBox(true);
-        var menuClientSize = this._menu.getBBox(true);
-        var titleRegionHeight = Math.max(iconClientSize.height, textClientSize.height, menuClientSize.height);
-        var yTitle = (-this._size.height + titleRegionHeight) / 2;
-
-        var titleTextHeight = Math.max(textClientSize.height, menuClientSize.height);
-
-        var topMargin = titleRegionHeight <= titleTextHeight ? 0 : (titleRegionHeight - titleTextHeight) / 2;
-        var leftMargin = topMargin;
-
-        this._titleRect
-            .pos({ x: leftMargin, y: yTitle })
-            .width(this._size.width - leftMargin * 2)
-            .height(titleTextHeight)
-            .display(this._show_title)
-            .render()
-        ;
-        this._icon
-            .move({ x: -this._size.width / 2 + iconClientSize.width / 2, y: yTitle })
-        ;
-        this._menu
-            .move({ x: this._size.width / 2 - menuClientSize.width / 2 - this._menuPadding, y: yTitle })
-        ;
-        this._text
-            .move({ x: (iconClientSize.width / 2 - menuClientSize.width / 2) / 2, y: yTitle })
-        ;
-        if (this._show_title) {
-            this._container
-                .pos({ x: leftMargin / 2, y: titleRegionHeight / 2 - topMargin / 2 })
-                .width(this._size.width - leftMargin)
-                .height(this._size.height - titleRegionHeight + topMargin)
-                .render()
-            ;
-        } else {
-            this._container
-                .pos({ x: 0, y: 0 })
-                .width(this._size.width)
-                .height(this._size.height)
-                .render()
-            ;
-        }
-
-        if (this._showContent) {
-            var xOffset = leftMargin;
-            var yOffset = titleRegionHeight - topMargin;
-            var context = this;
-            var content = element.selectAll(".content").data(this._content ? [this._content] : [], function (d) { return d._id; });
-            content.enter().append("g")
-                .attr("class", "content")
-                .attr("clip-path", "url(#" + this.id() + "_clip)")
-                .each(function (d) {
-                    d.target(this);
-                })
-            ;
-            content
-                .each(function (d) {
-                    var padding = {
-                        left: 4,
-                        top: 4,
-                        right: 4,
-                        bottom: 4
-                    };
-                    d
-                        .pos({ x: xOffset / 2, y: yOffset / 2 })
-                        .size({
-                            width: context._size.width - xOffset - (padding.left + padding.right),
-                            height: context._size.height - yOffset - (padding.top + padding.bottom)
-                        })
-                    ;
-                })
-            ;
-            if (this._content) {
-                this._clipRect
-                    .attr("x", -this._size.width / 2 + xOffset)
-                    .attr("y", -this._size.height / 2 + yOffset)
-                    .attr("width", this._size.width - xOffset)
-                    .attr("height", this._size.height - yOffset)
-                ;
-            }
-            content.exit().transition()
-                .each(function (d) { d.target(null); })
-                .remove()
-            ;
-        }
-
-        this._menu.element().node().parentNode.appendChild(this._menu.element().node());
-    };
-
-    Surface.prototype.exit = function (domNode, element) {
-        if (this._content) {
-            this._content.target(null);
-        }
-        SVGWidget.prototype.exit.apply(this, arguments);
-    };
-
-    Surface.prototype.render = function (callback) {
-        if (!this._content) {
-            SVGWidget.prototype.render.apply(this, arguments);
-        }
-        SVGWidget.prototype.render.call(this);
-        var context = this;
-        if (this._content) {
-            this._content.render(function (contentWidget) {
-                if (callback) {
-                    callback(context);
-                }
-            });
-        }
-        return this;
-    }
-
-    Surface.prototype.intersection = function (pointA, pointB) {
-        var hits = [];
-        var i1 = this._icon.intersection(pointA, pointB, this._pos);
-        if (i1) {
-            hits.push({i: i1, d: this.distance(i1, pointB)});
-        }
-        var i2 = this._titleRect.intersection(pointA, pointB);
-        if (i2) {
-            hits.push({i: i2, d: this.distance(i2, pointB)});
-        }
-        var i3 = this._container.intersection(pointA, pointB);
-        if (i3) {
-            hits.push({i: i3, d: this.distance(i3, pointB)});
-        }
-        var nearest = null;
-        hits.forEach(function (item) {
-            if (nearest === null || nearest.d > item.d) {
-                nearest = item;
-            }
-        });
-        return nearest && nearest.i ? nearest.i : null;
-    };
-
-    return Surface;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/ResizeSurface',["./Surface", "css!./ResizeSurface"], factory);
-    } else {
-        root.Graph = factory(root.Surface);
-    }
-}(this, function (Surface) {
-    function ResizeSurface() {
-        Surface.call(this);
-
-        this.handleWidth = 8;
-        this.handles = [{ loc: "NW" }, { loc: "N" }, { loc: "NE" }, { loc: "E" }, { loc: "SE" }, { loc: "S" }, { loc: "SW" }, { loc: "W" }];
-
-        this._allowResize = true;
-
-        var context = this;
-        this.dispatch = d3.dispatch("sizestart", "size", "sizeend");
-        this.drag = d3.behavior.drag()
-            .origin(function (d) { return d; })
-            .on("dragstart", function (d) {
-                context.dispatch.sizestart(context, d.loc);
-                if (context._allowResize) {
-                    d3.event.sourceEvent.stopPropagation();
-                    context._dragHandlePos = { x: d.x, y: d.y };
-                    context._dragStartPos = context.pos();
-                    context._dragStartSize = context.size();
-                    context._prevPosSize = {
-                        x: context._dragStartPos.x,
-                        y: context._dragStartPos.y,
-                        width: context._dragStartSize.width,
-                        height: context._dragStartSize.height
-                    }
-                    context._textPosSize = context._text.getBBox(true);
-                    context._iconPosSize = context._icon.getBBox(true);
-                    context.showContent(false);
-                }
-            })
-            .on("drag", function (d) {
-                if (context._allowResize) {
-                    d3.event.sourceEvent.stopPropagation();
-                    var _dx = d3.event.x - context._dragHandlePos.x;
-                    var _dy = d3.event.y - context._dragHandlePos.y;
-                    var delta = { x: 0, y: 0, w: 0, h: 0 };
-                    switch (d.loc) {
-                        case "NW":
-                            delta.x = _dx / 2;
-                            delta.w = -_dx;
-                        case "N":
-                            delta.y = _dy / 2;
-                            delta.h = -_dy;
-                            break;
-                        case "NE":
-                            delta.y = _dy / 2;
-                            delta.h = -_dy;
-                        case "E":
-                            delta.x = _dx / 2;
-                            delta.w = _dx;
-                            break;
-                        case "SE":
-                            delta.x = _dx / 2;
-                            delta.w = _dx;
-                        case "S":
-                            delta.y = _dy / 2;
-                            delta.h = _dy;
-                            break;
-                        case "SW":
-                            delta.y = _dy / 2;
-                            delta.h = _dy;
-                        case "W":
-                            delta.x = _dx / 2;
-                            delta.w = -_dx;
-                            break;
-                    }
-                    var posSize = {
-                        x: context._dragStartPos.x + delta.x,
-                        y: context._dragStartPos.y + delta.y,
-                        width: context._dragStartSize.width + delta.w,
-                        height: context._dragStartSize.height + delta.h
-                    };
-                    if (posSize.width < context._iconPosSize.width * 2 + context._textPosSize.width) {
-                        posSize.x = context._prevPosSize.x;
-                        posSize.width = context._prevPosSize.width;
-                    }
-                    if (posSize.height < context._textPosSize.height + 48) {
-                        posSize.y = context._prevPosSize.y;
-                        posSize.height = context._prevPosSize.height;
-                    }
-                    context
-                        .pos({ x: posSize.x, y: posSize.y }, false, false)
-                        .size({ width: posSize.width, height: posSize.height })
-                        .render()
-                        .getBBox(true)
-                    ;
-                    context.dispatch.size(context, d.loc);
-                    context._prevPosSize = posSize;
-                }
-            })
-            .on("dragend", function (d) {
-                if (context._allowResize) {
-                    d3.event.sourceEvent.stopPropagation();
-                    context
-                        .showContent(true)
-                        .render()
-                    ;
-                    context._container.getBBox(true);
-                    context._titleRect.getBBox(true);
-                    context.dispatch.sizeend(context, d.loc);
-                }
-            })
-        ;
-    };
-    ResizeSurface.prototype = Object.create(Surface.prototype);
-
-    ResizeSurface.prototype.allowResize = function (_) {
-        if (!arguments.length) return this._allowResize;
-        this._allowResize = _;
-        return this;
-    };
-
-    ResizeSurface.prototype.move = function (_) {
-        var retVal = Surface.prototype.move.apply(this, arguments);
-        this.updateHandles(this._domNode, this._element);
-        return retVal;
-    };
-
-    ResizeSurface.prototype.update = function (domNode, element) {
-        Surface.prototype.update.apply(this, arguments);
-        this.updateHandles(domNode, element);
-    };
-
-    ResizeSurface.prototype.updateHandles = function (domNode, element) {
-        var sizeHandles = this._parentElement.selectAll("rect").data(this.handles, function (d) { return d.loc; });
-        sizeHandles.enter().append("rect")
-            .attr("class", function (d) { return "resize" + d.loc; })
-            .call(this.drag)
-        ;
-
-        var l = this._pos.x + this._container._pos.x - this._container.width() / 2;
-        var t = this._pos.y + this._titleRect._pos.y - this._titleRect.height() / 2;
-        var r = this._pos.x + this._container._pos.x + this._container.width() / 2;
-        var b = this._pos.y + this._container._pos.y + this._container.height() / 2;
-        var w = r - l;
-        var h = b - t;
-        var context = this;
-        sizeHandles
-            .each(function (d) {
-                switch (d.loc) {
-                    case "NW":
-                        d.x = l - context.handleWidth / 2;
-                        d.y = t - context.handleWidth / 2;
-                        d.width = context.handleWidth;
-                        d.height = context.handleWidth;
-                        break;
-                    case "N":
-                        d.x = l + context.handleWidth / 2;
-                        d.y = t - context.handleWidth / 2;
-                        d.width = w - context.handleWidth;
-                        d.height = context.handleWidth;
-                        break;
-                    case "NE":
-                        d.x = r - context.handleWidth / 2;
-                        d.y = t - context.handleWidth / 2;
-                        d.width = context.handleWidth;
-                        d.height = context.handleWidth;
-                        break;
-                    case "E":
-                        d.x = r - context.handleWidth / 2;
-                        d.y = t + context.handleWidth / 2;
-                        d.width = context.handleWidth;
-                        d.height = h - context.handleWidth;
-                        break;
-                    case "SE":
-                        d.x = r - context.handleWidth / 2;
-                        d.y = b - context.handleWidth / 2;
-                        d.width = context.handleWidth;
-                        d.height = context.handleWidth;
-                        break;
-                    case "S":
-                        d.x = l + context.handleWidth / 2;
-                        d.y = b - context.handleWidth / 2;
-                        d.width = w - context.handleWidth;
-                        d.height = context.handleWidth;
-                        break;
-                    case "SW":
-                        d.x = l - context.handleWidth / 2;
-                        d.y = b - context.handleWidth / 2;
-                        d.width = context.handleWidth;
-                        d.height = context.handleWidth;
-                        break;
-                    case "W":
-                        d.x = l - context.handleWidth / 2;
-                        d.y = t + context.handleWidth / 2;
-                        d.width = context.handleWidth;
-                        d.height = h - context.handleWidth;
-                        break;
-                }
-                d3.select(this)
-                    .attr("x", d.x)
-                    .attr("y", d.y)
-                    .attr("width", d.width)
-                    .attr("height", d.height)
-                ;
-            })
-        ;
-    };
-
-    return ResizeSurface;
 }));
 
 
@@ -4184,6 +2835,1027 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     }
 
     return MultiChart;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/Shape.js',["./SVGWidget", "css!./Shape"], factory);
+    } else {
+        root.Entity = factory(root.SVGWidget);
+    }
+}(this, function (SVGWidget) {
+    function Shape() {
+        SVGWidget.call(this);
+        this._class = "common_Shape";
+    };
+    Shape.prototype = Object.create(SVGWidget.prototype);
+
+    Shape.prototype.publish("shape", "circle", "set", "Shape Type", ["circle", "square", "rect", "ellipse"]);
+    Shape.prototype.publish("width", 24, "number", "Width");
+    Shape.prototype.publish("height", 24, "number", "Height");
+    Shape.prototype.publish("color_stroke", null, "html-color", "Stroke Color", null);
+    Shape.prototype.publish("color_fill", null, "html-color", "Fill Color", null);
+
+    Shape.prototype.radius = function (_) {
+        if (!arguments.length) return Math.max(this._width, this._height) / 2;
+        this._width = _;
+        this._height = _;
+        return this;
+    };
+
+    Shape.prototype.testData = function () {
+        return this;
+    }
+
+    Shape.prototype.intersection = function (pointA, pointB) {
+        switch (this._shape) {
+            case "circle":
+                return this.intersectCircle(pointA, pointB);
+        }
+        return SVGWidget.prototype.intersection.apply(this, arguments);
+    };
+
+    Shape.prototype.update = function (domNode, element) {
+        var shape = element.selectAll("rect,circle,ellipse").data([this._shape], function (d) { return d; });
+        
+        shape.enter().append(this._shape === "square" ? "rect" : this._shape)
+            .attr("class", "common_Shape")
+        ;
+        var context = this;
+        shape.each(function (d) {
+            var element = d3.select(this);
+            element.style({
+                fill: context._color_fill !== context.__meta_color_fill.defaultValue ? context._color_fill : null,
+                stroke: context._color_stroke !== context.__meta_color_stroke.defaultValue ? context._color_stroke : null
+            });
+            switch (context._shape) {
+                case "circle":
+                    var radius = context.radius();
+                    element
+                        .attr("r", radius)
+                    ;
+                    break;
+                case "square":
+                    var width = Math.max(context._width, context._height);
+                    element
+                        .attr("x", -width / 2)
+                        .attr("y", -width / 2)
+                        .attr("width", width)
+                        .attr("height", width)
+                    ;
+                    break;
+                case "rect":
+                    element
+                        .attr("x", -context._width / 2)
+                        .attr("y", -context._height / 2)
+                        .attr("width", context._width)
+                        .attr("height", context._height)
+                    ;
+                    break;
+                case "ellipse":
+                    element
+                        .attr("rx", context._width / 2)
+                        .attr("ry", context._height / 2)
+                    ;
+                    break;
+            }
+        });
+        shape.exit().remove();
+    };
+
+    return Shape;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/Icon.js',["./SVGWidget", "./Shape", "./FAChar", "css!./Icon"], factory);
+    } else {
+        root.Entity = factory(root.SVGWidget, root.Shape, root.FAChar);
+    }
+}(this, function (SVGWidget, Shape, FAChar) {
+    function Icon() {
+        SVGWidget.call(this);
+        this._class = "common_Icon";
+
+        this._shapeWidget = new Shape();
+        this._faChar = new FAChar();
+    };
+    Icon.prototype = Object.create(SVGWidget.prototype);    
+
+    Icon.prototype.publish("shape", "circle", "set", "Shape Type", ["circle", "square"]);
+    Icon.prototype.publishProxy("faChar", "_faChar", "char");
+    Icon.prototype.publishProxy("image_color_fill", "_faChar", "color_fill");
+    Icon.prototype.publish("tooltip", "", "string", "Tooltip");
+    Icon.prototype.publish("diameter", 24, "number", "Diameter");
+    Icon.prototype.publish("padding_percent", 45, "number", "Padding Percent");
+    Icon.prototype.publishProxy("shape_color_fill", "_shapeWidget", "color_fill");
+    Icon.prototype.publishProxy("shape_color_stroke", "_shapeWidget", "color_stroke");
+
+    Icon.prototype.testData = function () {
+        this._faChar.testData();
+        return this;
+    };
+
+    Icon.prototype.intersection = function (pointA, pointB) {
+        return this._shapeWidget.intersection(pointA, pointB);
+    };
+
+    Icon.prototype.enter = function (domNode, element) {
+        SVGWidget.prototype.enter.apply(this, arguments);
+        this._shapeWidget
+            .target(domNode)
+            .render()
+        ;
+        this._faChar
+            .target(domNode)
+            .render()
+        ;
+        this._tooltipElement = element.append("title");
+    };
+
+    Icon.prototype.update = function (domNode, element) {
+        SVGWidget.prototype.update.apply(this, arguments);
+        this._faChar
+            .font_size(this._diameter * (100 - this._padding_percent) / 100)
+            .render()
+        ;
+        this._shapeWidget
+            .shape(this._shape)
+            .width(this._diameter)
+            .height(this._diameter)
+            .render()
+        ;
+        this._tooltipElement.text(this._tooltip);
+    };
+
+    return Icon;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/IMenu.js',[], factory);
+    } else {
+        root.IMenu = factory();
+    }
+}(this, function () {
+    function IMenu() {
+    };
+
+    //  Data ---
+    IMenu.prototype.testData = function () {
+        var data = ["This", "is a", "list", "of some text."];
+        this.data(data);
+        return this;
+    };
+
+    //  Properties  ---
+
+    //  Events  ---
+    IMenu.prototype.click = function (d) {
+        console.log("Click:  " + d);
+    };
+    IMenu.prototype.preShowMenu = function () {
+        console.log("preShowMenu");
+    };
+    IMenu.prototype.postHideMenu = function (d) {
+        console.log("postHideMenu");
+    };
+
+    return IMenu;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/IList.js',[], factory);
+    } else {
+        root.IList = factory();
+    }
+}(this, function () {
+    function IList() {
+    };
+
+    //  Data ---
+    IList.prototype.testData = function () {
+        var data = ["This", "is a", "list", "of some text."];
+        this.data(data);
+        return this;
+    };
+
+    //  Properties  ---
+
+    //  Events  ---
+    IList.prototype.click = function (d) {
+        console.log("Click:  " + d);
+    };
+
+    return IList;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/TextBox.js',["./SVGWidget", "./Shape", "./Text", "css!./TextBox"], factory);
+    } else {
+        root.Entity = factory(root.SVGWidget, root.Shape, root.Text);
+    }
+}(this, function (SVGWidget, Shape, Text) {
+    function TextBox() {
+        SVGWidget.call(this);
+        this._class = "common_TextBox";
+
+        this._shape = new Shape()
+            .shape("rect")
+        ;
+        this._text = new Text();
+    };
+    TextBox.prototype = Object.create(SVGWidget.prototype);
+    TextBox.prototype.publishProxy("text", "_text");
+    TextBox.prototype.publishProxy("shape_color_stroke", "_shape", "color_stroke");
+    TextBox.prototype.publishProxy("shape_color_fill", "_shape", "color_fill");
+    TextBox.prototype.publishProxy("text_color_fill", "_text", "color_fill");
+    TextBox.prototype.publish("padding_left", 4, "number", "Padding:  Left");
+    TextBox.prototype.publish("padding_right", 4, "number", "Padding:  Right");
+    TextBox.prototype.publish("padding_top", 4, "number", "Padding:  Top");
+    TextBox.prototype.publish("padding_bottom", 4, "number", "Padding:  Bottom");
+    TextBox.prototype.publishProxy("anchor", "_text");
+    TextBox.prototype.publish("fixedSize", null);
+
+    TextBox.prototype.padding = function (_) {
+        this._padding_left = _;
+        this._padding_right = _;
+        this._padding_top = _;
+        this._padding_bottom = _;
+        return this;
+    };
+
+    TextBox.prototype.testData = function () {
+        this._text.testData();
+        return this;
+    }
+
+    TextBox.prototype.enter = function (domNode, element) {
+        SVGWidget.prototype.enter.apply(this, arguments);
+        this._shape
+            .target(domNode)
+            .render()
+        ;
+        this._text
+            .target(domNode)
+            .render()
+        ;
+    };
+
+    TextBox.prototype.update = function (domNode, element) {
+        SVGWidget.prototype.update.apply(this, arguments);
+
+        this._text
+            .render()
+        ;
+        var textBBox = this._text.getBBox(true);
+        var size = {
+            width: this._fixedSize ? this._fixedSize.width : textBBox.width + this._padding_left + this._padding_right,
+            height: this._fixedSize ? this._fixedSize.height : textBBox.height + this._padding_top + this._padding_bottom
+        };
+        this._shape
+            .width(size.width)
+            .height(size.height)
+            .render()
+        ;
+        if (this._fixedSize) {
+            switch (this.anchor()) {
+                case "start":
+                    this._text
+                        .x(-this._fixedSize.width / 2 + textBBox.width / 2 + (this._padding_left + this._padding_right) / 2)
+                        .render()
+                    ;
+                    break;
+                case "end":
+                    this._text
+                        .x(this._fixedSize.width / 2 - textBBox.width / 2 - (this._padding_left + this._padding_right) / 2)
+                        .render()
+                    ;
+                    break;
+            }
+        }
+    };
+
+    return TextBox;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/List.js',["d3/d3", "../common/SVGWidget", "./IList", "../common/TextBox", "css!./List"], factory);
+    } else {
+        root.List = factory(root.d3, root.SVGWidget, root.IList, root.TextBox);
+    }
+}(this, function (d3, SVGWidget, IList, TextBox) {
+    function List(target) {
+        SVGWidget.call(this);
+        IList.call(this);
+        this._class = "common_List";
+
+        this._listWidgets = {};
+    };
+    List.prototype = Object.create(SVGWidget.prototype);
+    List.prototype.implements(IList.prototype);
+
+    List.prototype.publish("anchor", "start", "set", "Anchor Position", ["", "start", "middle", "end"]);
+
+    List.prototype.update = function (domNode, element) {
+        SVGWidget.prototype.update.apply(this, arguments);
+        var context = this;
+
+        var line = element.selectAll(".line").data(this._data, function (d) { return d; });
+        line.enter().append("g")
+            .attr("class", "line")
+            .each(function (d) {
+                var newTextBox = new TextBox()
+                    .target(this)
+                    .padding_top(0)
+                    .padding_bottom(0)
+                    .padding_left(8)
+                    .padding_right(8)
+                    .text(d)
+                    .render()
+                ;
+                newTextBox.element()
+                    .on("click", function (d) {
+                        context.click(d.text());
+                    })
+                ;
+                context._listWidgets[d] = newTextBox;
+            })
+        ;
+
+        var listHeight = 0;
+        var listWidth = 0;
+        var listCount = 0;
+        for (var key in this._listWidgets) {
+            var bbox = this._listWidgets[key].getBBox();
+            listHeight += bbox.height;
+            if (listWidth < bbox.width)
+                listWidth = bbox.width;
+            ++listCount;
+        }
+        var lineHeight = listHeight / listCount;
+
+        var xPos = -listWidth / 2;
+        var yPos = -listHeight / 2;// + lineHeight / 2;
+        line
+            .each(function (d) {
+                var widget = context._listWidgets[d];
+                var bbox = widget.getBBox();
+                widget
+                    .pos({ x: 0, y: yPos + bbox.height / 2 })
+                    .anchor(context._anchor)
+                    .fixedSize({ width: listWidth, height: bbox.height })
+                    .render()
+                ;
+                yPos += bbox.height;
+            })
+        ;
+        line.exit()
+            .remove()
+            .each(function (d) {
+                delete context._listWidgets[d];
+            })
+        ;
+    };
+
+    return List;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/Menu.js',["./SVGWidget", "./IMenu", "./Icon", "./List", "css!./Menu"], factory);
+    } else {
+        root.Entity = factory(root.SVGWidget, root.IMenu, root.Icon, root.List);
+    }
+}(this, function (SVGWidget, IMenu, Icon, List) {
+    function Menu() {
+        SVGWidget.call(this);
+        IMenu.call(this);
+        this._class = "common_Menu";
+
+        this._icon = new Icon()
+            .shape("rect")
+            .diameter(14)
+        ;
+        this._list = new List();
+
+        var context = this;
+        this._list.click = function (d) {
+            d3.event.stopPropagation();
+            context.hideMenu();
+            context.click(d);
+        };
+        this._visible = false;
+    };
+    Menu.prototype = Object.create(SVGWidget.prototype);
+    Menu.prototype.implements(IMenu.prototype);
+
+    Menu.prototype.publishProxy("faChar", "_icon", null, "\uf0c9");
+    Menu.prototype.publishProxy("padding_percent", "_icon", null, 10);
+
+    Menu.prototype.toggleMenu = function () {
+        if (!this._visible) {
+            this.showMenu();
+        } else {
+            this.hideMenu();
+        }
+    };
+
+    Menu.prototype.showMenu = function () {
+        this.preShowMenu();
+        this._visible = true;
+        this._list
+            .data(this._data)
+            .render()
+        ;
+
+        var bbox = this._icon.getBBox(true);
+        var menuBBox = this._list.getBBox(true);
+        var pos = {
+            x: bbox.width / 2 - menuBBox.width / 2,
+            y: bbox.height / 2 + menuBBox.height / 2
+        };
+        this._list
+            .move(pos)
+        ;
+        var context = this;
+        d3.select("body")
+            .on("click." + this._id, function () {
+                console.log("click:  body - " + context._id)
+                if (context._visible) {
+                    context.hideMenu();
+                }
+            })
+        ;
+    };
+
+    Menu.prototype.hideMenu = function () {
+        d3.select("body")
+            .on("click." + this._id, null)
+        ;
+        this._visible = false;
+        this._list
+            .data([])
+            .render()
+        ;
+        this.postHideMenu();
+    };
+
+    Menu.prototype.testData = function () {
+        this
+            .data(["Menu A", "And B", "a longer C"])
+        ;
+        return this;
+    }
+
+    Menu.prototype.enter = function (domNode, element) {
+        SVGWidget.prototype.enter.apply(this, arguments);
+
+        this._icon
+            .target(domNode)
+            .render()
+        ;
+
+        this._list
+            .target(domNode)
+            .render()
+        ;
+
+        var context = this;
+        this._icon.element()
+            .on("click", function (d) {
+                d3.event.stopPropagation();
+                context.toggleMenu();
+            })
+        ;
+    };
+
+    Menu.prototype.update = function (domNode, element) {
+        SVGWidget.prototype.update.apply(this, arguments);
+        element
+            .classed("disabled", this._data.length === 0)
+        ;
+
+        this._icon
+            .faChar(this.faChar())
+            .padding_percent(this.padding_percent())
+            .render()
+        ;
+    };
+
+    return Menu;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/Surface.js',["./SVGWidget", "./Icon", "./Shape", "./Text", "./FAChar", "./Menu", "css!./Surface"], factory);
+    } else {
+        root.Graph = factory(root.SVGWidget, root.Icon, root.Shape, root.Text, root.FAChar, root.Menu);
+    }
+}(this, function (SVGWidget, Icon, Shape, Text, FAChar, Menu) {
+    function Surface() {
+        SVGWidget.call(this);
+        this._class = "common_Surface";
+
+        this._menuPadding = 2;
+        this._icon = new Icon()
+            .faChar("\uf07b")
+            .padding_percent(50)
+        ;
+        this._container = new Shape()
+            .class("container")
+            .shape("rect")
+        ;
+        this._titleRect = new Shape()
+            .class("title")
+            .shape("rect")
+        ;
+        this._text = new Text()
+            .class("title")
+        ;
+        this._menu = new Menu()
+            .padding_percent(0)
+        ;
+        var context = this;
+        this._menu.preShowMenu = function () {
+            if (context._content && context._content.hasOverlay()) {
+                context._content.visible(false);
+            }
+        }
+        this._menu.postHideMenu = function () {
+            if (context._content && context._content.hasOverlay()) {
+                context._content.visible(true);
+            }
+        }
+
+        this._showContent = true;
+        this._content = null;
+    };
+    Surface.prototype = Object.create(SVGWidget.prototype);
+
+    Surface.prototype.publish("show_title", true, "boolean", "Show Title");
+    Surface.prototype.publish("title", "", "string", "Title");
+    Surface.prototype.publishProxy("title_font_size", "_text", "font_size");
+    Surface.prototype.publish("show_icon", true, "boolean", "Show Title");
+    Surface.prototype.publishProxy("icon_faChar", "_icon", "faChar");
+    Surface.prototype.publishProxy("icon_shape", "_icon", "shape");
+    //Surface.prototype.publish("menu");
+    Surface.prototype.publish("content", null, "widget", "Content");
+
+    Surface.prototype.menu = function (_) {
+        if (!arguments.length) return this._menu.data();
+        this._menu.data(_);
+        return this;
+    };
+
+    Surface.prototype.showContent = function (_) {
+        if (!arguments.length) return this._showContent;
+        this._showContent = _;
+        if (this._content) {
+            this._content.visible(this._showContent);
+        }
+        return this;
+    };
+
+    Surface.prototype.content = function (_) {
+        if (!arguments.length) return this._content;
+        this._content = _;
+        switch (this._content.class()) {
+            case "bar":
+                this.icon_faChar("\uf080")
+                break;
+            case "bubble":
+                this.icon_faChar("\uf192")
+                break;
+            case "pie":
+                this.icon_faChar("\uf200")
+                break;
+            case "table":
+                this.icon_faChar("\uf0ce")
+                break;
+        }
+
+        return this;
+    };
+
+    Surface.prototype.testData = function () {
+        this.title("Hello and welcome!");
+        this.menu(["aaa", "bbb", "ccc"]);
+        return this;
+    }
+
+    Surface.prototype.enter = function (_domNode, _element) {
+        SVGWidget.prototype.enter.apply(this, arguments);
+        var element = _element.append("g").attr("class", "frame");
+        var domNode = element.node();
+        this._clipRect = element.append("defs").append("clipPath")
+            .attr("id", this.id() + "_clip")
+            .append("rect")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", this._size.width)
+                .attr("height", this._size.height)
+        ;
+        this._titleRect
+            .target(domNode)
+            .render()
+            .display(this._show_title && this._show_icon)
+        ;
+        this._icon
+            .target(domNode)
+            .render()
+        ;
+        var menuViz = false;
+        this._menu
+            .target(_domNode)
+        ;
+        this._text
+            .target(domNode)
+        ;
+        this._container
+            .target(domNode)
+        ;
+    };
+
+    Surface.prototype.update = function (domNode, element) {
+        SVGWidget.prototype.update.apply(this, arguments);
+
+        this._icon
+            .display(this._show_title && this._show_icon)
+            .render()
+        ;
+        this._menu
+            .render()
+        ;
+        this._text
+            .text(this._title)
+            .display(this._show_title)
+            .render()
+        ;
+        var iconClientSize = this._show_icon ? this._icon.getBBox(true) : {width:0, height: 0};
+        var textClientSize = this._text.getBBox(true);
+        var menuClientSize = this._menu.getBBox(true);
+        var titleRegionHeight = Math.max(iconClientSize.height, textClientSize.height, menuClientSize.height);
+        var yTitle = (-this._size.height + titleRegionHeight) / 2;
+
+        var titleTextHeight = Math.max(textClientSize.height, menuClientSize.height);
+
+        var topMargin = titleRegionHeight <= titleTextHeight ? 0 : (titleRegionHeight - titleTextHeight) / 2;
+        var leftMargin = topMargin;
+
+        this._titleRect
+            .pos({ x: leftMargin, y: yTitle })
+            .width(this._size.width - leftMargin * 2)
+            .height(titleTextHeight)
+            .display(this._show_title)
+            .render()
+        ;
+        this._icon
+            .move({ x: -this._size.width / 2 + iconClientSize.width / 2, y: yTitle })
+        ;
+        this._menu
+            .move({ x: this._size.width / 2 - menuClientSize.width / 2 - this._menuPadding, y: yTitle })
+        ;
+        this._text
+            .move({ x: (iconClientSize.width / 2 - menuClientSize.width / 2) / 2, y: yTitle })
+        ;
+        if (this._show_title) {
+            this._container
+                .pos({ x: leftMargin / 2, y: titleRegionHeight / 2 - topMargin / 2 })
+                .width(this._size.width - leftMargin)
+                .height(this._size.height - titleRegionHeight + topMargin)
+                .render()
+            ;
+        } else {
+            this._container
+                .pos({ x: 0, y: 0 })
+                .width(this._size.width)
+                .height(this._size.height)
+                .render()
+            ;
+        }
+
+        if (this._showContent) {
+            var xOffset = leftMargin;
+            var yOffset = titleRegionHeight - topMargin;
+            var context = this;
+            var content = element.selectAll(".content").data(this._content ? [this._content] : [], function (d) { return d._id; });
+            content.enter().append("g")
+                .attr("class", "content")
+                .attr("clip-path", "url(#" + this.id() + "_clip)")
+                .each(function (d) {
+                    d.target(this);
+                })
+            ;
+            content
+                .each(function (d) {
+                    var padding = {
+                        left: 4,
+                        top: 4,
+                        right: 4,
+                        bottom: 4
+                    };
+                    d
+                        .pos({ x: xOffset / 2, y: yOffset / 2 })
+                        .size({
+                            width: context._size.width - xOffset - (padding.left + padding.right),
+                            height: context._size.height - yOffset - (padding.top + padding.bottom)
+                        })
+                    ;
+                })
+            ;
+            if (this._content) {
+                this._clipRect
+                    .attr("x", -this._size.width / 2 + xOffset)
+                    .attr("y", -this._size.height / 2 + yOffset)
+                    .attr("width", this._size.width - xOffset)
+                    .attr("height", this._size.height - yOffset)
+                ;
+            }
+            content.exit().transition()
+                .each(function (d) { d.target(null); })
+                .remove()
+            ;
+        }
+
+        this._menu.element().node().parentNode.appendChild(this._menu.element().node());
+    };
+
+    Surface.prototype.exit = function (domNode, element) {
+        if (this._content) {
+            this._content.target(null);
+        }
+        SVGWidget.prototype.exit.apply(this, arguments);
+    };
+
+    Surface.prototype.render = function (callback) {
+        if (!this._content) {
+            SVGWidget.prototype.render.apply(this, arguments);
+        }
+        SVGWidget.prototype.render.call(this);
+        var context = this;
+        if (this._content) {
+            this._content.render(function (contentWidget) {
+                if (callback) {
+                    callback(context);
+                }
+            });
+        }
+        return this;
+    }
+
+    Surface.prototype.intersection = function (pointA, pointB) {
+        var hits = [];
+        var i1 = this._icon.intersection(pointA, pointB, this._pos);
+        if (i1) {
+            hits.push({i: i1, d: this.distance(i1, pointB)});
+        }
+        var i2 = this._titleRect.intersection(pointA, pointB);
+        if (i2) {
+            hits.push({i: i2, d: this.distance(i2, pointB)});
+        }
+        var i3 = this._container.intersection(pointA, pointB);
+        if (i3) {
+            hits.push({i: i3, d: this.distance(i3, pointB)});
+        }
+        var nearest = null;
+        hits.forEach(function (item) {
+            if (nearest === null || nearest.d > item.d) {
+                nearest = item;
+            }
+        });
+        return nearest && nearest.i ? nearest.i : null;
+    };
+
+    return Surface;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/ResizeSurface.js',["./Surface", "css!./ResizeSurface"], factory);
+    } else {
+        root.Graph = factory(root.Surface);
+    }
+}(this, function (Surface) {
+    function ResizeSurface() {
+        Surface.call(this);
+
+        this.handleWidth = 8;
+        this.handles = [{ loc: "NW" }, { loc: "N" }, { loc: "NE" }, { loc: "E" }, { loc: "SE" }, { loc: "S" }, { loc: "SW" }, { loc: "W" }];
+
+        this._allowResize = true;
+
+        var context = this;
+        this.dispatch = d3.dispatch("sizestart", "size", "sizeend");
+        this.drag = d3.behavior.drag()
+            .origin(function (d) { return d; })
+            .on("dragstart", function (d) {
+                context.dispatch.sizestart(context, d.loc);
+                if (context._allowResize) {
+                    d3.event.sourceEvent.stopPropagation();
+                    context._dragHandlePos = { x: d.x, y: d.y };
+                    context._dragStartPos = context.pos();
+                    context._dragStartSize = context.size();
+                    context._prevPosSize = {
+                        x: context._dragStartPos.x,
+                        y: context._dragStartPos.y,
+                        width: context._dragStartSize.width,
+                        height: context._dragStartSize.height
+                    }
+                    context._textPosSize = context._text.getBBox(true);
+                    context._iconPosSize = context._icon.getBBox(true);
+                    context.showContent(false);
+                }
+            })
+            .on("drag", function (d) {
+                if (context._allowResize) {
+                    d3.event.sourceEvent.stopPropagation();
+                    var _dx = d3.event.x - context._dragHandlePos.x;
+                    var _dy = d3.event.y - context._dragHandlePos.y;
+                    var delta = { x: 0, y: 0, w: 0, h: 0 };
+                    switch (d.loc) {
+                        case "NW":
+                            delta.x = _dx / 2;
+                            delta.w = -_dx;
+                        case "N":
+                            delta.y = _dy / 2;
+                            delta.h = -_dy;
+                            break;
+                        case "NE":
+                            delta.y = _dy / 2;
+                            delta.h = -_dy;
+                        case "E":
+                            delta.x = _dx / 2;
+                            delta.w = _dx;
+                            break;
+                        case "SE":
+                            delta.x = _dx / 2;
+                            delta.w = _dx;
+                        case "S":
+                            delta.y = _dy / 2;
+                            delta.h = _dy;
+                            break;
+                        case "SW":
+                            delta.y = _dy / 2;
+                            delta.h = _dy;
+                        case "W":
+                            delta.x = _dx / 2;
+                            delta.w = -_dx;
+                            break;
+                    }
+                    var posSize = {
+                        x: context._dragStartPos.x + delta.x,
+                        y: context._dragStartPos.y + delta.y,
+                        width: context._dragStartSize.width + delta.w,
+                        height: context._dragStartSize.height + delta.h
+                    };
+                    if (posSize.width < context._iconPosSize.width * 2 + context._textPosSize.width) {
+                        posSize.x = context._prevPosSize.x;
+                        posSize.width = context._prevPosSize.width;
+                    }
+                    if (posSize.height < context._textPosSize.height + 48) {
+                        posSize.y = context._prevPosSize.y;
+                        posSize.height = context._prevPosSize.height;
+                    }
+                    context
+                        .pos({ x: posSize.x, y: posSize.y }, false, false)
+                        .size({ width: posSize.width, height: posSize.height })
+                        .render()
+                        .getBBox(true)
+                    ;
+                    context.dispatch.size(context, d.loc);
+                    context._prevPosSize = posSize;
+                }
+            })
+            .on("dragend", function (d) {
+                if (context._allowResize) {
+                    d3.event.sourceEvent.stopPropagation();
+                    context
+                        .showContent(true)
+                        .render()
+                    ;
+                    context._container.getBBox(true);
+                    context._titleRect.getBBox(true);
+                    context.dispatch.sizeend(context, d.loc);
+                }
+            })
+        ;
+    };
+    ResizeSurface.prototype = Object.create(Surface.prototype);
+
+    ResizeSurface.prototype.allowResize = function (_) {
+        if (!arguments.length) return this._allowResize;
+        this._allowResize = _;
+        return this;
+    };
+
+    ResizeSurface.prototype.move = function (_) {
+        var retVal = Surface.prototype.move.apply(this, arguments);
+        this.updateHandles(this._domNode, this._element);
+        return retVal;
+    };
+
+    ResizeSurface.prototype.update = function (domNode, element) {
+        Surface.prototype.update.apply(this, arguments);
+        this.updateHandles(domNode, element);
+    };
+
+    ResizeSurface.prototype.updateHandles = function (domNode, element) {
+        var sizeHandles = this._parentElement.selectAll("rect").data(this.handles, function (d) { return d.loc; });
+        sizeHandles.enter().append("rect")
+            .attr("class", function (d) { return "resize" + d.loc; })
+            .call(this.drag)
+        ;
+
+        var l = this._pos.x + this._container._pos.x - this._container.width() / 2;
+        var t = this._pos.y + this._titleRect._pos.y - this._titleRect.height() / 2;
+        var r = this._pos.x + this._container._pos.x + this._container.width() / 2;
+        var b = this._pos.y + this._container._pos.y + this._container.height() / 2;
+        var w = r - l;
+        var h = b - t;
+        var context = this;
+        sizeHandles
+            .each(function (d) {
+                switch (d.loc) {
+                    case "NW":
+                        d.x = l - context.handleWidth / 2;
+                        d.y = t - context.handleWidth / 2;
+                        d.width = context.handleWidth;
+                        d.height = context.handleWidth;
+                        break;
+                    case "N":
+                        d.x = l + context.handleWidth / 2;
+                        d.y = t - context.handleWidth / 2;
+                        d.width = w - context.handleWidth;
+                        d.height = context.handleWidth;
+                        break;
+                    case "NE":
+                        d.x = r - context.handleWidth / 2;
+                        d.y = t - context.handleWidth / 2;
+                        d.width = context.handleWidth;
+                        d.height = context.handleWidth;
+                        break;
+                    case "E":
+                        d.x = r - context.handleWidth / 2;
+                        d.y = t + context.handleWidth / 2;
+                        d.width = context.handleWidth;
+                        d.height = h - context.handleWidth;
+                        break;
+                    case "SE":
+                        d.x = r - context.handleWidth / 2;
+                        d.y = b - context.handleWidth / 2;
+                        d.width = context.handleWidth;
+                        d.height = context.handleWidth;
+                        break;
+                    case "S":
+                        d.x = l + context.handleWidth / 2;
+                        d.y = b - context.handleWidth / 2;
+                        d.width = w - context.handleWidth;
+                        d.height = context.handleWidth;
+                        break;
+                    case "SW":
+                        d.x = l - context.handleWidth / 2;
+                        d.y = b - context.handleWidth / 2;
+                        d.width = context.handleWidth;
+                        d.height = context.handleWidth;
+                        break;
+                    case "W":
+                        d.x = l - context.handleWidth / 2;
+                        d.y = t + context.handleWidth / 2;
+                        d.width = context.handleWidth;
+                        d.height = h - context.handleWidth;
+                        break;
+                }
+                d3.select(this)
+                    .attr("x", d.x)
+                    .attr("y", d.y)
+                    .attr("width", d.width)
+                    .attr("height", d.height)
+                ;
+            })
+        ;
+    };
+
+    return ResizeSurface;
 }));
 
 
@@ -5969,6 +5641,334 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     };
 
     return Graph;
+}));
+
+define('async',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
+define('propertyParser',{});
+define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/Common.js',["d3/d3", "../common/HTMLWidget", "goog!visualization,1,packages:[corechart]"], factory);
+    } else {
+        root.Common = factory(root.d3, root.HTMLWidget);
+    }
+}(this, function (d3, HTMLWidget) {
+
+    function Common(tget) {
+        HTMLWidget.call(this);
+        this._class = "google_Common";
+
+        this._tag = "div";
+
+        this.columns([]);
+        this.data([]);
+        this._data_google = [];
+
+        this._chart = null;
+    };
+    Common.prototype = Object.create(HTMLWidget.prototype);
+
+    Common.prototype.publish("chartAreaWidth", "80%", "string", "Chart Area Width");
+    Common.prototype.publish("chartAreaHeight", "80%", "string", "Chart Area Height");
+
+    Common.prototype.publish("fontSize", null, "number", "Font Size");
+    Common.prototype.publish("fontName", null, "string", "Font Name");
+
+    Common.prototype.publish("legendShow", true, "boolean", "Show Legend");
+    Common.prototype.publish("legendAlignment", "center", "set", "Legend Alignment", ["", "start", "center", "end"]);
+    Common.prototype.publish("legendPosition", "right", "set", "Legend Position", ["", "bottom", "labeled", "left", "right", "top"]);
+    Common.prototype.publish("legendFontColor", "#000", "html-color", "Legend Font Color");
+    Common.prototype.publish("legendFontName", null, "string", "Legend Font Name");
+    Common.prototype.publish("legendFontSize", null, "number", "Legend Font Size");
+    Common.prototype.publish("legendFontBold", false, "boolean", "Legend Font Bold");
+    Common.prototype.publish("legendFontItalic", false, "boolean", "Legend Font Italic");
+
+    Common.prototype.publish("animationDuration", 0, "number", "Animation Duration");
+    Common.prototype.publish("animationOnStartup", true, "boolean", "Animate On Startup");
+    Common.prototype.publish("animationEasing", "linear", "set", "Animation Easing", ["", "linear", "in", "out", "inAndOut"]);
+
+    Common.prototype.data = function (_) {
+        var retVal = HTMLWidget.prototype.data.apply(this, arguments);
+        if (arguments.length) {
+            var data = null;
+            if (this._data.length) {
+                data = [this._columns].concat(this._data);
+            } else {
+                data = [
+                    ['', { role: 'annotation' }],
+                    ['', '']
+                ];
+            }
+            this._data_google = google.visualization.arrayToDataTable(data);
+        }
+        return retVal;
+    };
+
+    Common.prototype.getChartOptions = function () {
+        var colors = this._columns.filter(function (d, i) { return i > 0; }).map(function (row) {
+            return this._palette(row);
+        }, this);
+
+        return {
+            backgroundColor: "none",
+            width: this.width(),
+            height: this.height(),
+            colors: colors,
+            fontSize: this._fontSize,
+            fontName: this._fontName,
+            chartArea: {
+                width: this._chartAreaWidth,
+                height: this._chartAreaHeight
+            },
+            animation: {
+                duration: this._animationDuration,
+                startup: this._animationOnStartup,
+                easing: this._animationEasing
+            },
+            legend: {
+                alignment: this._legendAlignment,
+                position: this._legendShow ? this._legendPosition : "none",
+                maxLines: 2,
+                textStyle: {
+                    color: this._legendFontColor,
+                    fontName: this._legendFontName,
+                    fontSize: this._legendFontSize,
+                    bold: this._legendFontBold,
+                    italic: this._legendFontItalic
+                }
+            },
+        };
+    },
+
+    Common.prototype.enter = function (domNode, element) {
+        element.style("overflow", "hidden");
+
+        this._chart = new google.visualization[this._chartType](domNode);
+
+        var context = this;
+        google.visualization.events.addListener(this._chart, "select", function () {
+            var selectedItem = context._chart.getSelection()[0];
+            if (selectedItem) {
+                context.click(context.rowToObj(context._data[selectedItem.row]), context._columns[selectedItem.column]);
+            }
+        });
+    }
+
+    Common.prototype.update = function(domNode, element) {
+        HTMLWidget.prototype.update.apply(this, arguments);
+
+        this._chart.draw(this._data_google, this.getChartOptions());
+    };
+    
+    return Common;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/CommonND.js',["d3/d3", "../google/Common", "../chart/INDChart", "goog!visualization,1,packages:[corechart]"], factory);
+    } else {
+        root.CommonND = factory(root.d3, root.Common, root.INDChart);
+    }
+}(this, function (d3, Common, INDChart) {
+
+    function CommonND() {
+        Common.call(this);
+        INDChart.call(this);
+        this._class = "google_CommonND";
+    };
+    CommonND.prototype = Object.create(Common.prototype);
+    CommonND.prototype.implements(INDChart.prototype);
+
+    CommonND.prototype.publish("paletteID", "default", "set", "Palette ID", CommonND.prototype._palette.switch());
+
+    CommonND.prototype.update = function(domNode, element) {   
+        this._palette = this._palette.switch(this._paletteID);
+
+        Common.prototype.update.apply(this, arguments);
+    }
+
+    return CommonND;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/Bar.js',["d3/d3", "./CommonND"], factory);
+    } else {
+        root.Bar = factory(root.d3, root.CommonND);
+    }
+}(this, function (d3, CommonND) {
+
+    function Bar() {
+        CommonND.call(this);
+        this._class = "google_Bar";
+
+        this._chartType = "BarChart";
+    };
+    Bar.prototype = Object.create(CommonND.prototype);
+
+    //  TODO:  Publish Bar Properties Here
+   
+    Bar.prototype.getChartOptions = function () {
+        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
+        //  TODO:  Add Bar Properties Here
+        return retVal;
+    };
+
+    Bar.prototype.enter = function (domNode, element) {
+        CommonND.prototype.enter.apply(this, arguments);
+    };
+
+    Bar.prototype.update = function (domNode, element) {      
+        CommonND.prototype.update.apply(this, arguments);
+    };
+
+    return Bar;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/Column.js',["d3/d3", "./CommonND"], factory);
+    } else {
+        root.Column = factory(root.d3, root.CommonND);
+    }
+}(this, function (d3, CommonND) {
+
+    function Column() {
+        CommonND.call(this);
+        this._class = "google_Column";
+
+        this._chartType = "ColumnChart";
+    };
+    Column.prototype = Object.create(CommonND.prototype);
+    //  TODO:  Publish Column Properties Here
+
+    Column.prototype.getChartOptions = function () {
+        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
+        //  TODO:  Add Column Properties Here
+        return retVal;
+    };
+    
+    Column.prototype.enter = function (domNode, element) {
+        CommonND.prototype.enter.apply(this, arguments);
+    };
+
+    Column.prototype.update = function (domNode, element) {
+        CommonND.prototype.update.apply(this, arguments);
+    };
+
+    return Column;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/Common2D',["d3/d3", "../google/Common", "../chart/I2DChart", "goog!visualization,1,packages:[corechart]"], factory);
+    } else {
+        root.Common2D = factory(root.d3, root.Common, root.I2DChart);
+    }
+}(this, function (d3, Common, I2DChart) {
+
+    function Common2D() {
+        Common.call(this);
+        I2DChart.call(this);
+        this._class = "google_Common2D";
+    };
+    Common2D.prototype = Object.create(Common.prototype);
+    Common2D.prototype.implements(I2DChart.prototype);
+
+    Common2D.prototype.publish("paletteID", "default", "set", "Palette ID", Common2D.prototype._palette.switch());
+
+    Common2D.prototype.update = function(domNode, element) {
+        this._palette = this._palette.switch(this._paletteID);
+        
+        Common.prototype.update.apply(this, arguments);
+    }
+
+    return Common2D;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/Line.js',["d3/d3", "./CommonND"], factory);
+    } else {
+        root.Line = factory(root.d3, root.CommonND);
+    }
+}(this, function (d3, CommonND) {
+
+    function Line() {
+        CommonND.call(this);
+        this._class = "google_Line";
+
+        this._chartType = "LineChart";
+    };
+    Line.prototype = Object.create(CommonND.prototype);
+    //  TODO:  Publish Line Properties Here
+
+    Line.prototype.getChartOptions = function () {
+        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
+        //  TODO:  Add Line Properties Here
+        return retVal;
+    };
+
+    Line.prototype.enter = function (domNode, element) {
+        CommonND.prototype.enter.apply(this, arguments);
+    };
+
+    Line.prototype.update = function (domNode, element) {
+        CommonND.prototype.update.apply(this, arguments);
+    };
+    
+    return Line;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/Pie.js',["d3/d3", "./Common2D"], factory);
+    } else {
+        root.Pie = factory(root.d3, root.Common2D);
+    }
+}(this, function (d3, Common2D) {
+
+    function Pie() {
+        Common2D.call(this);
+        this._class = "google_Pie";
+
+        this._chartType = "PieChart";
+    };
+    Pie.prototype = Object.create(Common2D.prototype);
+    
+    Pie.prototype.publish("is3D", true, "boolean", "Enable 3D");
+    Pie.prototype.publish("pieHole", 0, "number", "Pie Hole Size");
+    Pie.prototype.publish("pieStartAngle", 0, "number", "Pie Start Angle");
+
+    Pie.prototype.getChartOptions = function () {
+        var retVal = Common2D.prototype.getChartOptions.apply(this, arguments);
+
+        retVal.colors = this._data.map(function (row) {
+            return this._palette(row[0]);
+        }, this);
+        retVal.is3D = this._is3D;
+        retVal.pieHole = this._pieHole;
+        retVal.pieStartAngle = this._pieStartAngle;
+        return retVal;
+    };
+    
+    Pie.prototype.enter = function (domNode, element) {
+        Common2D.prototype.enter.apply(this, arguments);
+    };
+
+    Pie.prototype.update = function (domNode, element) {
+        Common2D.prototype.update.apply(this, arguments);
+    };
+
+    return Pie;
 }));
 
 
