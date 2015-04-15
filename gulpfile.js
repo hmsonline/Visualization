@@ -40,7 +40,6 @@ gulp.task('default', ['css-combine', 'css-optimize'], function (done) {
         // plugins
         'async': '../rjs/plugins/async',
         'css': '../rjs/plugins/css-ignore',
-        'text': '../rjs/plugins/text',
         'goog': '../rjs/plugins/goog',
         'propertyParser': '../rjs/plugins/propertyParser',
 
@@ -53,6 +52,12 @@ gulp.task('default', ['css-combine', 'css-optimize'], function (done) {
         'lodash/lodash': 'empty:',
         'topojson/topojson': 'empty:'
       },
+      stubModules: [
+        'async',
+        'css',
+        'goog',
+        'propertyParser'
+      ],
       include: files
         .filter(function (file) { return path.extname(file) === '.js' && !excludes[file] })
         .map(function (file) { return file.substring('src/'.length) })
