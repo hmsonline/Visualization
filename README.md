@@ -1,3 +1,11 @@
+# TODO
+
+* Fix helloworld.html & test.html to use artifacts in dist
+* Lazy load data files (countries.js etc.)
+* Include map files in optimized build
+* Handle goog! stuff in optimize build
+* Handle dynamic google map (lazy load?)
+
 # Visualization Framework 
 * _[Demo/Test Page](http://rawgit.com/hpcc-systems/Visualization/master/demos/test.html) and its [source](https://github.com/hpcc-systems/Visualization/blob/master/demos/test.html)_
 * _[Dermatology Test Page](http://rawgit.com/hpcc-systems/Visualization/master/demos/dermatology.html) and its [source](https://github.com/hpcc-systems/Visualization/blob/master/demos/dermatology.html)_

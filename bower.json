@@ -25,8 +25,13 @@
     "font-awesome": "4.3.0",
     "lodash": "3.0.0",
     "topojson": "1.6.18",
-    "d3-cloud": "git@github.com:jasondavies/d3-cloud.git"
+    "d3-cloud": "git@github.com:jasondavies/d3-cloud.git",
+    "require-css": "~0.1.8",
+    "text": "~2.0.14",
+    "requirejs-plugins": "~1.0.3"
   },
   "license": "Apache",
-  "authors": ["HPCC Systems"]
+  "authors": [
+    "HPCC Systems"
+  ]
 }
