@@ -1,6 +1,7 @@
 # TODO
 
 * Fix helloworld.html & test.html to use artifacts in dist
+* Demos should use its own bower.json
 * Lazy load data files (countries.js etc.)
 * Include map files in optimized build
 * Handle goog! stuff in optimize build

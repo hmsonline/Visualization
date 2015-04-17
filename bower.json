@@ -6,15 +6,16 @@
     "visualization"
   ],
   "main": [
-    "dist/vis.css",
-    "dist/vis.js"
+    "dist/optimized/viz.min.css",
+    "dist/optimized/viz.min.js"
   ],
   "ignore": [
-    "rjs",
+    ".gitignore",
     "src",
+    "package.json",
     "demos",
-    "gulpfile.*",
-    ".gitignore"
+    "gulpfile.js",
+    "rjs.noop.js"
   ],
   "dependencies": {
     "c3": "0.4.10",
