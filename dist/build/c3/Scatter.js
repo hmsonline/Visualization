@@ -1,1 +1,0 @@
-(function(e,t){typeof define=="function"&&define.amd?define(["./CommonND"],t):e.C3_Scatter=t(e.C3_CommonND)})(this,function(e){function t(t){e.call(this),this._class="c3_Scatter",this._type="scatter"}return t.prototype=Object.create(e.prototype),t});

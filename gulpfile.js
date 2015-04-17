@@ -10,7 +10,7 @@ const sort = require('gulp-natural-sort')
 const dir = require('node-dir')
 
 function css(minify) {
-  return gulp.src('src/**/*.css')
+  return gulp.src('viz/**/*.css')
     .pipe(sort())
     .pipe(concatCss(minify ? 'viz.min.css' : 'viz.css'))
     .pipe(minify ? minifyCss({keepBreaks:true}) : gutil.noop())
@@ -21,22 +21,21 @@ gulp.task('css-combine', css.bind(null, false))
 gulp.task('css-optimize', css.bind(null, true))
 
 gulp.task('optimize', ['css-combine', 'css-optimize'], function (done) {
-  dir.files('src', function (err, files) {
+  dir.files('viz', function (err, files) {
     if (err) return done(err)
 
     const excludes = {
       // TODO: exclude only data files
-      'src/config.js': true,
-      'src/map/ChoroplethCountries.js': true,
-      'src/map/countries.js': true,
-      'src/map/ChoroplethCounties.js': true,
-      'src/map/us-counties.js': true,
-      'src/map/ChoroplethStates.js': true,
-      'src/map/us-states.js': true
+      'viz/map/ChoroplethCountries.js': true,
+      'viz/map/countries.js': true,
+      'viz/map/ChoroplethCounties.js': true,
+      'viz/map/us-counties.js': true,
+      'viz/map/ChoroplethStates.js': true,
+      'viz/map/us-states.js': true
     }
 
     const opts = {
-      baseUrl: 'src',
+      baseUrl: 'viz',
       paths: {
         // plugins
         'async': '../rjs.noop',
@@ -47,15 +46,14 @@ gulp.task('optimize', ['css-combine', 'css-optimize'], function (done) {
         // vendors
         'd3/d3': 'empty:',
         'c3/c3': 'empty:',
-        'lib/colorbrewer': 'empty:',
-        'lib/dagre/dagre': 'empty:',
-        'lib/Font-Awesome': 'empty:',
-        'lodash/lodash': 'empty:',
+        'dagre/dagre': 'empty:',
+        'colorbrewer/colorbrewer': 'empty:',
+        'font-awesome': 'empty:',
         'topojson/topojson': 'empty:'
       },
       include: files
         .filter(function (file) { return path.extname(file) === '.js' && !excludes[file] })
-        .map(function (file) { return file.substring('src/'.length) })
+        .map(function (file) { return file.substring('viz/'.length) })
     }
 
     async.parallel([
@@ -67,10 +65,9 @@ gulp.task('optimize', ['css-combine', 'css-optimize'], function (done) {
 
 gulp.task('default', ['optimize'], function (done) {
   var opts = {
-    dir: 'dist/build',
-    appDir: 'src',
-    baseUrl: '.',
-    modules: [{name: 'config', include: []}]
+    dir: 'dist/build/viz',
+    appDir: 'viz',
+    baseUrl: '.'
   }
   optimize(opts, done)
 })

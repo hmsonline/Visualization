@@ -1,11 +1,12 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('common/Widget.js',["d3/d3"], factory);
+        define('common/Widget.js',["d3/d3", "require"], factory);
     } else {
-        root.Widget = factory(root.d3);
+        root.common_Widget = factory(root.d3);
     }
-}(this, function (d3) {
+}(this, function (d3, require) {
+    var root = this;
     var widgetID = 0;
     var widgetMeta = {};
     function Widget() {
@@ -121,6 +122,20 @@
     };
 
     // Serialization  ---
+    Widget.prototype.require = require || function (paths, cb) {
+        if (typeof paths === 'function') {
+            cb = paths
+            paths = []
+        }
+
+        var objs = paths.map(function (path) {
+            var prop = path.substring("../".length).split("/").join("_")
+            return root[prop]
+        })
+        
+        cb.apply(null, objs)
+    }
+
     Widget.prototype.publish = function (id, defaultValue, type, description, set, ext) {
         if (this["__meta_" + id] !== undefined) {
             throw id + " is already published."
@@ -594,7 +609,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/Transition.js',[], factory);
     } else {
-        root.Transition = factory();
+        root.common_Transition = factory();
     }
 }(this, function () {
     function Transition(widget) {
@@ -641,7 +656,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/HTMLWidget.js',["./Widget", "./Transition", "d3/d3"], factory);
     } else {
-        root.HTMLWidget = factory(root.Widget, root.Transition, root.d3);
+        root.common_HTMLWidget = factory(root.common_Widget, root.common_Transition, root.d3);
     }
 }(this, function (Widget, Transition, d3) {
     function HTMLWidget() {
@@ -782,7 +797,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/Common.js',["d3/d3", "c3/c3", "../common/HTMLWidget", "css!c3/c3"], factory);
     } else {
-        root.C3_Common = factory(root.d3, root.c3, root.HTMLWidget);
+        root.c3_Common = factory(root.d3, root.c3, root.common_HTMLWidget);
     }
 }(this, function (d3, c3, HTMLWidget) {
     function Common(target) {
@@ -815,7 +830,7 @@
         return this;
     };
 
-    Common.prototype.getC3Series = function() {
+    Common.prototype.c3_eries = function() {
         return this._columns.filter(function (d, i) { return i > 0;});
     };
 
@@ -880,9 +895,9 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('common/Palette.js',["d3/d3", "lib/colorbrewer/colorbrewer"], factory);
+        define('common/Palette.js',["d3/d3", "colorbrewer/colorbrewer"], factory);
     } else {
-        root.Palette = factory(root.d3);
+        root.common_Palette = factory(root.d3);
     }
 }(this, function (d3) {
     var d3Ordinal = [
@@ -1137,7 +1152,7 @@
     if (typeof define === "function" && define.amd) {
         define('chart/INDChart.js',["../common/Palette"], factory);
     } else {
-        root.Chart_INDChart = factory(root.Palette);
+        root.chart_INDChart = factory(root.common_Palette);
     }
 }(this, function (Palette) {
     function INDChart() {
@@ -1169,7 +1184,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/CommonND.js',["./Common", "../chart/INDChart"], factory);
     } else {
-        root.C3_CommonND = factory(root.C3_Common, root.Chart_INDChart);
+        root.c3_CommonND = factory(root.c3_Common, root.chart_INDChart);
     }
 }(this, function (Common, INDChart) {
     function CommonND(target) {
@@ -1269,7 +1284,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/Area.js',["./CommonND"], factory);
     } else {
-        root.C3_Area = factory(root.C3_CommonND);
+        root.c3_Area = factory(root.c3_CommonND);
     }
 }(this, function (CommonND) {
     function Area(target) {
@@ -1288,7 +1303,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/Column.js',["./CommonND"], factory);
     } else {
-        root.C3_Column = factory(root.C3_CommonND);
+        root.c3_Column = factory(root.c3_CommonND);
     }
 }(this, function (CommonND) {
     function Column(target) {
@@ -1307,7 +1322,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/Bar.js',["./Column"], factory);
     } else {
-        root.C3_Bar = factory(root.C3_Column);
+        root.c3_Bar = factory(root.c3_Column);
     }
 }(this, function (Column) {
     function Bar(target) {
@@ -1326,7 +1341,7 @@
     if (typeof define === "function" && define.amd) {
         define('chart/I1DChart.js',["../common/Palette"], factory);
     } else {
-        root.Chart_I1DChart = factory(root.Palette);
+        root.chart_I1DChart = factory(root.common_Palette);
     }
 }(this, function (Palette) {
     function I1DChart() {
@@ -1353,7 +1368,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/Common1D',["./Common", "../chart/I1DChart"], factory);
     } else {
-        root.C3_Common1D = factory(root.C3_Common, root.Chart_I1DChart);
+        root.c3_Common1D = factory(root.c3_Common, root.chart_I1DChart);
     }
 }(this, function (Common, I1DChart) {
     function Common1D(target) {
@@ -1391,7 +1406,7 @@
     if (typeof define === "function" && define.amd) {
         define('chart/I2DChart.js',["../common/Palette"], factory);
     } else {
-        root.Chart_I2DChart = factory(root.Palette);
+        root.chart_I2DChart = factory(root.common_Palette);
     }
 }(this, function (Palette) {
     function I2DChart() {
@@ -1423,7 +1438,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/Common2D',["./Common", "../chart/I2DChart"], factory);
     } else {
-        root.C3_Common2D = factory(root.C3_Common, root.Chart_I2DChart);
+        root.c3_Common2D = factory(root.c3_Common, root.chart_I2DChart);
     }
 }(this, function (Common, I2DChart) {
     function Common2D(target) {
@@ -1461,7 +1476,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/Donut.js',["./Common2D"], factory);
     } else {
-        root.C3_Donut = factory(root.C3_Common2D);
+        root.c3_Donut = factory(root.c3_Common2D);
     }
 }(this, function (Common2D) {
     function Donut(target) {
@@ -1516,7 +1531,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/Gauge.js',["./Common1D"], factory);
     } else {
-        root.C3_Gauge = factory(root.C3_Common1D);
+        root.c3_Gauge = factory(root.c3_Common1D);
     }
 }(this, function (Common1D) {
     function Gauge(target) {
@@ -1566,7 +1581,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/Line',["./CommonND"], factory);
     } else {
-        root.C3_Line = factory(root.C3_CommonND);
+        root.c3_Line = factory(root.c3_CommonND);
     }
 }(this, function (CommonND) {
     function Line(target) {
@@ -1585,7 +1600,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/Pie.js',["./Common2D"], factory);
     } else {
-        root.C3_Pie = factory(root.C3_Common2D);
+        root.c3_Pie = factory(root.c3_Common2D);
     }
 }(this, function (Common2D) {
     function Pie(target) {
@@ -1615,7 +1630,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/Scatter.js',["./CommonND"], factory);
     } else {
-        root.C3_Scatter = factory(root.C3_CommonND);
+        root.c3_Scatter = factory(root.c3_CommonND);
     }
 }(this, function (CommonND) {
     function Scatter(target) {
@@ -1634,7 +1649,7 @@
     if (typeof define === "function" && define.amd) {
         define('c3/Step.js',["./CommonND"], factory);
     } else {
-        root.C3_Step = factory(root.C3_CommonND);
+        root.c3_Step = factory(root.c3_CommonND);
     }
 }(this, function (CommonND) {
     function Step(target) {
@@ -1653,7 +1668,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/SVGWidget.js',["./Widget", "./Transition", "d3/d3"], factory);
     } else {
-        root.SVGWidget = factory(root.Widget, root.Transition, root.d3);
+        root.common_SVGWidget = factory(root.common_Widget, root.common_Transition, root.d3);
     }
 }(this, function (Widget, Transition, d3) {
     function SVGWidget() {
@@ -1980,7 +1995,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/Text.js',["./SVGWidget", "css!./Text"], factory);
     } else {
-        root.Text = factory(root.SVGWidget);
+        root.common_Text = factory(root.common_SVGWidget);
     }
 }(this, function (SVGWidget) {
     function Text() {
@@ -2055,9 +2070,9 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('common/FAChar.js',["./SVGWidget", "./Text", "css!lib/Font-Awesome/css/font-awesome", "css!./FAChar"], factory);
+        define('common/FAChar.js',["./SVGWidget", "./Text", "css!font-awesome/css/font-awesome", "css!./FAChar"], factory);
     } else {
-        root.FAChar = factory(root.SVGWidget, root.Text);
+        root.common_FAChar = factory(root.common_SVGWidget, root.common_Text);
     }
 }(this, function (SVGWidget, Text) {
     function FAChar() {
@@ -2103,7 +2118,7 @@
     if (typeof define === "function" && define.amd) {
         define('chart/Bubble.js',["d3/d3", "../common/SVGWidget", "./I2DChart", "../common/Text", "../common/FAChar", "css!./Bubble"], factory);
     } else {
-        root.Chart_Bubble = factory(root.d3, root.SVGWidget, root.Chart_I2DChart, root.Text, root.FAChar);
+        root.chart_Bubble = factory(root.d3, root.common_SVGWidget, root.chart_I2DChart, root.common_Text, root.common_FAChar);
     }
 }(this, function (d3, SVGWidget, I2DChart, Text, FAChar) {
     function Bubble(target) {
@@ -2221,7 +2236,7 @@
     if (typeof define === "function" && define.amd) {
         define('chart/XYAxis.js',["d3/d3", "../common/SVGWidget"], factory);
     } else {
-        root.Chart_XYAxis = factory(root.d3, root.SVGWidget);
+        root.chart_XYAxis = factory(root.d3, root.common_SVGWidget);
     }
 }(this, function (d3, SVGWidget) {
     function XYAxis(target) {
@@ -2383,7 +2398,7 @@
     if (typeof define === "function" && define.amd) {
         define('chart/Column.js',["d3/d3", "./XYAxis", "./I2DChart", "css!./Column"], factory);
     } else {
-        root.Chart_Column = factory(root.d3, root.Chart_XYAxis, root.Chart_I2DChart);
+        root.chart_Column = factory(root.d3, root.chart_XYAxis, root.chart_I2DChart);
     }
 }(this, function (d3, XYAxis, I2DChart) {
     function Column(target) {
@@ -2441,7 +2456,7 @@
     if (typeof define === "function" && define.amd) {
         define('chart/Line.js',["d3/d3", "./XYAxis", "./INDChart", "css!./Line"], factory);
     } else {
-        root.Chart_Line = factory(root.d3, root.Chart_XYAxis, root.Chart_INDChart);
+        root.chart_Line = factory(root.d3, root.chart_XYAxis, root.chart_INDChart);
     }
 }(this, function (d3, XYAxis, INDChart) {
     function Line(target) {
@@ -2504,7 +2519,7 @@
     if (typeof define === "function" && define.amd) {
         define('other/Persist.js',["require"], factory);
     } else {
-        root.Persist = factory();
+        root.other_Persist = factory(root.common_Widget.prototype.require);
     }
 }(this, function (require) {
     return {
@@ -2670,7 +2685,7 @@
     if (typeof define === "function" && define.amd) {
         define('chart/MultiChart',["d3/d3", "../common/SVGWidget", "./INDChart", "../other/Persist", "require"], factory);
     } else {
-        root.Chart_MultiChart = factory(root.d3, root.SVGWidget, root.Chart_INDChart, root.Persist, root.require);
+        root.chart_MultiChart = factory(root.d3, root.common_SVGWidget, root.chart_INDChart, root.other_Persist, root.require);
     }
 }(this, function (d3, SVGWidget, INDChart, Persist, require) {
     var _2dChartTypes = [
@@ -2855,7 +2870,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/Shape.js',["./SVGWidget", "css!./Shape"], factory);
     } else {
-        root.Shape = factory(root.SVGWidget);
+        root.common_Shape = factory(root.common_SVGWidget);
     }
 }(this, function (SVGWidget) {
     function Shape() {
@@ -2946,7 +2961,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/Icon.js',["./SVGWidget", "./Shape", "./FAChar", "css!./Icon"], factory);
     } else {
-        root.Icon = factory(root.SVGWidget, root.Shape, root.FAChar);
+        root.common_Icon = factory(root.common_SVGWidget, root.common_Shape, root.common_FAChar);
     }
 }(this, function (SVGWidget, Shape, FAChar) {
     function Icon() {
@@ -3012,7 +3027,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/IMenu.js',[], factory);
     } else {
-        root.IMenu = factory();
+        root.common_IMenu = factory();
     }
 }(this, function () {
     function IMenu() {
@@ -3046,7 +3061,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/IList.js',[], factory);
     } else {
-        root.IList = factory();
+        root.common_IList = factory();
     }
 }(this, function () {
     function IList() {
@@ -3075,7 +3090,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/TextBox.js',["./SVGWidget", "./Shape", "./Text", "css!./TextBox"], factory);
     } else {
-        root.TextBox = factory(root.SVGWidget, root.Shape, root.Text);
+        root.common_TextBox = factory(root.common_SVGWidget, root.common_Shape, root.common_Text);
     }
 }(this, function (SVGWidget, Shape, Text) {
     function TextBox() {
@@ -3167,7 +3182,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/List.js',["d3/d3", "../common/SVGWidget", "./IList", "../common/TextBox", "css!./List"], factory);
     } else {
-        root.List = factory(root.d3, root.SVGWidget, root.IList, root.TextBox);
+        root.common_List = factory(root.d3, root.common_SVGWidget, root.common_IList, root.common_TextBox);
     }
 }(this, function (d3, SVGWidget, IList, TextBox) {
     function List(target) {
@@ -3252,7 +3267,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/Menu.js',["./SVGWidget", "./IMenu", "./Icon", "./List", "css!./Menu"], factory);
     } else {
-        root.Menu = factory(root.SVGWidget, root.IMenu, root.Icon, root.List);
+        root.common_Menu = factory(root.common_SVGWidget, root.common_IMenu, root.common_Icon, root.common_List);
     }
 }(this, function (SVGWidget, IMenu, Icon, List) {
     function Menu() {
@@ -3379,7 +3394,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/Surface.js',["./SVGWidget", "./Icon", "./Shape", "./Text", "./FAChar", "./Menu", "css!./Surface"], factory);
     } else {
-        root.Surface = factory(root.SVGWidget, root.Icon, root.Shape, root.Text, root.FAChar, root.Menu);
+        root.common_Surface = factory(root.common_SVGWidget, root.common_Icon, root.common_Shape, root.common_Text, root.common_FAChar, root.common_Menu);
     }
 }(this, function (SVGWidget, Icon, Shape, Text, FAChar, Menu) {
     function Surface() {
@@ -3665,7 +3680,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/ResizeSurface.js',["./Surface", "css!./ResizeSurface"], factory);
     } else {
-        root.ResizeSurface = factory(root.Surface);
+        root.common_ResizeSurface = factory(root.common_Surface);
     }
 }(this, function (Surface) {
     function ResizeSurface() {
@@ -3875,7 +3890,7 @@
     if (typeof define === "function" && define.amd) {
         define('chart/MultiChartSurface',["d3/d3", "../common/ResizeSurface", "./MultiChart", "./INDChart"], factory);
     } else {
-        root.Chart_MultiChartSurface = factory(root.d3, root.ResizeSurface, root.Chart_MultiChart, root.Chart_INDChart);
+        root.chart_MultiChartSurface = factory(root.d3, root.common_ResizeSurface, root.chart_MultiChart, root.chart_INDChart);
     }
 }(this, function (d3, ResizeSurface, MultiChart, INDChart) {
     function MultiChartSurface() {
@@ -3939,7 +3954,7 @@
     if (typeof define === "function" && define.amd) {
         define('chart/Pie',["d3/d3", "../common/SVGWidget", "./I2DChart", "../common/Text", "../common/FAChar", "css!./Pie"], factory);
     } else {
-        root.Chart_Pie = factory(root.d3, root.SVGWidget, root.Chart_I2DChart, root.Text, root.FAChar);
+        root.chart_Pie = factory(root.d3, root.common_SVGWidget, root.chart_I2DChart, root.common_Text, root.common_FAChar);
     }
 }(this, function (d3, SVGWidget, I2DChart, Text, FAChar) {
     function Pie(target) {
@@ -4107,7 +4122,7 @@
     if (typeof define === "function" && define.amd) {
         define('google/Common.js',["d3/d3", "../common/HTMLWidget", "goog!visualization,1,packages:[corechart]"], factory);
     } else {
-        root.Google_Common = factory(root.d3, root.HTMLWidget);
+        root.google_Common = factory(root.d3, root.common_HTMLWidget);
     }
 }(this, function (d3, HTMLWidget) {
 
@@ -4225,7 +4240,7 @@
     if (typeof define === "function" && define.amd) {
         define('google/CommonND.js',["d3/d3", "../google/Common", "../chart/INDChart", "goog!visualization,1,packages:[corechart]"], factory);
     } else {
-        root.Google_CommonND = factory(root.d3, root.Google_Common, root.Chart_INDChart);
+        root.google_CommonND = factory(root.d3, root.google_Common, root.chart_INDChart);
     }
 }(this, function (d3, Common, INDChart) {
 
@@ -4253,7 +4268,7 @@
     if (typeof define === "function" && define.amd) {
         define('google/Bar.js',["d3/d3", "./CommonND"], factory);
     } else {
-        root.Google_Bar = factory(root.d3, root.Google_CommonND);
+        root.google_Bar = factory(root.d3, root.google_CommonND);
     }
 }(this, function (d3, CommonND) {
 
@@ -4289,7 +4304,7 @@
     if (typeof define === "function" && define.amd) {
         define('google/Column.js',["d3/d3", "./CommonND"], factory);
     } else {
-        root.Google_Column = factory(root.d3, root.Google_CommonND);
+        root.google_Column = factory(root.d3, root.google_CommonND);
     }
 }(this, function (d3, CommonND) {
 
@@ -4324,7 +4339,7 @@
     if (typeof define === "function" && define.amd) {
         define('google/Common2D',["d3/d3", "../google/Common", "../chart/I2DChart", "goog!visualization,1,packages:[corechart]"], factory);
     } else {
-        root.Google_Common2D = factory(root.d3, root.Google_Common, root.Chart_I2DChart);
+        root.google_Common2D = factory(root.d3, root.google_Common, root.chart_I2DChart);
     }
 }(this, function (d3, Common, I2DChart) {
 
@@ -4352,7 +4367,7 @@
     if (typeof define === "function" && define.amd) {
         define('google/Line.js',["d3/d3", "./CommonND"], factory);
     } else {
-        root.Google_Line = factory(root.d3, root.Google_CommonND);
+        root.google_Line = factory(root.d3, root.google_CommonND);
     }
 }(this, function (d3, CommonND) {
 
@@ -4387,7 +4402,7 @@
     if (typeof define === "function" && define.amd) {
         define('google/Pie.js',["d3/d3", "./Common2D"], factory);
     } else {
-        root.Google_Pie = factory(root.d3, root.Google_Common2D);
+        root.google_Pie = factory(root.d3, root.google_Common2D);
     }
 }(this, function (d3, Common2D) {
 
@@ -4430,9 +4445,319 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
+        define('layout/Surface.js',["../common/HTMLWidget", "../chart/MultiChart", "../c3/Column", "../c3/Line", "css!./Surface"], factory);
+    } else {
+        root.layout_Surface = factory(root.common_HTMLWidget, root.chart_MultiChart, root.c3_Column, root.c3_Line);
+    }
+}(this, function (HTMLWidget, MultiChart, Column, Line) {
+    function Surface() {
+        HTMLWidget.call(this);
+        this._class = "layout_Surface";
+
+        this._tag = "div";
+    };
+    Surface.prototype = Object.create(HTMLWidget.prototype);
+
+    Surface.prototype.publish("title", "", "string", "Title");
+    Surface.prototype.publish("widget", null, "widget", "Widget");
+
+    Surface.prototype.testData = function () {
+        this.title("ABC");
+        this.widget(new Surface().widget(new MultiChart().testData()));
+        return this;
+    };
+
+    Surface.prototype.enter = function (domNode, element) {
+        HTMLWidget.prototype.enter.apply(this, arguments);
+    };
+
+    Surface.prototype.update = function (domNode, element) {
+        HTMLWidget.prototype.update.apply(this, arguments);
+        var titles = element.selectAll(".surfaceTitle").data(this._title ? [this._title] : []);
+        titles.enter().insert("h3", "div")
+            .attr("class", "surfaceTitle")
+        ;
+        titles
+            .text(function (d) { return d; })
+        ;
+        titles.exit().remove();
+
+        var widgets = element.selectAll("#" + this._id + " > .surfaceWidget").data(this._widget ? [this._widget] : [], function (d) { return d._id; });
+
+        var context = this;
+        widgets.enter().append("div")
+            .attr("class", "surfaceWidget")
+            .each(function (d) {
+                //console.log("surface enter:" + d._class + d._id);
+                d.target(this);
+            })
+        ;
+        widgets
+            .each(function (d) {
+                //console.log("surface update:" + d._class + d._id);
+                var width = context.clientWidth();
+                var height = context.clientHeight();
+                if (context._title) {
+                    height -= context.calcHeight(element.select("h3"));
+                }
+                var widgetDiv = d3.select(this);
+                height -= context.calcFrameHeight(widgetDiv);
+                width -= context.calcFrameWidth(widgetDiv);
+                d
+                    .resize({ width: width, height: height })
+                ;
+            })
+        ;
+        widgets.exit().each(function (d) {
+            //console.log("surface exit:" + d._class + d._id);
+            d.target(null);
+        }).remove();
+    };
+
+    Surface.prototype.exit = function (domNode, element) {
+        if (this._widget) {
+            this._widget = null;
+            this.render();
+        }
+        HTMLWidget.prototype.exit.apply(this, arguments);
+    };
+
+    Surface.prototype.render = function (callback) {
+        var context = this;
+        HTMLWidget.prototype.render.call(this, function (widget) {
+            if (context._widget) {
+                context._widget.render(function (widget) {
+                    if (callback) {
+                        callback(widget);
+                    }
+                });
+            } else {
+                if (callback) {
+                    callback(widget);
+                }
+            }
+        });
+    }
+
+    return Surface;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('layout/Cell',["./Surface", "../chart/Pie", "../c3/Column", "../c3/Line", "css!./Cell"], factory);
+    } else {
+        root.layout_Cell = factory(root.layout_Surface, root.chart_Pie, root.c3_Column, root.c3_Line);
+    }
+}(this, function (Surface, Pie, Column, Line) {
+    function Cell() {
+        Surface.call(this);
+        this._class = "layout_Cell";
+    };
+    Cell.prototype = Object.create(Surface.prototype);
+
+    Cell.prototype.publish("gridRow", 0, "number", "Grid Row Position");
+    Cell.prototype.publish("gridCol", 0, "number", "Grid Column Position");
+    Cell.prototype.publish("gridRowSpan", 1, "number", "Grid Row Span");
+    Cell.prototype.publish("gridColSpan", 1, "number", "Grid Column Span");
+
+    Cell.prototype.enter = function (domNode, element) {
+        Surface.prototype.enter.apply(this, arguments);
+        element.classed("layout_Surface", true);
+    };
+
+    return Cell;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('layout/Grid',["../common/HTMLWidget", "./Cell", "../common/Text", "../chart/Pie", "../chart/MultiChart", "../c3/Column", "../c3/Line", "css!./Grid"], factory);
+    } else {
+        root.layout_Grid = factory(root.common_HTMLWidget, root.layout_Cell, root.common_Text, root.chart_Pie, root.chart_MultiChart, root.c3_Column, root.c3_Line);
+    }
+}(this, function (HTMLWidget, Cell, Text, Pie, MultiChart, Column, Line) {
+	function Grid() {
+        HTMLWidget.call(this);
+        this._class = "layout_Grid";
+
+        this._tag = "div";
+
+        this._content = [];
+    };
+    Grid.prototype = Object.create(HTMLWidget.prototype);
+
+    Grid.prototype.publish("gutter", 4, "number", "Gap Between Widgets");
+    Grid.prototype.publish("fitTo", "all", "set", "Sizing Strategy", ["all", "width"]);
+    Grid.prototype.publish("content", [], "widgetArray", "widgets");
+
+    Grid.prototype.testData = function () {
+        this.setContent(0, 0, new Pie().testData())
+        this.setContent(0, 1, new Pie().testData())
+        this.setContent(1, 0, new Pie().testData())
+        this.setContent(1, 1, new Pie().testData())
+        this.setContent(0, 2, new MultiChart().testData(), "Title AAA", 2, 2)
+        this.setContent(2, 0, new Line().testData(), "Title BBB", 2, 4)
+        return this;
+    };
+
+    Grid.prototype.getDimensions = function () {
+        var size = { width: 0, height: 0 };
+        this._content.forEach(function (cell) {
+            if (size.width < cell.gridCol() + cell.gridColSpan()) {
+            	size.width = cell.gridCol() + cell.gridColSpan();
+            }
+            if (size.height < cell.gridRow() + cell.gridRowSpan()) {
+            	size.height = cell.gridRow() + cell.gridRowSpan();
+            }
+        }, this);
+        return size;
+    };
+
+    Grid.prototype.clearContent = function () {
+        this._content = this._content.filter(function (contentWidget) {
+            contentWidget.target(null);
+            return false;
+        });
+    };
+
+    Grid.prototype.setContent = function (row, col, widget, title, rowSpan, colSpan) {
+        rowSpan = rowSpan || 1;
+        colSpan = colSpan || 1;
+        title = title || "";
+        this._content = this._content.filter(function (contentWidget) {
+            if (contentWidget._gridRow === row && contentWidget._gridCol === col) {
+                contentWidget.target(null);
+                return false;
+            }
+            return true;
+        });
+
+        if (widget) {
+            var cell = new Cell()
+                .gridRow(row)
+                .gridCol(col)
+                .widget(widget)
+                .title(title)
+                .gridRowSpan(rowSpan)
+                .gridColSpan(colSpan)
+            ;
+            this._content.push(cell);
+        }
+        return this;
+    };
+
+    Grid.prototype.getContent = function (id) {
+        var retVal = null;
+        this._content.some(function (cell) {
+            if (cell._widget._id === id) {
+                retVal = cell._widget;
+                return true;
+            }
+            return false;
+        });
+        return retVal;
+    }
+
+    Grid.prototype.childMoved = Grid.prototype.debounce(function (domNode, element) {
+        this.render();
+    }, 250);
+
+    Grid.prototype.enter = function (domNode, element) {
+        HTMLWidget.prototype.enter.apply(this, arguments);
+        element.style("position", "relative");
+        this._scrollBarWidth = this.getScrollbarWidth();
+    };
+
+    Grid.prototype.update = function (domNode, element) {
+        HTMLWidget.prototype.update.apply(this, arguments);
+        this._parentElement.style("overflow-x", this._fitTo === "width" ? "hidden" : null);
+        this._parentElement.style("overflow-y", this._fitTo === "width" ? "scroll" : null);
+        var dimensions = this.getDimensions();
+        var cellWidth = (this.width() - (this._fitTo === "width" ? this._scrollBarWidth : 0)) / dimensions.width;
+        var cellHeight = this._fitTo === "all" ? this.height() / dimensions.height : cellWidth;
+
+        var context = this;
+        var rows = element.selectAll(".cell_" + this._id).data(this._content, function (d) { return d._id; });
+        rows.enter().append("div")
+            .attr("class", "cell_" + this._id)
+            .style("position", "absolute")
+            .each(function (d) {
+                //console.log("Grid :enter - " + d._class + d._id);
+                d
+                   .target(this)
+                ;
+                d.__grid_watch = d.watch(function (key, newVal, oldVal) {
+                    if (context._renderCount && key.indexOf("grid") === 0 && newVal !== oldVal) {
+                        context.childMoved();
+                    }
+                });
+            })
+        ;
+        rows
+            .style("left", function (d) { return d.gridCol() * cellWidth + context._gutter / 2 + "px"; })
+            .style("top", function (d) { return d.gridRow() * cellHeight + context._gutter / 2 + "px"; })
+            .style("width", function (d) { return d.gridColSpan() * cellWidth - context._gutter + "px"; })
+            .style("height", function (d) { return d.gridRowSpan() * cellHeight - context._gutter + "px"; })
+            .each(function (d) {
+                //console.log("Grid :update - " + d._class + d._id);
+                d
+                    .resize()
+                ;
+            })
+        ;
+        rows.exit().each(function (d) {
+            //console.log("Grid: exit - " + d._class + d._id);
+            d
+               .target(null)
+            ;
+            if (d.__grid_watch) {
+                d.__grid_watch.remove();
+            }
+        }).remove();
+    };
+
+    Grid.prototype.exit = function (domNode, element) {
+        HTMLWidget.prototype.exit.apply(this, arguments);
+    };
+
+    Grid.prototype.render = function (callback) {
+        var context = this;
+        HTMLWidget.prototype.render.call(this, function (widget) {
+            if (context._content.length) {
+                var renderCount = context._content.length;
+                context._content.forEach(function (contentWidget, idx) {
+                    setTimeout(function () {
+                        contentWidget.render(function () {
+                            if (--renderCount === 0) {
+                                if (callback) {
+                                    callback(widget);
+                                }
+                            }
+                        });
+                    }, 0);
+                });
+            } else {
+                if (callback) {
+                    callback(widget);
+                }
+            }
+        });
+        return this;
+    }
+
+    return Grid;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
         define('graph/Edge',["d3/d3", "../common/SVGWidget", "../common/TextBox", "css!./Edge"], factory);
     } else {
-        root.Graph_Edge = factory(root.d3, root.SVGWidget, root.TextBox);
+        root.graph_Edge = factory(root.d3, root.common_SVGWidget, root.common_TextBox);
     }
 }(this, function (d3, SVGWidget, TextBox) {
     function Edge() {
@@ -4628,7 +4953,7 @@
     if (typeof define === "function" && define.amd) {
         define('graph/IGraph.js',[], factory);
     } else {
-        root.Graph_IGraph = factory();
+        root.graph_IGraph = factory();
     }
 }(this, function () {
     function IGraph() {
@@ -4652,7 +4977,7 @@
     if (typeof define === "function" && define.amd) {
         define('graph/Vertex.js',["d3/d3", "../common/SVGWidget", "../common/Icon", "../common/TextBox", "css!./Vertex"], factory);
     } else {
-        root.Graph_Vertex = factory(root.d3, root.SVGWidget, root.Icon, root.TextBox);
+        root.graph_Vertex = factory(root.d3, root.common_SVGWidget, root.common_Icon, root.common_TextBox);
     }
 }(this, function (d3, SVGWidget, Icon, TextBox) {
     function Vertex() {
@@ -4775,9 +5100,9 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('graph/GraphData.js',["lib/dagre/dagre"], factory);
+        define('graph/GraphData.js',["dagre/dagre"], factory);
     } else {
-        root.Graph_GraphData = factory(root.dagre);
+        root.graph_GraphData = factory(root.dagre);
     }
 }(this, function (dagre) {
     function GraphData() {
@@ -4910,9 +5235,9 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('graph/GraphLayouts.js',["lib/dagre/dagre"], factory);
+        define('graph/GraphLayouts.js',["dagre/dagre"], factory);
     } else {
-        root.Graph_GraphLayouts = factory(root.dagre);
+        root.graph_GraphLayouts = factory(root.dagre);
     }
 }(this, function (dagre) {
     function Circle(graphData, width, height, radius) {
@@ -5080,7 +5405,7 @@
     if (typeof define === "function" && define.amd) {
         define('other/Bag.js',[], factory);
     } else {
-        root.Bag = factory();
+        root.other_Bag = factory();
     }
 }(this, function () {
     function SelectionBag() {
@@ -5150,7 +5475,7 @@
     if (typeof define === "function" && define.amd) {
         define('graph/Graph',["d3/d3", "../common/SVGWidget", "./IGraph", "./Vertex", "./GraphData", "./GraphLayouts", "../other/Bag", "css!./Graph"], factory);
     } else {
-        root.Graph_Graph = factory(root.d3, root.SVGWidget, root.Graph_IGraph, root.Graph_Vertex, root.Graph_GraphData, root.Graph_GraphLayouts, root.Bag);
+        root.graph_Graph = factory(root.d3, root.common_SVGWidget, root.graph_IGraph, root.graph_Vertex, root.graph_GraphData, root.graph_GraphLayouts, root.other_Bag);
     }
 }(this, function (d3, SVGWidget, IGraph, Vertex, GraphData, GraphLayouts, Bag) {
     function Graph() {
@@ -5981,321 +6306,11 @@
 }));
 
 
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('layout/Surface.js',["../common/HTMLWidget", "../chart/MultiChart", "../c3/Column", "../c3/Line", "css!./Surface"], factory);
-    } else {
-        root.Layout_Surface = factory(root.HTMLWidget, root.Chart_MultiChart, root.C3_Column, root.C3_Line);
-    }
-}(this, function (HTMLWidget, MultiChart, Column, Line) {
-    function Surface() {
-        HTMLWidget.call(this);
-        this._class = "layout_Surface";
-
-        this._tag = "div";
-    };
-    Surface.prototype = Object.create(HTMLWidget.prototype);
-
-    Surface.prototype.publish("title", "", "string", "Title");
-    Surface.prototype.publish("widget", null, "widget", "Widget");
-
-    Surface.prototype.testData = function () {
-        this.title("ABC");
-        this.widget(new Surface().widget(new MultiChart().testData()));
-        return this;
-    };
-
-    Surface.prototype.enter = function (domNode, element) {
-        HTMLWidget.prototype.enter.apply(this, arguments);
-    };
-
-    Surface.prototype.update = function (domNode, element) {
-        HTMLWidget.prototype.update.apply(this, arguments);
-        var titles = element.selectAll(".surfaceTitle").data(this._title ? [this._title] : []);
-        titles.enter().insert("h3", "div")
-            .attr("class", "surfaceTitle")
-        ;
-        titles
-            .text(function (d) { return d; })
-        ;
-        titles.exit().remove();
-
-        var widgets = element.selectAll("#" + this._id + " > .surfaceWidget").data(this._widget ? [this._widget] : [], function (d) { return d._id; });
-
-        var context = this;
-        widgets.enter().append("div")
-            .attr("class", "surfaceWidget")
-            .each(function (d) {
-                //console.log("surface enter:" + d._class + d._id);
-                d.target(this);
-            })
-        ;
-        widgets
-            .each(function (d) {
-                //console.log("surface update:" + d._class + d._id);
-                var width = context.clientWidth();
-                var height = context.clientHeight();
-                if (context._title) {
-                    height -= context.calcHeight(element.select("h3"));
-                }
-                var widgetDiv = d3.select(this);
-                height -= context.calcFrameHeight(widgetDiv);
-                width -= context.calcFrameWidth(widgetDiv);
-                d
-                    .resize({ width: width, height: height })
-                ;
-            })
-        ;
-        widgets.exit().each(function (d) {
-            //console.log("surface exit:" + d._class + d._id);
-            d.target(null);
-        }).remove();
-    };
-
-    Surface.prototype.exit = function (domNode, element) {
-        if (this._widget) {
-            this._widget = null;
-            this.render();
-        }
-        HTMLWidget.prototype.exit.apply(this, arguments);
-    };
-
-    Surface.prototype.render = function (callback) {
-        var context = this;
-        HTMLWidget.prototype.render.call(this, function (widget) {
-            if (context._widget) {
-                context._widget.render(function (widget) {
-                    if (callback) {
-                        callback(widget);
-                    }
-                });
-            } else {
-                if (callback) {
-                    callback(widget);
-                }
-            }
-        });
-    }
-
-    return Surface;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('layout/Cell',["./Surface", "../chart/Pie", "../c3/Column", "../c3/Line", "css!./Cell"], factory);
-    } else {
-        root.Layout_Cell = factory(root.Layout_Surface, root.Chart_Pie, root.C3_Column, root.C3_Line);
-    }
-}(this, function (Surface, Pie, Column, Line) {
-    function Cell() {
-        Surface.call(this);
-        this._class = "layout_Cell";
-    };
-    Cell.prototype = Object.create(Surface.prototype);
-
-    Cell.prototype.publish("gridRow", 0, "number", "Grid Row Position");
-    Cell.prototype.publish("gridCol", 0, "number", "Grid Column Position");
-    Cell.prototype.publish("gridRowSpan", 1, "number", "Grid Row Span");
-    Cell.prototype.publish("gridColSpan", 1, "number", "Grid Column Span");
-
-    Cell.prototype.enter = function (domNode, element) {
-        Surface.prototype.enter.apply(this, arguments);
-        element.classed("layout_Surface", true);
-    };
-
-    return Cell;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('layout/Grid',["../common/HTMLWidget", "./Cell", "../common/Text", "../chart/Pie", "../chart/MultiChart", "../c3/Column", "../c3/Line", "css!./Grid"], factory);
-    } else {
-        root.Layout_Grid = factory(root.HTMLWidget, root.Layout_Cell, root.Text, root.Chart_Pie, root.Chart_MultiChart, root.C3_Column, root.C3_Line);
-    }
-}(this, function (HTMLWidget, Cell, Text, Pie, MultiChart, Column, Line) {
-	function Grid() {
-        HTMLWidget.call(this);
-        this._class = "layout_Grid";
-
-        this._tag = "div";
-
-        this._content = [];
-    };
-    Grid.prototype = Object.create(HTMLWidget.prototype);
-
-    Grid.prototype.publish("gutter", 4, "number", "Gap Between Widgets");
-    Grid.prototype.publish("fitTo", "all", "set", "Sizing Strategy", ["all", "width"]);
-    Grid.prototype.publish("content", [], "widgetArray", "widgets");
-
-    Grid.prototype.testData = function () {
-        this.setContent(0, 0, new Pie().testData())
-        this.setContent(0, 1, new Pie().testData())
-        this.setContent(1, 0, new Pie().testData())
-        this.setContent(1, 1, new Pie().testData())
-        this.setContent(0, 2, new MultiChart().testData(), "Title AAA", 2, 2)
-        this.setContent(2, 0, new Line().testData(), "Title BBB", 2, 4)
-        return this;
-    };
-
-    Grid.prototype.getDimensions = function () {
-        var size = { width: 0, height: 0 };
-        this._content.forEach(function (cell) {
-            if (size.width < cell.gridCol() + cell.gridColSpan()) {
-            	size.width = cell.gridCol() + cell.gridColSpan();
-            }
-            if (size.height < cell.gridRow() + cell.gridRowSpan()) {
-            	size.height = cell.gridRow() + cell.gridRowSpan();
-            }
-        }, this);
-        return size;
-    };
-
-    Grid.prototype.clearContent = function () {
-        this._content = this._content.filter(function (contentWidget) {
-            contentWidget.target(null);
-            return false;
-        });
-    };
-
-    Grid.prototype.setContent = function (row, col, widget, title, rowSpan, colSpan) {
-        rowSpan = rowSpan || 1;
-        colSpan = colSpan || 1;
-        title = title || "";
-        this._content = this._content.filter(function (contentWidget) {
-            if (contentWidget._gridRow === row && contentWidget._gridCol === col) {
-                contentWidget.target(null);
-                return false;
-            }
-            return true;
-        });
-
-        if (widget) {
-            var cell = new Cell()
-                .gridRow(row)
-                .gridCol(col)
-                .widget(widget)
-                .title(title)
-                .gridRowSpan(rowSpan)
-                .gridColSpan(colSpan)
-            ;
-            this._content.push(cell);
-        }
-        return this;
-    };
-
-    Grid.prototype.getContent = function (id) {
-        var retVal = null;
-        this._content.some(function (cell) {
-            if (cell._widget._id === id) {
-                retVal = cell._widget;
-                return true;
-            }
-            return false;
-        });
-        return retVal;
-    }
-
-    Grid.prototype.childMoved = Grid.prototype.debounce(function (domNode, element) {
-        this.render();
-    }, 250);
-
-    Grid.prototype.enter = function (domNode, element) {
-        HTMLWidget.prototype.enter.apply(this, arguments);
-        element.style("position", "relative");
-        this._scrollBarWidth = this.getScrollbarWidth();
-    };
-
-    Grid.prototype.update = function (domNode, element) {
-        HTMLWidget.prototype.update.apply(this, arguments);
-        this._parentElement.style("overflow-x", this._fitTo === "width" ? "hidden" : null);
-        this._parentElement.style("overflow-y", this._fitTo === "width" ? "scroll" : null);
-        var dimensions = this.getDimensions();
-        var cellWidth = (this.width() - (this._fitTo === "width" ? this._scrollBarWidth : 0)) / dimensions.width;
-        var cellHeight = this._fitTo === "all" ? this.height() / dimensions.height : cellWidth;
-
-        var context = this;
-        var rows = element.selectAll(".cell_" + this._id).data(this._content, function (d) { return d._id; });
-        rows.enter().append("div")
-            .attr("class", "cell_" + this._id)
-            .style("position", "absolute")
-            .each(function (d) {
-                //console.log("Grid :enter - " + d._class + d._id);
-                d
-                   .target(this)
-                ;
-                d.__grid_watch = d.watch(function (key, newVal, oldVal) {
-                    if (context._renderCount && key.indexOf("grid") === 0 && newVal !== oldVal) {
-                        context.childMoved();
-                    }
-                });
-            })
-        ;
-        rows
-            .style("left", function (d) { return d.gridCol() * cellWidth + context._gutter / 2 + "px"; })
-            .style("top", function (d) { return d.gridRow() * cellHeight + context._gutter / 2 + "px"; })
-            .style("width", function (d) { return d.gridColSpan() * cellWidth - context._gutter + "px"; })
-            .style("height", function (d) { return d.gridRowSpan() * cellHeight - context._gutter + "px"; })
-            .each(function (d) {
-                //console.log("Grid :update - " + d._class + d._id);
-                d
-                    .resize()
-                ;
-            })
-        ;
-        rows.exit().each(function (d) {
-            //console.log("Grid: exit - " + d._class + d._id);
-            d
-               .target(null)
-            ;
-            if (d.__grid_watch) {
-                d.__grid_watch.remove();
-            }
-        }).remove();
-    };
-
-    Grid.prototype.exit = function (domNode, element) {
-        HTMLWidget.prototype.exit.apply(this, arguments);
-    };
-
-    Grid.prototype.render = function (callback) {
-        var context = this;
-        HTMLWidget.prototype.render.call(this, function (widget) {
-            if (context._content.length) {
-                var renderCount = context._content.length;
-                context._content.forEach(function (contentWidget, idx) {
-                    setTimeout(function () {
-                        contentWidget.render(function () {
-                            if (--renderCount === 0) {
-                                if (callback) {
-                                    callback(widget);
-                                }
-                            }
-                        });
-                    }, 0);
-                });
-            } else {
-                if (callback) {
-                    callback(widget);
-                }
-            }
-        });
-        return this;
-    }
-
-    return Grid;
-}));
-
-
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
         define('map/IChoropleth.js',["../common/Palette"], factory);
     } else {
-        root.Map_IChoropleth = factory(root.Palette, root.usStates,root.usCounties);
+        root.map_IChoropleth = factory(root.common_Palette, root.usStates, root.usCounties);
     }
 }(this, function (Palette, usStates, usCounties) {
     function IChoropleth() {
@@ -6317,7 +6332,7 @@
     if (typeof define === "function" && define.amd) {
         define('map/Choropleth.js',["d3/d3", "../common/SVGWidget", "./IChoropleth", "css!./Choropleth"], factory);
     } else {
-        root.Map_Choropleth = factory(root.d3, root.SVGWidget, root.Map_IChoropleth);
+        root.map_Choropleth = factory(root.d3, root.common_SVGWidget, root.map_IChoropleth);
     }
 }(this, function (d3, SVGWidget, IChoropleth) {
     function Choropleth() {
@@ -6614,7 +6629,7 @@
     if (typeof define === "function" && define.amd) {
         define('map/IGMap.js',["../common/Shape", "../graph/Edge"], factory);
     } else {
-        root.Map_IGMap = factory(root.Shape, root.Graph_Edge);
+        root.map_IGMap = factory(root.common_Shape, root.graph_Edge);
     }
 }(this, function (Shape, Edge) {
     function IGMap() {
@@ -6673,7 +6688,7 @@
     if (typeof define === "function" && define.amd) {
         define('map/GMap.js',["d3/d3", "../common/SVGWidget", "../graph/Graph", "./IGMap", "async!http://maps.google.com/maps/api/js?sensor=false", "css!./GMap"], factory);
     } else {
-        root.Map_GMap = factory(root.d3, root.SVGWidget, root.Graph_Graph, root.Map_IGMap);
+        root.map_GMap = factory(root.d3, root.common_SVGWidget, root.graph_Graph, root.map_IGMap);
     }
 }(this, function (d3, SVGWidget, Graph, IGMap) {
     function GMap(target) {
@@ -6778,7 +6793,7 @@
     if (typeof define === "function" && define.amd) {
         define('other/Comms.js',[], factory);
     } else {
-        root.ESPUrl = factory();
+        root.other_ESPUrl = factory();
     }
 }(this, function () {
     function ESPUrl() {
@@ -7538,7 +7553,7 @@
     if (typeof define === "function" && define.amd) {
         define('marshaller/HipieDDL.js',["../other/Comms", "../common/Widget"], factory);
     } else {
-        root.MarshallerHipieDDL = factory(root.Comms, root.Widget);
+        root.marshaller_HipieDDL = factory(root.other_Comms, root.common_Widget);
     }
 }(this, function (Comms, Widget) {
     var Vertex = null;
@@ -8091,6 +8106,7 @@
         this.WUID = dataSource.WUID;
         this.URL = dataSource.URL;
         this.databomb = dataSource.databomb;
+        this.request = {};
 
         var context = this;
         this.outputs = {};
@@ -8135,9 +8151,7 @@
 
     DataSource.prototype.fetchData = function (request, refresh) {
         var context = this;
-        this.request = {
-            refresh: refresh ? true : false
-        };
+        this.request.refresh = refresh ? true : false;
         this.filter.forEach(function (item) {
             context.request[item + "_changed"] = false;
         });
@@ -8346,12 +8360,12 @@
     if (typeof define === "function" && define.amd) {
         define('marshaller/Graph.js',["d3/d3", "../common/SVGWidget", "../common/TextBox", "../common/Surface", "../common/ResizeSurface", "../chart/MultiChartSurface", "../common/Palette", "../graph/Graph", "../graph/Vertex", "../graph/Edge", "./HipieDDL"], factory);
     } else {
-        root.Graph = factory(root.d3, root.SVGWidget, root.TextBox, root.Surface, root.ResizeSurface, root.Chart_MultiChartSurface, root.Palette, root.Graph_Graph, root.Graph_Vertex, root.Graph_Edge, root.HipieDDL);
+        root.marshaller_Graph = factory(root.d3, root.common_SVGWidget, root.common_TextBox, root.common_Surface, root.common_ResizeSurface, root.chart_MultiChartSurface, root.common_Palette, root.graph_Graph, root.graph_Vertex, root.graph_Edge, root.marshaller_HipieDDL);
     }
 }(this, function (d3, SVGWidget, TextBox, Surface, ResizeSurface, MultiChartSurface, Palette, GraphWidget, Vertex, Edge, HipieDDL) {
     function createGraphData(marshaller, databomb, visualizeRoxie) {
         if (databomb instanceof Object) {
-        } else {
+        } else if (databomb){
             databomb = JSON.parse(databomb);
         }
         var curr = null;
@@ -8800,7 +8814,7 @@
     if (typeof define === "function" && define.amd) {
         define('marshaller/HTML.js',["d3/d3", "../layout/Grid", "./HipieDDL", "../layout/Surface", "../layout/Cell"], factory);
     } else {
-        root.HTML = factory(root.d3, root.Layout_Grid, root.HipieDDL, root.Layout_Surface, root.Layout_Cell);
+        root.marshaller_HTML = factory(root.d3, root.layout_Grid, root.marshaller_HipieDDL, root.layout_Surface, root.layout_Cell);
     }
 }(this, function (d3, Grid, HipieDDL, Surface, Cell) {
     function HTML() {
@@ -8832,7 +8846,7 @@
 
     function createGraphData(marshaller, databomb) {
         if (databomb instanceof Object) {
-        } else {
+        } else if (databomb){
             databomb = JSON.parse(databomb);
         }
         var curr = null;
@@ -8922,7 +8936,7 @@
     if (typeof define === "function" && define.amd) {
         define('other/Audio.js',["../common/HTMLWidget"], factory);
     } else {
-        root.Audio = factory(root.HTMLWidget);
+        root.other_Audio = factory(root.common_HTMLWidget);
     }
 }(this, function (HTMLWidget) {
     function Audio() {
@@ -9017,7 +9031,7 @@
     if (typeof define === "function" && define.amd) {
         define('other/ISlider',[], factory);
     } else {
-        root.ISlider = factory();
+        root.other_ISlider = factory();
     }
 }(this, function () {
     function ISlider() {
@@ -9043,7 +9057,7 @@
     if (typeof define === "function" && define.amd) {
         define('other/IWordCloud',[], factory);
     } else {
-        root.IWordCloud = factory();
+        root.other_IWordCloud = factory();
     }
 }(this, function () {
     function IWordCloud() {
@@ -9074,7 +9088,7 @@
     if (typeof define === "function" && define.amd) {
         define('other/MorphText.js',["../common/SVGWidget", "css!./MorphText"], factory);
     } else {
-        root.MorphText = factory(root.SVGWidget);
+        root.other_MorphText = factory(root.common_SVGWidget);
     }
 }(this, function (SVGWidget) {
     function MorphText() {
@@ -9190,7 +9204,7 @@
     if (typeof define === "function" && define.amd) {
         define('other/PropertyEditor.js',["../common/Widget", "../common/HTMLWidget", "./Persist"], factory);
     } else {
-        root.PropertyEditor = factory(root.Widget, root.HTMLWidget, root.Persist);
+        root.other_PropertyEditor = factory(root.Common_Widget, root.common_HTMLWidget, root.other_Persist);
     }
 }(this, function (Widget, HTMLWidget, Persist) {
     function PropertyEditor() {
@@ -9595,7 +9609,7 @@
     if (typeof define === "function" && define.amd) {
         define('other/Slider.js',["../common/SVGWidget", "./ISlider", "css!./Slider"], factory);
     } else {
-        root.Slider = factory(root.SVGWidget, root.ISlider);
+        root.other_Slider = factory(root.common_SVGWidget, root.other_ISlider);
     }
 }(this, function (SVGWidget, ISlider) {
     function Slider() {
@@ -9818,7 +9832,7 @@
     if (typeof define === "function" && define.amd) {
         define('other/Table.js',["../common/HTMLWidget", "css!./Table"], factory);
     } else {
-        root.Table = factory(root.HTMLWidget);
+        root.other_Table = factory(root.common_HTMLWidget);
     }
 }(this, function (HTMLWidget) {
     function Table() {
@@ -9902,7 +9916,7 @@
     if (typeof define === "function" && define.amd) {
         define('other/WordCloud.js',["../common/SVGWidget", "./IWordCloud", "d3/d3", "css!./WordCloud"], factory);
     } else {
-        root.WordCloud = factory(root.SVGWidget, root.IWordCloud, root.d3);
+        root.other_WordCloud = factory(root.common_SVGWidget, root.other_IWordCloud, root.d3);
     }
 }(this, function (SVGWidget, IWordCloud, d3) {
     function WordCloud() {
@@ -10016,7 +10030,7 @@
 
     WordCloud.prototype.render = function (callback) {
         var context = this;
-        require(["lib/wordcloud/d3.layout.cloud"], function (d3LayoutClout) {
+        require(["d3-cloud/d3.layout.cloud"], function (d3LayoutClout) {
             SVGWidget.prototype.render.call(context, callback);
         });
         return this;
@@ -10030,7 +10044,7 @@
     if (typeof define === "function" && define.amd) {
         define('tree/ITree.js',["../common/Palette"], factory);
     } else {
-        root.Tree_ITree = factory(root.Palette);
+        root.tree_ITree = factory(root.common_Palette);
     }
 }(this, function (Palette) {
     function ITree() {
@@ -10082,7 +10096,7 @@
     if (typeof define === "function" && define.amd) {
         define('tree/CirclePacking.js',["d3/d3", "../common/SVGWidget", "./ITree", "../common/Text", "../common/FAChar", "css!./CirclePacking"], factory);
     } else {
-        root.Tree_CirclePacking = factory(root.d3, root.SVGWidget, root.Tree_ITree, root.Text, root.FAChar);
+        root.tree_CirclePacking = factory(root.d3, root.common_SVGWidget, root.tree_ITree, root.common_Text, root.common_FAChar);
     }
 }(this, function (d3, SVGWidget, ITree, Text, FAChar) {
     function CirclePacking(target) {
@@ -10206,7 +10220,7 @@
     if (typeof define === "function" && define.amd) {
         define('tree/Dendrogram.js',["d3/d3", "../common/SVGWidget", "./ITree", "css!./Dendrogram"], factory);
     } else {
-        root.Tree_Dendrogram = factory(root.d3, root.SVGWidget, root.Tree_ITree);
+        root.tree_Dendrogram = factory(root.d3, root.common_SVGWidget, root.tree_ITree);
     }
 }(this, function (d3, SVGWidget, ITree) {
     function Dendrogram(target) {
@@ -10296,7 +10310,7 @@
     if (typeof define === "function" && define.amd) {
         define('tree/SunburstPartition.js',["d3/d3", "../common/SVGWidget", "./ITree", "../common/Text", "../common/FAChar", "css!./SunburstPartition"], factory);
     } else {
-        root.Tree_SunburstPartition = factory(root.d3, root.SVGWidget, root.Tree_ITree, root.Text, root.FAChar);
+        root.tree_SunburstPartition = factory(root.d3, root.common_SVGWidget, root.tree_ITree, root.common_Text, root.common_FAChar);
     }
 }(this, function (d3, SVGWidget, ITree, Text, FAChar) {
     function SunburstPartition(target) {

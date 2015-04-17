@@ -1,12 +1,3 @@
-# TODO
-
-* Fix helloworld.html & test.html to use artifacts in dist
-* Demos should use its own bower.json
-* Lazy load data files (countries.js etc.)
-* Include map files in optimized build
-* Handle goog! stuff in optimize build
-* Handle dynamic google map (lazy load?)
-
 # Visualization Framework 
 * _[Demo/Test Page](http://rawgit.com/hpcc-systems/Visualization/master/demos/test.html) and its [source](https://github.com/hpcc-systems/Visualization/blob/master/demos/test.html)_
 * _[Dermatology Test Page](http://rawgit.com/hpcc-systems/Visualization/master/demos/dermatology.html) and its [source](https://github.com/hpcc-systems/Visualization/blob/master/demos/dermatology.html)_
@@ -62,3 +53,16 @@ None of this would would be possible without the great work of others.  The widg
 While widgets/src also includes wrappers for CDN hosted visualizations:
 * [Google Maps](https://developers.google.com/maps/)
 * [Google Charts](https://developers.google.com/chart/)
+
+
+# TODO
+
+- [x] Avoid embedding source of externa libs, declare via bower.json
+- [x] Gulp build for "legacy" and optimized (single files) mode
+- [x] Fix up incorrect/collided names in global scope (non-AMD usage)
+- [x] Fix helloworld.html & test.html to use built artifacts, not source
+- [x] Demos should use its own config.js and bower.json
+- [ ] Include map files in optimized build
+- [ ] Lazy load data files (countries.js etc.)
+- [ ] Handle goog! stuff in optimize build
+- [ ] Handle dynamic google map (lazy load?)

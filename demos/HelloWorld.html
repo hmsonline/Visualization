@@ -2,15 +2,14 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <script src="../rjs/require.js"></script>
-    <script src="../src/config.js"></script>
-    <script src="config.js"></script>
+    <script src="./bower_components/requirejs/require.js"></script>
+    <script src="./config.js"></script>
 </head>
 <body>
     <div id="helloWorld" style="width:100%; height:100vh">
     </div>
     <script>
-        require(["common/TextBox"], function (TextBox) {
+        require(["viz/common/TextBox"], function (TextBox) {
             var helloWorld = new TextBox()
                 .target("helloWorld")
                 .text("Hello\nWorld!")

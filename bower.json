@@ -18,18 +18,15 @@
     "rjs.noop.js"
   ],
   "dependencies": {
-    "c3": "0.4.10",
+    "c3": "0.4.9",
     "colorbrewer": "1.0.0",
-    "crossfilter": "git@github.com:square/crossfilter.git",
     "d3": "3.5.0",
     "dagre": "0.7.1",
     "font-awesome": "4.3.0",
     "lodash": "3.0.0",
     "topojson": "1.6.18",
-    "d3-cloud": "git@github.com:jasondavies/d3-cloud.git",
-    "require-css": "~0.1.8",
-    "text": "~2.0.14",
-    "requirejs-plugins": "~1.0.3"
+    "crossfilter": "git@github.com:square/crossfilter.git",
+    "d3-cloud": "git@github.com:jasondavies/d3-cloud.git"
   },
   "license": "Apache",
   "authors": [
