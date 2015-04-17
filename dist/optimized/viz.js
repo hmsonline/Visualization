@@ -594,7 +594,7 @@
     if (typeof define === "function" && define.amd) {
         define('common/Transition.js',[], factory);
     } else {
-        root.Entity = factory();
+        root.Transition = factory();
     }
 }(this, function () {
     function Transition(widget) {
@@ -764,14 +764,25 @@
     return HTMLWidget;
 }));
 
-define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
+(function () {
+  if (typeof define === "function" && define.amd) {
+    var noop = {
+      load: function (name, parentConf, onLoad) {
+        onLoad()
+      }
+    }
+
+    define('async',['module'], function () { return noop })
+  }
+})()
+;
 
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
         define('c3/Common.js',["d3/d3", "c3/c3", "../common/HTMLWidget", "css!c3/c3"], factory);
     } else {
-        root.Pie = factory(root.d3, root.c3, root.HTMLWidget);
+        root.C3_Common = factory(root.d3, root.c3, root.HTMLWidget);
     }
 }(this, function (d3, c3, HTMLWidget) {
     function Common(target) {
@@ -807,7 +818,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     Common.prototype.getC3Series = function() {
         return this._columns.filter(function (d, i) { return i > 0;});
     };
- 
+
     Common.prototype.getC3Rows = function () {
         var retVal = [this._columns.filter(function (item, idx) { return idx > 0; })].concat(this._data.map(function (row) {
             return row.filter(function (cell, idx) {
@@ -871,7 +882,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('common/Palette.js',["d3/d3", "lib/colorbrewer/colorbrewer"], factory);
     } else {
-        root.Entity = factory(root.d3);
+        root.Palette = factory(root.d3);
     }
 }(this, function (d3) {
     var d3Ordinal = [
@@ -1069,8 +1080,8 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
           .enter().append("span")
             .attr("class", "palette")
             .attr("title", function(d) { return d; })
-            .on("click", function(d) { 
-                console.log(d3.values(d.value).map(JSON.stringify).join("\n")); 
+            .on("click", function(d) {
+                console.log(d3.values(d.value).map(JSON.stringify).join("\n"));
             })
           .selectAll(".swatch").data(function (d) { return palette_ordinal(d).colors(); })
           .enter().append("span")
@@ -1083,15 +1094,15 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
           .enter().append("span")
             .attr("class", "palette")
             .attr("title", function(d) { return d; })
-            .on("click", function(d) { 
-                console.log(d3.values(d.value).map(JSON.stringify).join("\n")); 
+            .on("click", function(d) {
+                console.log(d3.values(d.value).map(JSON.stringify).join("\n"));
             })
           .selectAll(".swatch2").data(function (d) { return palette_rainbow(d).colors(); })
           .enter().append("span")
             .attr("class", "swatch2")
             .style("height", (256 / 32)+"px")
             .style("background-color", function(d) { return d; });
-            
+
         var palette = { id: customArr.join("_") + steps, scale: palette_rainbow("custom", customArr, steps) };
         d3.select(customDivID)
           .selectAll(".palette")
@@ -1099,8 +1110,8 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
           .enter().append("span")
             .attr("class", "palette")
             .attr("title", function(d) { return "aaa";/*d.from + "->" + d.to;*/ })
-            .on("click", function(d) { 
-                console.log(d3.values(d.value).map(JSON.stringify).join("\n")); 
+            .on("click", function(d) {
+                console.log(d3.values(d.value).map(JSON.stringify).join("\n"));
             })
           .selectAll(".swatch2").data(function(d) {
                 var retVal = [];
@@ -1112,7 +1123,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
           .enter().append("span")
             .attr("class", "swatch2")
             .style("background-color", function(d) { return d; });
-    };    
+    };
 
     return {
         ordinal: fetchOrdinalItem,
@@ -1126,7 +1137,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('chart/INDChart.js',["../common/Palette"], factory);
     } else {
-        root.INDChart = factory(root.Palette);
+        root.Chart_INDChart = factory(root.Palette);
     }
 }(this, function (Palette) {
     function INDChart() {
@@ -1158,7 +1169,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('c3/CommonND.js',["./Common", "../chart/INDChart"], factory);
     } else {
-        root.CommonND = factory(root.Common, root.INDChart);
+        root.C3_CommonND = factory(root.C3_Common, root.Chart_INDChart);
     }
 }(this, function (Common, INDChart) {
     function CommonND(target) {
@@ -1229,7 +1240,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
 
     CommonND.prototype.update = function (domNode, element) {
         Common.prototype.update.apply(this, arguments);
-        
+
         this._palette = this._palette.switch(this._paletteID);
 
         switch (this._xaxis_type) {
@@ -1258,7 +1269,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('c3/Area.js',["./CommonND"], factory);
     } else {
-        root.Area = factory(root.CommonND);
+        root.C3_Area = factory(root.C3_CommonND);
     }
 }(this, function (CommonND) {
     function Area(target) {
@@ -1277,7 +1288,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('c3/Column.js',["./CommonND"], factory);
     } else {
-        root.Column = factory(root.CommonND);
+        root.C3_Column = factory(root.C3_CommonND);
     }
 }(this, function (CommonND) {
     function Column(target) {
@@ -1296,7 +1307,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('c3/Bar.js',["./Column"], factory);
     } else {
-        root.Bar = factory(root.Column);
+        root.C3_Bar = factory(root.C3_Column);
     }
 }(this, function (Column) {
     function Bar(target) {
@@ -1315,7 +1326,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('chart/I1DChart.js',["../common/Palette"], factory);
     } else {
-        root.I1DChart = factory(root.Palette);
+        root.Chart_I1DChart = factory(root.Palette);
     }
 }(this, function (Palette) {
     function I1DChart() {
@@ -1342,7 +1353,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('c3/Common1D',["./Common", "../chart/I1DChart"], factory);
     } else {
-        root.Common1D = factory(root.Common, root.I1DChart);
+        root.C3_Common1D = factory(root.C3_Common, root.Chart_I1DChart);
     }
 }(this, function (Common, I1DChart) {
     function Common1D(target) {
@@ -1366,7 +1377,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     Common1D.prototype.implements(I1DChart.prototype);
 
     Common1D.prototype.publish("paletteID", "default", "set", "Palette ID", Common1D.prototype._palette.switch());
-	
+
     Common1D.prototype.update = function (domNode, element) {
         Common.prototype.update.apply(this, arguments);
         this._palette = this._palette.switch(this._paletteID);
@@ -1380,7 +1391,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('chart/I2DChart.js',["../common/Palette"], factory);
     } else {
-        root.I2DChart = factory(root.Palette);
+        root.Chart_I2DChart = factory(root.Palette);
     }
 }(this, function (Palette) {
     function I2DChart() {
@@ -1407,11 +1418,12 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     return I2DChart;
 }));
 
+
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
         define('c3/Common2D',["./Common", "../chart/I2DChart"], factory);
     } else {
-        root.Common2D = factory(root.Common, root.I2DChart);
+        root.C3_Common2D = factory(root.C3_Common, root.Chart_I2DChart);
     }
 }(this, function (Common, I2DChart) {
     function Common2D(target) {
@@ -1449,7 +1461,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('c3/Donut.js',["./Common2D"], factory);
     } else {
-        root.Donut = factory(root.Common2D);
+        root.C3_Donut = factory(root.C3_Common2D);
     }
 }(this, function (Common2D) {
     function Donut(target) {
@@ -1480,7 +1492,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
 
     Donut.prototype.update = function (domNode, element) {
         Common2D.prototype.update.apply(this, arguments);
-        
+
         this.c3Chart.internal.config.donut_label_show = this.label_show();
 //        this.c3Chart.internal.config.donut_label_format = this.high();
 //        this.c3Chart.internal.config.donut_label_threshold = this.show_value_label() ? this.columns() : "";
@@ -1504,7 +1516,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('c3/Gauge.js',["./Common1D"], factory);
     } else {
-        root.Gauge = factory(root.Common1D);
+        root.C3_Gauge = factory(root.C3_Common1D);
     }
 }(this, function (Common1D) {
     function Gauge(target) {
@@ -1554,7 +1566,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('c3/Line',["./CommonND"], factory);
     } else {
-        root.Line = factory(root.CommonND);
+        root.C3_Line = factory(root.C3_CommonND);
     }
 }(this, function (CommonND) {
     function Line(target) {
@@ -1573,7 +1585,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('c3/Pie.js',["./Common2D"], factory);
     } else {
-        root.Pie = factory(root.Common2D);
+        root.C3_Pie = factory(root.C3_Common2D);
     }
 }(this, function (Common2D) {
     function Pie(target) {
@@ -1586,7 +1598,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
 
     Pie.prototype.update = function (domNode, element) {
         Common2D.prototype.update.apply(this, arguments);
-        
+
         var data = this._data.map(function (row, idx) {
             return [row[0], row[1]];
         }, this);
@@ -1603,7 +1615,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('c3/Scatter.js',["./CommonND"], factory);
     } else {
-        root.Scatter = factory(root.CommonND);
+        root.C3_Scatter = factory(root.C3_CommonND);
     }
 }(this, function (CommonND) {
     function Scatter(target) {
@@ -1622,7 +1634,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('c3/Step.js',["./CommonND"], factory);
     } else {
-        root.Step = factory(root.CommonND);
+        root.C3_Step = factory(root.C3_CommonND);
     }
 }(this, function (CommonND) {
     function Step(target) {
@@ -1968,7 +1980,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('common/Text.js',["./SVGWidget", "css!./Text"], factory);
     } else {
-        root.Entity = factory(root.SVGWidget);
+        root.Text = factory(root.SVGWidget);
     }
 }(this, function (SVGWidget) {
     function Text() {
@@ -2045,7 +2057,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('common/FAChar.js',["./SVGWidget", "./Text", "css!lib/Font-Awesome/css/font-awesome", "css!./FAChar"], factory);
     } else {
-        root.Entity = factory(root.SVGWidget, root.Text);
+        root.FAChar = factory(root.SVGWidget, root.Text);
     }
 }(this, function (SVGWidget, Text) {
     function FAChar() {
@@ -2091,7 +2103,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('chart/Bubble.js',["d3/d3", "../common/SVGWidget", "./I2DChart", "../common/Text", "../common/FAChar", "css!./Bubble"], factory);
     } else {
-        root.Bubble = factory(root.d3, root.SVGWidget, root.I2DChart, root.Text, root.FAChar);
+        root.Chart_Bubble = factory(root.d3, root.SVGWidget, root.Chart_I2DChart, root.Text, root.FAChar);
     }
 }(this, function (d3, SVGWidget, I2DChart, Text, FAChar) {
     function Bubble(target) {
@@ -2109,9 +2121,9 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     };
     Bubble.prototype = Object.create(SVGWidget.prototype);
     Bubble.prototype.implements(I2DChart.prototype);
-	
+
     Bubble.prototype.publish("paletteID", "default", "set", "Palette ID", Bubble.prototype._palette.switch());
-	
+
     Bubble.prototype.size = function (_) {
         var retVal = SVGWidget.prototype.size.apply(this, arguments);
         if (arguments.length) {
@@ -2127,7 +2139,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
 
         this._palette = this._palette.switch(this._paletteID);
         var node = element.selectAll(".node")
-            .data(this._data.length ? this.d3Pack.nodes({ children: this.cloneData() }).filter(function (d) { return !d.children; }) : [], function (d) { return d[0]; })            
+            .data(this._data.length ? this.d3Pack.nodes({ children: this.cloneData() }).filter(function (d) { return !d.children; }) : [], function (d) { return d[0]; })
         ;
 
         //  Enter  ---
@@ -2209,7 +2221,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('chart/XYAxis.js',["d3/d3", "../common/SVGWidget"], factory);
     } else {
-        root.XYAxis = factory(root.d3, root.SVGWidget);
+        root.Chart_XYAxis = factory(root.d3, root.SVGWidget);
     }
 }(this, function (d3, SVGWidget) {
     function XYAxis(target) {
@@ -2371,7 +2383,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('chart/Column.js',["d3/d3", "./XYAxis", "./I2DChart", "css!./Column"], factory);
     } else {
-        root.Column = factory(root.d3, root.XYAxis, root.I2DChart);
+        root.Chart_Column = factory(root.d3, root.Chart_XYAxis, root.Chart_I2DChart);
     }
 }(this, function (d3, XYAxis, I2DChart) {
     function Column(target) {
@@ -2388,7 +2400,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
         var context = this;
 
         this._palette = this._palette.switch(this._paletteID);
-        
+
         var column = this.svgData.selectAll(".columnRect")
             .data(this._data)
         ;
@@ -2429,7 +2441,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('chart/Line.js',["d3/d3", "./XYAxis", "./INDChart", "css!./Line"], factory);
     } else {
-        root.Line = factory(root.d3, root.XYAxis, root.INDChart);
+        root.Chart_Line = factory(root.d3, root.Chart_XYAxis, root.Chart_INDChart);
     }
 }(this, function (d3, XYAxis, INDChart) {
     function Line(target) {
@@ -2439,9 +2451,9 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     };
     Line.prototype = Object.create(XYAxis.prototype);
     Line.prototype.implements(INDChart.prototype);
-	
+
     Line.prototype.publish("paletteID", "default", "set", "Palette ID", Line.prototype._palette.switch());
-	
+
     Line.prototype.enter = function (domNode, element) {
         XYAxis.prototype.enter.apply(this, arguments);
         var context = this;
@@ -2449,7 +2461,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
 
     Line.prototype.updateChart = function (domNode, element, margin, width, height) {
         var context = this;
-		
+
         this._palette = this._palette.switch(this._paletteID);
         var d3Line = d3.svg.line()
             .x(function (d) {
@@ -2469,7 +2481,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
         line.enter().append("path")
             .attr("class", "dataLine")
         ;
-        line 
+        line
             .style("stroke", function (d, i) {
                 return context._palette(context._columns[i + 1]);
             })
@@ -2492,7 +2504,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('other/Persist.js',["require"], factory);
     } else {
-        root.Entity = factory();
+        root.Persist = factory();
     }
 }(this, function (require) {
     return {
@@ -2658,7 +2670,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('chart/MultiChart',["d3/d3", "../common/SVGWidget", "./INDChart", "../other/Persist", "require"], factory);
     } else {
-        root.MultiChart = factory(root.d3, root.SVGWidget, root.INDChart, root.Persist, root.require);
+        root.Chart_MultiChart = factory(root.d3, root.SVGWidget, root.Chart_INDChart, root.Persist, root.require);
     }
 }(this, function (d3, SVGWidget, INDChart, Persist, require) {
     var _2dChartTypes = [
@@ -2843,7 +2855,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('common/Shape.js',["./SVGWidget", "css!./Shape"], factory);
     } else {
-        root.Entity = factory(root.SVGWidget);
+        root.Shape = factory(root.SVGWidget);
     }
 }(this, function (SVGWidget) {
     function Shape() {
@@ -2879,7 +2891,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
 
     Shape.prototype.update = function (domNode, element) {
         var shape = element.selectAll("rect,circle,ellipse").data([this._shape], function (d) { return d; });
-        
+
         shape.enter().append(this._shape === "square" ? "rect" : this._shape)
             .attr("class", "common_Shape")
         ;
@@ -2934,7 +2946,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('common/Icon.js',["./SVGWidget", "./Shape", "./FAChar", "css!./Icon"], factory);
     } else {
-        root.Entity = factory(root.SVGWidget, root.Shape, root.FAChar);
+        root.Icon = factory(root.SVGWidget, root.Shape, root.FAChar);
     }
 }(this, function (SVGWidget, Shape, FAChar) {
     function Icon() {
@@ -2944,7 +2956,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
         this._shapeWidget = new Shape();
         this._faChar = new FAChar();
     };
-    Icon.prototype = Object.create(SVGWidget.prototype);    
+    Icon.prototype = Object.create(SVGWidget.prototype);
 
     Icon.prototype.publish("shape", "circle", "set", "Shape Type", ["circle", "square"]);
     Icon.prototype.publishProxy("faChar", "_faChar", "char");
@@ -3063,7 +3075,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('common/TextBox.js',["./SVGWidget", "./Shape", "./Text", "css!./TextBox"], factory);
     } else {
-        root.Entity = factory(root.SVGWidget, root.Shape, root.Text);
+        root.TextBox = factory(root.SVGWidget, root.Shape, root.Text);
     }
 }(this, function (SVGWidget, Shape, Text) {
     function TextBox() {
@@ -3240,7 +3252,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('common/Menu.js',["./SVGWidget", "./IMenu", "./Icon", "./List", "css!./Menu"], factory);
     } else {
-        root.Entity = factory(root.SVGWidget, root.IMenu, root.Icon, root.List);
+        root.Menu = factory(root.SVGWidget, root.IMenu, root.Icon, root.List);
     }
 }(this, function (SVGWidget, IMenu, Icon, List) {
     function Menu() {
@@ -3367,7 +3379,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('common/Surface.js',["./SVGWidget", "./Icon", "./Shape", "./Text", "./FAChar", "./Menu", "css!./Surface"], factory);
     } else {
-        root.Graph = factory(root.SVGWidget, root.Icon, root.Shape, root.Text, root.FAChar, root.Menu);
+        root.Surface = factory(root.SVGWidget, root.Icon, root.Shape, root.Text, root.FAChar, root.Menu);
     }
 }(this, function (SVGWidget, Icon, Shape, Text, FAChar, Menu) {
     function Surface() {
@@ -3653,7 +3665,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('common/ResizeSurface.js',["./Surface", "css!./ResizeSurface"], factory);
     } else {
-        root.Graph = factory(root.Surface);
+        root.ResizeSurface = factory(root.Surface);
     }
 }(this, function (Surface) {
     function ResizeSurface() {
@@ -3863,7 +3875,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('chart/MultiChartSurface',["d3/d3", "../common/ResizeSurface", "./MultiChart", "./INDChart"], factory);
     } else {
-        root.MultiChartSurface = factory(root.d3, root.ResizeSurface, root.MultiChart, root.INDChart);
+        root.Chart_MultiChartSurface = factory(root.d3, root.ResizeSurface, root.Chart_MultiChart, root.Chart_INDChart);
     }
 }(this, function (d3, ResizeSurface, MultiChart, INDChart) {
     function MultiChartSurface() {
@@ -3927,7 +3939,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     if (typeof define === "function" && define.amd) {
         define('chart/Pie',["d3/d3", "../common/SVGWidget", "./I2DChart", "../common/Text", "../common/FAChar", "css!./Pie"], factory);
     } else {
-        root.Pie = factory(root.d3, root.SVGWidget, root.I2DChart, root.Text, root.FAChar);
+        root.Chart_Pie = factory(root.d3, root.SVGWidget, root.Chart_I2DChart, root.Text, root.FAChar);
     }
 }(this, function (d3, SVGWidget, I2DChart, Text, FAChar) {
     function Pie(target) {
@@ -3954,9 +3966,9 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     };
     Pie.prototype = Object.create(SVGWidget.prototype);
     Pie.prototype.implements(I2DChart.prototype);
-	
+
     Pie.prototype.publish("paletteID", "default", "set", "Palette ID", Pie.prototype._palette.switch());
-	
+
     Pie.prototype.size = function (_) {
         var retVal = SVGWidget.prototype.size.apply(this, arguments);
         if (arguments.length) {
@@ -3991,7 +4003,7 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
 
     Pie.prototype.update = function (domNode, element) {
         var context = this;
-		
+
         this._palette = this._palette.switch(this._paletteID);
         var arc = element.selectAll(".arc").data(this.d3Pie(this._data), function (d) { return d.data[0]; });
 
@@ -4089,16 +4101,13 @@ define('css',{load: function(id){throw new Error("Dynamic load not allowed: " + 
     return Pie;
 }));
 
-define('async',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
-define('propertyParser',{});
-define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
 
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
         define('google/Common.js',["d3/d3", "../common/HTMLWidget", "goog!visualization,1,packages:[corechart]"], factory);
     } else {
-        root.Common = factory(root.d3, root.HTMLWidget);
+        root.Google_Common = factory(root.d3, root.HTMLWidget);
     }
 }(this, function (d3, HTMLWidget) {
 
@@ -4207,7 +4216,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
 
         this._chart.draw(this._data_google, this.getChartOptions());
     };
-    
+
     return Common;
 }));
 
@@ -4216,7 +4225,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('google/CommonND.js',["d3/d3", "../google/Common", "../chart/INDChart", "goog!visualization,1,packages:[corechart]"], factory);
     } else {
-        root.CommonND = factory(root.d3, root.Common, root.INDChart);
+        root.Google_CommonND = factory(root.d3, root.Google_Common, root.Chart_INDChart);
     }
 }(this, function (d3, Common, INDChart) {
 
@@ -4230,7 +4239,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
 
     CommonND.prototype.publish("paletteID", "default", "set", "Palette ID", CommonND.prototype._palette.switch());
 
-    CommonND.prototype.update = function(domNode, element) {   
+    CommonND.prototype.update = function(domNode, element) {
         this._palette = this._palette.switch(this._paletteID);
 
         Common.prototype.update.apply(this, arguments);
@@ -4244,7 +4253,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('google/Bar.js',["d3/d3", "./CommonND"], factory);
     } else {
-        root.Bar = factory(root.d3, root.CommonND);
+        root.Google_Bar = factory(root.d3, root.Google_CommonND);
     }
 }(this, function (d3, CommonND) {
 
@@ -4257,7 +4266,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     Bar.prototype = Object.create(CommonND.prototype);
 
     //  TODO:  Publish Bar Properties Here
-   
+
     Bar.prototype.getChartOptions = function () {
         var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
         //  TODO:  Add Bar Properties Here
@@ -4268,7 +4277,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
         CommonND.prototype.enter.apply(this, arguments);
     };
 
-    Bar.prototype.update = function (domNode, element) {      
+    Bar.prototype.update = function (domNode, element) {
         CommonND.prototype.update.apply(this, arguments);
     };
 
@@ -4280,7 +4289,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('google/Column.js',["d3/d3", "./CommonND"], factory);
     } else {
-        root.Column = factory(root.d3, root.CommonND);
+        root.Google_Column = factory(root.d3, root.Google_CommonND);
     }
 }(this, function (d3, CommonND) {
 
@@ -4298,7 +4307,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
         //  TODO:  Add Column Properties Here
         return retVal;
     };
-    
+
     Column.prototype.enter = function (domNode, element) {
         CommonND.prototype.enter.apply(this, arguments);
     };
@@ -4315,7 +4324,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('google/Common2D',["d3/d3", "../google/Common", "../chart/I2DChart", "goog!visualization,1,packages:[corechart]"], factory);
     } else {
-        root.Common2D = factory(root.d3, root.Common, root.I2DChart);
+        root.Google_Common2D = factory(root.d3, root.Google_Common, root.Chart_I2DChart);
     }
 }(this, function (d3, Common, I2DChart) {
 
@@ -4331,7 +4340,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
 
     Common2D.prototype.update = function(domNode, element) {
         this._palette = this._palette.switch(this._paletteID);
-        
+
         Common.prototype.update.apply(this, arguments);
     }
 
@@ -4343,7 +4352,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('google/Line.js',["d3/d3", "./CommonND"], factory);
     } else {
-        root.Line = factory(root.d3, root.CommonND);
+        root.Google_Line = factory(root.d3, root.Google_CommonND);
     }
 }(this, function (d3, CommonND) {
 
@@ -4369,7 +4378,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     Line.prototype.update = function (domNode, element) {
         CommonND.prototype.update.apply(this, arguments);
     };
-    
+
     return Line;
 }));
 
@@ -4378,7 +4387,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('google/Pie.js',["d3/d3", "./Common2D"], factory);
     } else {
-        root.Pie = factory(root.d3, root.Common2D);
+        root.Google_Pie = factory(root.d3, root.Google_Common2D);
     }
 }(this, function (d3, Common2D) {
 
@@ -4389,7 +4398,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
         this._chartType = "PieChart";
     };
     Pie.prototype = Object.create(Common2D.prototype);
-    
+
     Pie.prototype.publish("is3D", true, "boolean", "Enable 3D");
     Pie.prototype.publish("pieHole", 0, "number", "Pie Hole Size");
     Pie.prototype.publish("pieStartAngle", 0, "number", "Pie Start Angle");
@@ -4405,7 +4414,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
         retVal.pieStartAngle = this._pieStartAngle;
         return retVal;
     };
-    
+
     Pie.prototype.enter = function (domNode, element) {
         Common2D.prototype.enter.apply(this, arguments);
     };
@@ -4423,7 +4432,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('graph/Edge',["d3/d3", "../common/SVGWidget", "../common/TextBox", "css!./Edge"], factory);
     } else {
-        root.Entity = factory(root.d3, root.SVGWidget, root.TextBox);
+        root.Graph_Edge = factory(root.d3, root.SVGWidget, root.TextBox);
     }
 }(this, function (d3, SVGWidget, TextBox) {
     function Edge() {
@@ -4522,7 +4531,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
         var pathElements = this._elementPath;
 
         if (this.svgMarkerGlitch && !skipPushMarkers) {
-            element.transition().duration((transitionDuration ? transitionDuration : 0) + 100) 
+            element.transition().duration((transitionDuration ? transitionDuration : 0) + 100)
                 .each("start", function (d) {
                     context._pushMarkers(element, d);
                 })
@@ -4619,7 +4628,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('graph/IGraph.js',[], factory);
     } else {
-        root.IGraph = factory();
+        root.Graph_IGraph = factory();
     }
 }(this, function () {
     function IGraph() {
@@ -4643,7 +4652,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('graph/Vertex.js',["d3/d3", "../common/SVGWidget", "../common/Icon", "../common/TextBox", "css!./Vertex"], factory);
     } else {
-        root.Entity = factory(root.d3, root.SVGWidget, root.Icon, root.TextBox);
+        root.Graph_Vertex = factory(root.d3, root.SVGWidget, root.Icon, root.TextBox);
     }
 }(this, function (d3, SVGWidget, Icon, TextBox) {
     function Vertex() {
@@ -4768,7 +4777,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('graph/GraphData.js',["lib/dagre/dagre"], factory);
     } else {
-        root.GraphData = factory(root.dagre);
+        root.Graph_GraphData = factory(root.dagre);
     }
 }(this, function (dagre) {
     function GraphData() {
@@ -4903,7 +4912,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('graph/GraphLayouts.js',["lib/dagre/dagre"], factory);
     } else {
-        root.GraphLayouts = factory(root.dagre);
+        root.Graph_GraphLayouts = factory(root.dagre);
     }
 }(this, function (dagre) {
     function Circle(graphData, width, height, radius) {
@@ -4925,11 +4934,11 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
                 width: size.width,
                 height: size.height
             }
-            currStep += step; 
+            currStep += step;
         });
     };
     Circle.prototype.nodePos = function(u) {
-        return this.pos[u];        
+        return this.pos[u];
     };
     Circle.prototype.edgePoints = function(e) {
         return [];
@@ -5071,7 +5080,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('other/Bag.js',[], factory);
     } else {
-        root.Entity = factory();
+        root.Bag = factory();
     }
 }(this, function () {
     function SelectionBag() {
@@ -5141,7 +5150,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('graph/Graph',["d3/d3", "../common/SVGWidget", "./IGraph", "./Vertex", "./GraphData", "./GraphLayouts", "../other/Bag", "css!./Graph"], factory);
     } else {
-        root.Graph = factory(root.d3, root.SVGWidget, root.IGraph, root.Vertex, root.GraphData, root.GraphLayouts, root.Bag);
+        root.Graph_Graph = factory(root.d3, root.SVGWidget, root.Graph_IGraph, root.Graph_Vertex, root.Graph_GraphData, root.Graph_GraphLayouts, root.Bag);
     }
 }(this, function (d3, SVGWidget, IGraph, Vertex, GraphData, GraphLayouts, Bag) {
     function Graph() {
@@ -5170,7 +5179,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     };
     Graph.prototype = Object.create(SVGWidget.prototype);
     Graph.prototype.implements(IGraph.prototype);
-    
+
     //  Properties  ---
     Graph.prototype.getOffsetPos = function () {
         return { x: 0, y: 0 };
@@ -5309,7 +5318,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
                 if (d3.event.sourceEvent && d3.event.sourceEvent.shiftKey && d3.event.sourceEvent.ctrlKey) {
                     context._zoomMode = "selection";
                 } else if (d3.event.sourceEvent && d3.event.sourceEvent.shiftKey) {
-                    context._zoomMode = "selection"; 
+                    context._zoomMode = "selection";
                     context._selection.clear();
                 } else {
                     context._zoomMode = "zoom";
@@ -5503,7 +5512,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     Graph.prototype.getVertexBounds = function (layoutEngine) {
         return this.getBounds(this.graphData.nodeValues(), layoutEngine);
     };
-        
+
     Graph.prototype.getSelectionBounds = function (layoutEngine) {
         return this.getBounds(this._selection.get(), layoutEngine);
     };
@@ -5977,7 +5986,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('layout/Surface.js',["../common/HTMLWidget", "../chart/MultiChart", "../c3/Column", "../c3/Line", "css!./Surface"], factory);
     } else {
-        root.Graph = factory(root.HTMLWidget, root.MultiChart, root.Column, root.Line);
+        root.Layout_Surface = factory(root.HTMLWidget, root.Chart_MultiChart, root.C3_Column, root.C3_Line);
     }
 }(this, function (HTMLWidget, MultiChart, Column, Line) {
     function Surface() {
@@ -6078,7 +6087,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('layout/Cell',["./Surface", "../chart/Pie", "../c3/Column", "../c3/Line", "css!./Cell"], factory);
     } else {
-        root.Graph = factory(root.Surface, root.Pie, root.Column, root.Line);
+        root.Layout_Cell = factory(root.Layout_Surface, root.Chart_Pie, root.C3_Column, root.C3_Line);
     }
 }(this, function (Surface, Pie, Column, Line) {
     function Cell() {
@@ -6106,7 +6115,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('layout/Grid',["../common/HTMLWidget", "./Cell", "../common/Text", "../chart/Pie", "../chart/MultiChart", "../c3/Column", "../c3/Line", "css!./Grid"], factory);
     } else {
-        root.Graph = factory(root.HTMLWidget, root.Cell, root.Text, root.Pie, root.MultiChart, root.Column, root.Line);
+        root.Layout_Grid = factory(root.HTMLWidget, root.Layout_Cell, root.Text, root.Chart_Pie, root.Chart_MultiChart, root.C3_Column, root.C3_Line);
     }
 }(this, function (HTMLWidget, Cell, Text, Pie, MultiChart, Column, Line) {
 	function Grid() {
@@ -6286,7 +6295,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('map/IChoropleth.js',["../common/Palette"], factory);
     } else {
-        root.IChoropleth = factory(root.Palette, root.usStates,root.usCounties);
+        root.Map_IChoropleth = factory(root.Palette, root.usStates,root.usCounties);
     }
 }(this, function (Palette, usStates, usCounties) {
     function IChoropleth() {
@@ -6308,7 +6317,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('map/Choropleth.js',["d3/d3", "../common/SVGWidget", "./IChoropleth", "css!./Choropleth"], factory);
     } else {
-        root.Choropleth = factory(root.d3, root.SVGWidget, root.IChoropleth);
+        root.Map_Choropleth = factory(root.d3, root.SVGWidget, root.Map_IChoropleth);
     }
 }(this, function (d3, SVGWidget, IChoropleth) {
     function Choropleth() {
@@ -6605,7 +6614,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('map/IGMap.js',["../common/Shape", "../graph/Edge"], factory);
     } else {
-        root.IGMap = factory(root.Shape, root.Edge);
+        root.Map_IGMap = factory(root.Shape, root.Graph_Edge);
     }
 }(this, function (Shape, Edge) {
     function IGMap() {
@@ -6664,7 +6673,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('map/GMap.js',["d3/d3", "../common/SVGWidget", "../graph/Graph", "./IGMap", "async!http://maps.google.com/maps/api/js?sensor=false", "css!./GMap"], factory);
     } else {
-        root.GMap = factory(root.d3, root.SVGWidget, root.Graph, root.IGMap);
+        root.Map_GMap = factory(root.d3, root.SVGWidget, root.Graph_Graph, root.Map_IGMap);
     }
 }(this, function (d3, SVGWidget, Graph, IGMap) {
     function GMap(target) {
@@ -6769,7 +6778,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('other/Comms.js',[], factory);
     } else {
-        root.Entity = factory();
+        root.ESPUrl = factory();
     }
 }(this, function () {
     function ESPUrl() {
@@ -6815,25 +6824,25 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
         this._protocol = _;
         return this;
     };
-    
+
     ESPUrl.prototype.hostname = function (_) {
         if (!arguments.length) return this._hostname;
         this._hostname = _;
         return this;
     };
-    
+
     ESPUrl.prototype.port = function (_) {
         if (!arguments.length) return this._port;
         this._port = _;
         return this;
     };
-    
+
     ESPUrl.prototype.pathname = function (_) {
         if (!arguments.length) return this._pathname;
         this._pathname = _;
         return this;
     };
-    
+
     ESPUrl.prototype.isWsWorkunits = function () {
         return this._pathname.toLowerCase().indexOf("wsworkunits") >= 0 || this._params["Wuid"];
     };
@@ -7180,7 +7189,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
             }
             context._resultNameCache[target.resultname] = response;
             if (!skipMapping) {
-                context._mappings.mapResult(context._resultNameCache, target.resultname);            
+                context._mappings.mapResult(context._resultNameCache, target.resultname);
             }
             callback(context._resultNameCache[target.resultname]);
         });
@@ -7188,16 +7197,16 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
 
     WsWorkunits.prototype.fetchResult = function (target, callback, skipMapping) {
         if (target.wuid) {
-            this._fetchResult(target, callback, skipMapping);        
+            this._fetchResult(target, callback, skipMapping);
         } else if (target.jobname) {
             var context = this;
             this.WUQuery(target, function(response) {
                 target.wuid = response[0].Wuid;
-                context._fetchResult(target, callback, skipMapping);        
+                context._fetchResult(target, callback, skipMapping);
             });
         }
     },
-    
+
     WsWorkunits.prototype.WUQuery = function (request, callback) {
         var url = this.getUrl({
             pathname: "WsWorkunits/WUQuery.json",
@@ -7529,7 +7538,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('marshaller/HipieDDL.js',["../other/Comms", "../common/Widget"], factory);
     } else {
-        root.Marshaller = factory(root.Comms, root.Widget);
+        root.MarshallerHipieDDL = factory(root.Comms, root.Widget);
     }
 }(this, function (Comms, Widget) {
     var Vertex = null;
@@ -8337,7 +8346,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('marshaller/Graph.js',["d3/d3", "../common/SVGWidget", "../common/TextBox", "../common/Surface", "../common/ResizeSurface", "../chart/MultiChartSurface", "../common/Palette", "../graph/Graph", "../graph/Vertex", "../graph/Edge", "./HipieDDL"], factory);
     } else {
-        root.Graph = factory(root.d3, root.SVGWidget, root.TextBox, root.Surface, root.ResizeSurface, root.MultiChartSurface, root.Palette, root.GraphWidget, root.Vertex, root.Edge, root.HipieDDL);
+        root.Graph = factory(root.d3, root.SVGWidget, root.TextBox, root.Surface, root.ResizeSurface, root.Chart_MultiChartSurface, root.Palette, root.Graph_Graph, root.Graph_Vertex, root.Graph_Edge, root.HipieDDL);
     }
 }(this, function (d3, SVGWidget, TextBox, Surface, ResizeSurface, MultiChartSurface, Palette, GraphWidget, Vertex, Edge, HipieDDL) {
     function createGraphData(marshaller, databomb, visualizeRoxie) {
@@ -8791,7 +8800,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('marshaller/HTML.js',["d3/d3", "../layout/Grid", "./HipieDDL", "../layout/Surface", "../layout/Cell"], factory);
     } else {
-        root.HTML = factory(root.d3, root.Grid, root.HipieDDL, root.Surface, root.Cell);
+        root.HTML = factory(root.d3, root.Layout_Grid, root.HipieDDL, root.Layout_Surface, root.Layout_Cell);
     }
 }(this, function (d3, Grid, HipieDDL, Surface, Cell) {
     function HTML() {
@@ -8913,7 +8922,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('other/Audio.js',["../common/HTMLWidget"], factory);
     } else {
-        root.Entity = factory(root.HTMLWidget);
+        root.Audio = factory(root.HTMLWidget);
     }
 }(this, function (HTMLWidget) {
     function Audio() {
@@ -9065,7 +9074,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('other/MorphText.js',["../common/SVGWidget", "css!./MorphText"], factory);
     } else {
-        root.Entity = factory(root.SVGWidget);
+        root.MorphText = factory(root.SVGWidget);
     }
 }(this, function (SVGWidget) {
     function MorphText() {
@@ -9089,7 +9098,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
             if (usedChars[id] === undefined) {
                 usedChars[id] = 0;
             }
-            usedChars[id]++;   
+            usedChars[id]++;
             return {text: d, id: d.charCodeAt(0) + (1024 * usedChars[id])};
         }));
 
@@ -9181,7 +9190,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('other/PropertyEditor.js',["../common/Widget", "../common/HTMLWidget", "./Persist"], factory);
     } else {
-        root.Entity = factory(root.Widget, root.HTMLWidget, root.Persist);
+        root.PropertyEditor = factory(root.Widget, root.HTMLWidget, root.Persist);
     }
 }(this, function (Widget, HTMLWidget, Persist) {
     function PropertyEditor() {
@@ -9214,10 +9223,10 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
         return "require([\"" + path + "\"], function(" + label + ") {\n" +
         "    var " + fieldName + " = new " + label + "()\n" +
         "        .target(\"divID\")\n" +
-        propertiesString + 
+        propertiesString +
         "        .render(" + renderCallback.split("\n").join("\n        ") +")\n" +
         "    ;\n" +
-        postCreate + 
+        postCreate +
         "});"
     };
 
@@ -9276,7 +9285,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
         }
         return propsStr;
     };
-    
+
     PropertyEditor.prototype.getJavaScript = function (fieldName, includeColumns, includeData, postCreate) {
         postCreate = postCreate || "";
         var callbackJS = "";
@@ -9586,7 +9595,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('other/Slider.js',["../common/SVGWidget", "./ISlider", "css!./Slider"], factory);
     } else {
-        root.Entity = factory(root.SVGWidget, root.ISlider);
+        root.Slider = factory(root.SVGWidget, root.ISlider);
     }
 }(this, function (SVGWidget, ISlider) {
     function Slider() {
@@ -9809,7 +9818,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('other/Table.js',["../common/HTMLWidget", "css!./Table"], factory);
     } else {
-        root.Entity = factory(root.HTMLWidget);
+        root.Table = factory(root.HTMLWidget);
     }
 }(this, function (HTMLWidget) {
     function Table() {
@@ -9893,7 +9902,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('other/WordCloud.js',["../common/SVGWidget", "./IWordCloud", "d3/d3", "css!./WordCloud"], factory);
     } else {
-        root.Entity = factory(root.SVGWidget, root.IWordCloud, root.d3);
+        root.WordCloud = factory(root.SVGWidget, root.IWordCloud, root.d3);
     }
 }(this, function (SVGWidget, IWordCloud, d3) {
     function WordCloud() {
@@ -9972,7 +9981,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
             text.enter().append("text")
                 .attr("text-anchor", "middle")
                 .attr("transform", function(d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
-                .style("font-size", function(d) { 
+                .style("font-size", function(d) {
                     return scale(d.__viz_1) + "px";
                 })
                 .style("font-family", function (d) { return d.font; })
@@ -10021,7 +10030,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('tree/ITree.js',["../common/Palette"], factory);
     } else {
-        root.ITree = factory(root.Palette);
+        root.Tree_ITree = factory(root.Palette);
     }
 }(this, function (Palette) {
     function ITree() {
@@ -10073,7 +10082,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('tree/CirclePacking.js',["d3/d3", "../common/SVGWidget", "./ITree", "../common/Text", "../common/FAChar", "css!./CirclePacking"], factory);
     } else {
-        root.CirclePacking = factory(root.d3, root.SVGWidget, root.ITree, root.Text, root.FAChar);
+        root.Tree_CirclePacking = factory(root.d3, root.SVGWidget, root.Tree_ITree, root.Text, root.FAChar);
     }
 }(this, function (d3, SVGWidget, ITree, Text, FAChar) {
     function CirclePacking(target) {
@@ -10083,9 +10092,9 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     };
     CirclePacking.prototype = Object.create(SVGWidget.prototype);
     CirclePacking.prototype.implements(ITree.prototype);
-	
+
     CirclePacking.prototype.publish("paletteID", "default", "set", "Palette ID", CirclePacking.prototype._palette.switch());
-	
+
     CirclePacking.prototype.enter = function (domNode, element) {
         var context = this;
 
@@ -10105,7 +10114,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
 
     CirclePacking.prototype.update = function (domNode, element) {
         var context = this;
-		
+
         this._palette = this._palette.switch(this._paletteID);
         this.svg.selectAll("circle").remove();
         this.svg.selectAll("text").remove();
@@ -10197,7 +10206,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('tree/Dendrogram.js',["d3/d3", "../common/SVGWidget", "./ITree", "css!./Dendrogram"], factory);
     } else {
-        root.Dendrogram = factory(root.d3, root.SVGWidget, root.ITree);
+        root.Tree_Dendrogram = factory(root.d3, root.SVGWidget, root.Tree_ITree);
     }
 }(this, function (d3, SVGWidget, ITree) {
     function Dendrogram(target) {
@@ -10207,9 +10216,9 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     };
     Dendrogram.prototype = Object.create(SVGWidget.prototype);
     Dendrogram.prototype.implements(ITree.prototype);
-	
+
     Dendrogram.prototype.publish("paletteID", "default", "set", "Palette ID", Dendrogram.prototype._palette.switch());
-	
+
     Dendrogram.prototype.enter = function (domNode, element) {
         SVGWidget.prototype.enter.apply(this, arguments);
 
@@ -10225,7 +10234,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     Dendrogram.prototype.update = function (domNode, element) {
         var context = this;
         SVGWidget.prototype.update.apply(this, arguments);
-		
+
         this._palette = this._palette.switch(this._paletteID);
         var width = this.width() - 60;  //  Pad to allow text to display
         this.layout
@@ -10257,7 +10266,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
         node_enter.on("click", function (d) { context.click(d); });
         node_enter.append("circle");
         node_enter.append("text");
-        
+
         nodes.select("circle")
             .attr("r", 4.5)
             .style("fill", function (d) { return context._palette(d.label); })
@@ -10287,7 +10296,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     if (typeof define === "function" && define.amd) {
         define('tree/SunburstPartition.js',["d3/d3", "../common/SVGWidget", "./ITree", "../common/Text", "../common/FAChar", "css!./SunburstPartition"], factory);
     } else {
-        root.SunburstPartition = factory(root.d3, root.SVGWidget, root.ITree, root.Text, root.FAChar);
+        root.Tree_SunburstPartition = factory(root.d3, root.SVGWidget, root.Tree_ITree, root.Text, root.FAChar);
     }
 }(this, function (d3, SVGWidget, ITree, Text, FAChar) {
     function SunburstPartition(target) {
@@ -10297,7 +10306,7 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
     };
     SunburstPartition.prototype = Object.create(SVGWidget.prototype);
     SunburstPartition.prototype.implements(ITree.prototype);
-	
+
     SunburstPartition.prototype.publish("paletteID", "default", "set", "Palette ID", SunburstPartition.prototype._palette.switch());
 
     SunburstPartition.prototype.root = function (_) {
@@ -10367,11 +10376,11 @@ define('goog',{load: function(id){throw new Error("Dynamic load not allowed: " +
         ;
         paths
             .attr("d", this.arc)
-            .style("fill", function (d) { 
-                return d.__viz_fill ? d.__viz_fill : context._palette(d.label); 
+            .style("fill", function (d) {
+                return d.__viz_fill ? d.__viz_fill : context._palette(d.label);
             })
-            .style("stroke", function (d) { 
-                return d.value > 16 ? "white" : "none"; 
+            .style("stroke", function (d) {
+                return d.value > 16 ? "white" : "none";
             })
             .select("title")
                 .text(function (d) { return d.label })
