@@ -18,6 +18,9 @@
     "rjs.noop.js"
   ],
   "dependencies": {
+    "requirejs": "2.1.17",
+    "requirejs-plugins": "1.0.3",
+    "require-css": "0.1.8",
     "c3": "0.4.9",
     "colorbrewer": "1.0.0",
     "d3": "3.5.0",
