@@ -7,14 +7,12 @@
     <link rel="stylesheet" href="test.css">
     <script src="../bower_components/requirejs/require.js"></script> 
     <script src="./config.js"></script>
+    <script src="../dist/amd/layers/all.js"></script>
     <script>
         var graph = null;
 
         function doTest() {
-            require(["lodash"], function (_) {
-                window._ = _;
-                require(["graphlib"], _doTest)
-            })
+            _doTest();
         }
 
         function _doTest() {

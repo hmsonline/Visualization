@@ -1,3 +1,8 @@
+var debug_mode = false;
+var lib_folder = debug_mode ? "../bower_components" : "../dist/amd/lib";
+var third_party_folder = debug_mode ? "../third_party" : "../dist/amd/lib";
+var src_folder = debug_mode ? "../src" : "../dist/amd/src";
+
 require.config({
     baseUrl: ".",
     paths: {
@@ -7,28 +12,26 @@ require.config({
         'goog': '../bower_components/requirejs-plugins/src/goog',
         'propertyParser': '../bower_components/requirejs-plugins/src/propertyParser',
 
-        'lodash': '../bower_components/lodash/dist/lodash',
-        'graphlib': '../bower_components/graphlib/dist/graphlib.core',
-        'd3-cloud': '../bower_components/d3-cloud',
-        'topojson': '../bower_components/topojson',
-        'font-awesome': '../bower_components/font-awesome',
-        'dagre/dagre': '../bower_components/dagre/dist/dagre.core',
-        'colorbrewer': '../bower_components/colorbrewer'
+        'dagre': third_party_folder + "/dagre",
+        'topojson': lib_folder + "/topojson",
+        'colorbrewer': lib_folder + "/colorbrewer",
+        'd3-cloud': lib_folder + "/d3-cloud",
+        'font-awesome': lib_folder + "/font-awesome"
     },
     packages: [
         {
             name: 'd3',
-            location: '../bower_components/d3',
-            main: 'd3'
+            location: lib_folder + "/d3",
+            main: "d3"
         },
         {
             name: 'c3',
-            location: '../bower_components/c3',
-            main: 'c3'
+            location: lib_folder + "/c3",
+            main: "c3"
         },
         {
             name: 'viz',
-            location: '../viz'
+            location: src_folder
         }
     ]
 });

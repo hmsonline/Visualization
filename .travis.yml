@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+  - "0.10"
+before_script:
+  - npm install -g bower
+  - npm install -g gulp
+  - bower install
+  - gulp
+deploy:
+  provider: releases
+  api_key:
+    secure: mU0HBX2E8MGpscZX5ppC497j2rlWJg347mov50hzNjuFqEYNeD7Y2/bBZCRhF8Z/3bB+6t52XoYCfhFm2Dv2PPCwWG5zJuGe9STHfoWbzAdOaD/nVF/fCEJAf7JWqpv7FInFMKRD1L955/1mljIUVTBbhXJcW7RK2syhszYTb4g=
+  file: 
+  - "./dist/amd/layers/build.txt"
+  skip_cleanup: true
+  on:
+    tags: true
