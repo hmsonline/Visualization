@@ -5,410 +5,433 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>HPCC Systems - Visualization Framework</title>
     <link rel="stylesheet" href="test.css">
-    <script src="../bower_components/requirejs/require.js"></script> 
-    <script src="./config.js"></script>
+    <script src="../widgets/lib/requirejs/require.js"></script>
     <script>
         var graph = null;
-
         function doTest() {
-            require(["lodash"], function (_) {
-                window._ = _;
-                require(["graphlib"], _doTest)
-            })
-        }
+            require(["../widgets/config"], function () {
+                requirejs.config({
+                    baseUrl: "../widgets"
+                });
+                require(["d3/d3",
+                    "src/common/Surface", "src/common/ResizeSurface", "src/common/Text", "src/common/TextBox", "src/common/Shape", "src/common/FAChar", "src/common/Icon", "src/common/List", "src/common/Menu", "src/common/Palette",
+                    "src/graph/Edge", "src/graph/Vertex",
+                    "src/tree/SunburstPartition", "src/tree/CirclePacking", "src/tree/Dendrogram",
+                    "src/other/MorphText", "src/other/Slider", "src/other/Table"
+                ], function (d3,
+                    Surface, ResizeSurface, Text, TextBox, Shape, FAChar, Icon, List, Menu, Palette,
+                    Edge, Vertex,
+                    SunburstPartition, CirclePacking, Dendrogram,
+                    MorphText, Slider, Table
+                    ) {
+                    function createEdge(source, target, label) {
+                        return new Edge()
+                            .sourceVertex(source)
+                            .targetVertex(target)
+                            .sourceMarker("circleFoot")
+                            .targetMarker("arrowHead")
+                            .text(label || "")
+                        ;
+                    }
 
-        function _doTest() {
-            require(["d3/d3",
-                "viz/common/Surface", "viz/common/ResizeSurface", "viz/common/Text", "viz/common/TextBox", "viz/common/Shape", "viz/common/FAChar", "viz/common/Icon", "viz/common/List", "viz/common/Menu", "viz/common/Palette",
-                "viz/graph/Edge", "viz/graph/Vertex",
-                "viz/tree/SunburstPartition", "viz/tree/CirclePacking", "viz/tree/Dendrogram",
-                "viz/other/MorphText", "viz/other/Slider", "viz/other/Table"
-            ], function (d3,
-                Surface, ResizeSurface, Text, TextBox, Shape, FAChar, Icon, List, Menu, Palette,
-                Edge, Vertex,
-                SunburstPartition, CirclePacking, Dendrogram,
-                MorphText, Slider, Table
-                ) {
-                function createEdge(source, target, label) {
-                    return new Edge()
-                        .sourceVertex(source)
-                        .targetVertex(target)
-                        .sourceMarker("circleFoot")
-                        .targetMarker("arrowHead")
-                        .text(label || "")
-                    ;
-                }
+                    var timeoutStep = 500;
+                    var timeoutIdx = 0;
 
-                var timeoutStep = 500;
-                var timeoutIdx = 0;
+                    var def = window.location.search.split("?")[1];
+                    switch (def) {
+                        case "composition":
+                            displayComposition();
+                            break;
+                        case "charts":
+                            displayCharts();
+                            break;
+                        case "maps":
+                            displayMaps();
+                            break;
+                        case "hierarchies":
+                            displayGraphHierarchies();
+                            break;
+                        case "surfaces":
+                            displaySurfaces();
+                            break;
+                        case "other":
+                            displayOther();
+                            break;
+                        case "palettes":
+                            displayPalettes();
+                            break;
+                        default:
+                            setTimeout(function () { displayComposition(); }, timeoutStep * timeoutIdx++);
+                            setTimeout(function () { displayCharts(); }, timeoutStep * timeoutIdx++);
+                            setTimeout(function () { displayMaps(); }, timeoutStep * timeoutIdx++);
+                            setTimeout(function () { displayGraphHierarchies(); }, timeoutStep * timeoutIdx++);
+                            setTimeout(function () { displaySurfaces(); }, timeoutStep * timeoutIdx++);
+                            setTimeout(function () { displayOther(); }, timeoutStep * timeoutIdx++);
+                            setTimeout(function () { displayPalettes(); }, timeoutStep * timeoutIdx++);
+                            break;
+                    }
 
-                setTimeout(function () { displayComposition(); }, timeoutStep * timeoutIdx++);
-                setTimeout(function () { displayCharts(); }, timeoutStep * timeoutIdx++);
-                setTimeout(function () { displayMaps(); }, timeoutStep * timeoutIdx++);
-                setTimeout(function () { displayGraphHierarchies(); }, timeoutStep * timeoutIdx++);
-                setTimeout(function () { displaySurfaces(); }, timeoutStep * timeoutIdx++);
-                setTimeout(function () { displayOther(); }, timeoutStep * timeoutIdx++);
-                setTimeout(function () { displayPalettes(); }, timeoutStep * timeoutIdx++);
 
-                function displayComposition() {
-                    //  Composition ---
-                    new Vertex()
-                        .text("Graph\nVertex")
-                        .faChar("\uf080")
-                        .target("vertex")
-                        .render()
-                    ;
-                    new Text()
-                        .text("Multi\nLine\nText")
-                        .target("text")
-                        .render()
-                    ;
-                    new Shape()
-                        .shape("circle")
-                        .target("shape")
-                        .size({ width: 32, height: 32 })
-                        .render()
-                    ;
-                    new FAChar()
-                        .char("\uf080")
-                        .target("faChar")
-                        .render()
-                    ;
-                    new TextBox()
-                        .text("Text\nBox")
-                        .target("textBox")
-                        .render()
-                    ;
-                    new Icon()
-                        .shape("circle")
-                        .faChar("\uf080")
-                        .target("Icon")
-                        .render()
-                    ;
-                    new List()
-                        .testData()
-                        .target("list")
-                        .render()
-                    ;
-                    new Menu()
-                        .faChar("\uf0c9")
-                        .data(["Menu A", "And B", "a longer C"])
-                        .target("menu")
-                        .pos({ x: 50, y: 10 })
-                        .render()
-                    ;
-                    new Surface()
-                        .size({ width: 100, height: 100 })
-                        .title("Surface")
-                        .menu(["aaa", "bbb", "ccc"])
-                        .target("surface")
-                        .render()
-                    ;
-                    require(["viz/graph/Graph"], function (Graph) {
-                        var vertices = [
-                            new Shape().shape("circle").size({ width: 32, height: 32 }),
-                            new FAChar().char("\uf080"),
-                            new Icon().shape("circle").faChar("\uf080"),
-                            new Shape().class("Shape2").shape("rect").size({ width: 32, height: 32 }),
-                            new Text().text("Multi\nLine\nText"),
-                            new TextBox().text("Text\nBox"),
-                            new Vertex().text("Graph\nVertex").faChar("\uf080"),
-                            new Shape().shape("rect").size({ width: 48, height: 22 }),
-                            new List().testData(),
-                            new Menu().faChar("\uf0c9").data(["Menu A", "And B", "a longer C"]),
-                            new ResizeSurface().size({ width: 200, height: 100 }).title("Resize Me!!!").menu(["aaa", "bbb", "ccc"]).icon_faChar("\uf047").content(new Dendrogram().testData())
-                        ];
-                        var edges = [
-                            createEdge(vertices[0], vertices[2]), createEdge(vertices[1], vertices[2]),
-                            createEdge(vertices[3], vertices[5]), createEdge(vertices[4], vertices[5]),
-                            createEdge(vertices[2], vertices[6]), createEdge(vertices[5], vertices[6], "test label"),
-                            createEdge(vertices[7], vertices[9]), createEdge(vertices[1], vertices[9]), createEdge(vertices[8], vertices[9]),
-                            createEdge(vertices[6], vertices[10]), createEdge(vertices[7], vertices[10]), createEdge(vertices[9], vertices[10])
-                        ];
-                        graph = new Graph()
-                            .target("composition")
-                            .data({ vertices: vertices, edges: edges })
-                            .layout("Hierarchy")
+                    function displayComposition() {
+                        //  Composition ---
+                        new Vertex()
+                            .text("Graph\nVertex")
+                            .faChar("\uf080")
+                            .target("vertex")
                             .render()
                         ;
-                        graph.vertex_dblclick = function (element, d) {
-                        };
-                    });
-                }
-
-                function displayCharts() {
-                    require(["viz/chart/Pie", "viz/chart/Bubble", "viz/chart/Column", "viz/chart/Line",
-                        "viz/google/Pie", "viz/google/Bar", "viz/google/Column", "viz/google/Line",
-                        "viz/c3/Pie", "viz/c3/Donut", "viz/c3/Line", "viz/c3/Column", "viz/c3/Bar", "viz/c3/Step", "viz/c3/Area", "viz/c3/Scatter"
-                    ], function (Pie, Bubble, Column, Line,
-                        GPie, GBar, GColumn, GLine,
-                        C3Pie, C3Donut, C3Line, C3Column, C3Bar, C3Step, C3Area, C3Scatter) {
-                        //  C3 Charts ---
-                        new C3Pie()
-                            .target("c3pie")
+                        new Text()
+                            .text("Multi\nLine\nText")
+                            .target("text")
+                            .render()
+                        ;
+                        new Shape()
+                            .shape("circle")
+                            .target("shape")
+                            .size({ width: 32, height: 32 })
+                            .render()
+                        ;
+                        new FAChar()
+                            .char("\uf080")
+                            .target("faChar")
+                            .render()
+                        ;
+                        new TextBox()
+                            .text("Text\nBox")
+                            .target("textBox")
+                            .render()
+                        ;
+                        new Icon()
+                            .shape("circle")
+                            .faChar("\uf080")
+                            .target("Icon")
+                            .render()
+                        ;
+                        new List()
                             .testData()
+                            .target("list")
                             .render()
                         ;
-                        var donut = new C3Donut()
-                            .target("c3donut")
-                            .title("MMMmmm")
-                            .testData()
+                        new Menu()
+                            .faChar("\uf0c9")
+                            .data(["Menu A", "And B", "a longer C"])
+                            .target("menu")
+                            .pos({ x: 50, y: 10 })
                             .render()
                         ;
-                        new C3Line()
-                            .target("c3line")
-                            .testData()
+                        new Surface()
+                            .size({ width: 100, height: 100 })
+                            .title("Surface")
+                            .menu(["aaa", "bbb", "ccc"])
+                            .target("surface")
                             .render()
                         ;
-                        new C3Column()
-                            .target("c3column")
-                            .testData()
-                            .render()
-                        ;
-                        new C3Bar()
-                            .target("c3bar")
-                            .testData()
-                            .render()
-                        ;
-                        new C3Step()
-                            .target("c3step")
-                            .testData()
-                            .render()
-                        ;
-                        new C3Area()
-                            .target("c3area")
-                            .testData()
-                            .render()
-                        ;
-                        new C3Scatter()
-                            .target("c3scatter")
-                            .testData()
-                            .render()
-                        ;
-
-                        //  D3 Charts  ---
-                        new Pie()
-                            .testData()
-                            .target("pie")
-                            .render()
-                        ;
-                        new Bubble()
-                            .testData()
-                            .target("bubble")
-                            .render()
-                        ;
-                        new Column()
-                            .target("column")
-                            .testData()
-                            .render()
-                        ;
-                        new Line()
-                            .target("line")
-                            .testData()
-                            .render()
-                        ;
-
-                        //  Google Charts ---
-                        new GPie()
-                            .target("gpie")
-                            .testData()
-                            .render()
-                        ;
-                        new GBar()
-                            .target("gbar")
-                            .testData()
-                            .render()
-                        ;
-                        new GColumn()
-                            .target("gcolumn")
-                            .testData()
-                            .render()
-                        ;
-                        new GLine()
-                            .target("gline")
-                            .testData()
-                            .render()
-                        ;
-                    });
-                }
-
-                function displayMaps() {
-                    //  Maps ---
-                    require(["viz/map/ChoroplethStates"], function (ChoroplethStates) {
-                        new ChoroplethStates()
-                            .target("choropleth")
-                            .testData()
-                            .render()
-                        ;
-                    });
-                    require(["viz/map/ChoroplethCounties"], function (ChoroplethCounties) {
-                        new ChoroplethCounties()
-                            .target("choroplethCounties")
-                            .testData()
-                            .render()
-                        ;
-                    });
-                    require(["viz/map/ChoroplethCountries"], function (ChoroplethCountries) {
-                        new ChoroplethCountries()
-                            .target("choroplethCountries")
-                            .testData()
-                            .render()
-                        ;
-                    });
-                    require(["viz/map/GMap"], function (GMap) {
-                        var gmap = new GMap()
-                            .target("gmap")
-                            .testData()
-                            .render()
-                        ;
-                    });
-                }
-
-                function displayGraphHierarchies() {
-                    //  Graphs / Hierarchies ---
-                    require(["viz/graph/Graph"], function (Graph) {
-                        var vertices = [
-                            new TextBox().text("G'Pa"),
-                            new TextBox().text("G'Ma"),
-                            new TextBox().text("Mother"),
-                            new TextBox().text("Father"),
-                            new TextBox().text("Child")
-                        ];
-                        var edges = [
-                            createEdge(vertices[0], vertices[2]), createEdge(vertices[1], vertices[2]),
-                            createEdge(vertices[2], vertices[4]),
-                            createEdge(vertices[3], vertices[4])
-                        ];
-                        new Graph()
-                            .target("graph")
-                            .hierarchyOptions({ rankSep: 18 })
-                            .data({ vertices: vertices, edges: edges })
-                            .layout("Hierarchy")
-                            .render()
-                        ;
-                    });
-                    new SunburstPartition()
-                        .target("sunburst")
-                        .testData()
-                        .render()
-                    ;
-                    new CirclePacking()
-                        .target("circlePacking")
-                        .testData()
-                        .render()
-                    ;
-                    new Dendrogram()
-                        .target("dendrogram")
-                        .testData()
-                        .render()
-                    ;
-                }
-
-                function displaySurfaces() {
-                    require(["viz/chart/MultiChartSurface"], function(MultiChartSurface) {
-                        //  Surfaces ---
-                        new MultiChartSurface()
-                            .target("twoDSurface")
-                            .title("2D Charts")
-                            .icon_faChar("\uf080")
-                            .mode("2d")
-                            .chart_type("COLUMN")
-                            .testData()
-                            .render()
-                        ;
-                        new MultiChartSurface()
-                            .target("multiSurface")
-                            .testData()
-                            .chart_type("GOOGLE_COLUMN")
-                            .title("Multi Charts")
-                            .icon_faChar("\uf080")
-                            .mode("multi")
-                            .render()
-                        ;
-                        require(["viz/map/ChoroplethStates"], function (ChoroplethStates) {
-                            var choroSurface = new Surface()
-                                .target("choroSurface")
-                                .title("States/Palette")
-                                .icon_faChar("\uf024")
-                                .content(new ChoroplethStates().testData().paletteID("BuPu"))
-                                .menu(Palette.rainbow())
+                        require(["src/graph/Graph"], function (Graph) {
+                            var vertices = [
+                                new Shape().shape("circle").size({ width: 32, height: 32 }),
+                                new FAChar().char("\uf080"),
+                                new Icon().shape("circle").faChar("\uf080"),
+                                new Shape().class("Shape2").shape("rect").size({ width: 32, height: 32 }),
+                                new Text().text("Multi\nLine\nText"),
+                                new TextBox().text("Text\nBox"),
+                                new Vertex().text("Graph\nVertex").faChar("\uf080"),
+                                new Shape().shape("rect").size({ width: 48, height: 22 }),
+                                new List().testData(),
+                                new Menu().faChar("\uf0c9").data(["Menu A", "And B", "a longer C"]),
+                                new ResizeSurface().size({ width: 200, height: 100 }).title("Resize Me!!!").menu(["aaa", "bbb", "ccc"]).icon_faChar("\uf047").content(new Dendrogram().testData())
+                            ];
+                            var edges = [
+                                createEdge(vertices[0], vertices[2]), createEdge(vertices[1], vertices[2]),
+                                createEdge(vertices[3], vertices[5]), createEdge(vertices[4], vertices[5]),
+                                createEdge(vertices[2], vertices[6]), createEdge(vertices[5], vertices[6], "test label"),
+                                createEdge(vertices[7], vertices[9]), createEdge(vertices[1], vertices[9]), createEdge(vertices[8], vertices[9]),
+                                createEdge(vertices[6], vertices[10]), createEdge(vertices[7], vertices[10]), createEdge(vertices[9], vertices[10])
+                            ];
+                            graph = new Graph()
+                                .target("composition")
+                                .data({ vertices: vertices, edges: edges })
+                                .layout("Hierarchy")
                                 .render()
                             ;
-                            choroSurface._menu.click = function (d) {
-                                choroSurface._content
-                                    .paletteID(d)
-                                    .render(d)
-                                ;
-                            }
+                            graph.vertex_dblclick = function (element, d) {
+                            };
                         });
-                    });
-                }
+                    }
 
-                function displayOther() {
-                    //  Other  ---
-                    var slider = new Slider()
-                        .target("slider")
-                        .low(2000)
-                        .high(2010)
-                        .step(2)
-                        .render();
-                    ;
-                    var slider = new Slider()
-                        .target("rangeSlider")
-                        .allowRange(true)
-                        .low(2000)
-                        .high(2010)
-                        .step(2)
-                        .render();
-                    ;
+                    function displayCharts() {
+                        require(["src/chart/Pie", "src/chart/Bubble", "src/chart/Column", "src/chart/Line",
+                            "src/google/Pie", "src/google/Bar", "src/google/Column", "src/google/Line",
+                            "src/c3/Pie", "src/c3/Donut", "src/c3/Line", "src/c3/Column", "src/c3/Bar", "src/c3/Step", "src/c3/Area", "src/c3/Scatter"
+                        ], function (Pie, Bubble, Column, Line,
+                            GPie, GBar, GColumn, GLine,
+                            C3Pie, C3Donut, C3Line, C3Column, C3Bar, C3Step, C3Area, C3Scatter) {
+                            //  C3 Charts ---
+                            new C3Pie()
+                                .target("c3pie")
+                                .testData()
+                                .render()
+                            ;
+                            var donut = new C3Donut()
+                                .target("c3donut")
+                                .title("MMMmmm")
+                                .testData()
+                                .render()
+                            ;
+                            new C3Line()
+                                .target("c3line")
+                                .testData()
+                                .render()
+                            ;
+                            new C3Column()
+                                .target("c3column")
+                                .testData()
+                                .render()
+                            ;
+                            new C3Bar()
+                                .target("c3bar")
+                                .testData()
+                                .render()
+                            ;
+                            new C3Step()
+                                .target("c3step")
+                                .testData()
+                                .render()
+                            ;
+                            new C3Area()
+                                .target("c3area")
+                                .testData()
+                                .render()
+                            ;
+                            new C3Scatter()
+                                .target("c3scatter")
+                                .testData()
+                                .render()
+                            ;
 
-                    require(["viz/other/WordCloud", "d3-cloud/d3.layout.cloud"], function (WordCloud) {
-                        var wordCloud = new WordCloud()
-                            .target("wordCloud")
+                            //  D3 Charts  ---
+                            new Pie()
+                                .testData()
+                                .target("pie")
+                                .render()
+                            ;
+                            new Bubble()
+                                .testData()
+                                .target("bubble")
+                                .render()
+                            ;
+                            new Column()
+                                .target("column")
+                                .testData()
+                                .render()
+                            ;
+                            new Line()
+                                .target("line")
+                                .testData()
+                                .render()
+                            ;
+
+                            //  Google Charts ---
+                            new GPie()
+                                .target("gpie")
+                                .testData()
+                                .render()
+                            ;
+                            new GBar()
+                                .target("gbar")
+                                .testData()
+                                .render()
+                            ;
+                            new GColumn()
+                                .target("gcolumn")
+                                .testData()
+                                .render()
+                            ;
+                            new GLine()
+                                .target("gline")
+                                .testData()
+                                .render()
+                            ;
+                        });
+                    }
+
+                    function displayMaps() {
+                        //  Maps ---
+                        require(["src/map/ChoroplethStates"], function (ChoroplethStates) {
+                            new ChoroplethStates()
+                                .target("choropleth")
+                                .testData()
+                                .render()
+                            ;
+                        });
+                        require(["src/map/ChoroplethCounties"], function (ChoroplethCounties) {
+                            new ChoroplethCounties()
+                                .target("choroplethCounties")
+                                .testData()
+                                .render()
+                            ;
+                        });
+                        require(["src/map/ChoroplethCountries"], function (ChoroplethCountries) {
+                            new ChoroplethCountries()
+                                .target("choroplethCountries")
+                                .testData()
+                                .render()
+                            ;
+                        });
+                        require(["src/map/GMap"], function (GMap) {
+                            var gmap = new GMap()
+                                .target("gmap")
+                                .testData()
+                                .render()
+                            ;
+                        });
+                    }
+
+                    function displayGraphHierarchies() {
+                        //  Graphs / Hierarchies ---
+                        require(["src/graph/Graph"], function (Graph) {
+                            var vertices = [
+                                new TextBox().text("G'Pa"),
+                                new TextBox().text("G'Ma"),
+                                new TextBox().text("Mother"),
+                                new TextBox().text("Father"),
+                                new TextBox().text("Child")
+                            ];
+                            var edges = [
+                                createEdge(vertices[0], vertices[2]), createEdge(vertices[1], vertices[2]),
+                                createEdge(vertices[2], vertices[4]),
+                                createEdge(vertices[3], vertices[4])
+                            ];
+                            new Graph()
+                                .target("graph")
+                                .hierarchyOptions({ rankSep: 18 })
+                                .data({ vertices: vertices, edges: edges })
+                                .layout("Hierarchy")
+                                .render()
+                            ;
+                        });
+                        new SunburstPartition()
+                            .target("sunburst")
                             .testData()
                             .render()
                         ;
-                    });
-
-                    new Table()
-                        .target("table")
-                        .testData()
-                        .render()
-                    ;
-                    var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
-                    var morphText = new MorphText()
-                        .target("morphText")
-                        .text(alphabet.join(""))
-                        .render()
-                    ;
-                    function shuffle(array) {
-                        var m = array.length, t, i;
-                        while (m) {
-                            i = Math.floor(Math.random() * m--);
-                            t = array[m], array[m] = array[i], array[i] = t;
-                        }
-                        return array;
-                    }
-                    setInterval(function () {
-                        var randomAlphabet = shuffle(alphabet)
-                            .slice(0, Math.floor(Math.random() * 26))
-                            .sort()
-                        ;
-                        morphText
-                            .text(randomAlphabet.join(""))
+                        new CirclePacking()
+                            .target("circlePacking")
+                            .testData()
                             .render()
                         ;
-                    }, 1500);
-                }
+                        new Dendrogram()
+                            .target("dendrogram")
+                            .testData()
+                            .render()
+                        ;
+                    }
 
-                function displayPalettes() {
-                    //  Palettes  ---
-                    require(["d3/d3", "viz/common/Palette"], function (d3, Palette) {
-                        var customArr = document.getElementById("customColors").value.split("\n");
-                        var steps = document.getElementById("steps").value;
-                        Palette.test("#ordinal", "#brewer", "#custom", customArr, steps);
-                    });
-                }
+                    function displaySurfaces() {
+                        require(["src/chart/MultiChartSurface"], function(MultiChartSurface) {
+                            //  Surfaces ---
+                            new MultiChartSurface()
+                                .target("twoDSurface")
+                                .title("2D Charts")
+                                .icon_faChar("\uf080")
+                                .mode("2d")
+                                .chart_type("COLUMN")
+                                .testData()
+                                .render()
+                            ;
+                            new MultiChartSurface()
+                                .target("multiSurface")
+                                .testData()
+                                .chart_type("GOOGLE_COLUMN")
+                                .title("Multi Charts")
+                                .icon_faChar("\uf080")
+                                .mode("multi")
+                                .render()
+                            ;
+                            require(["src/map/ChoroplethStates"], function (ChoroplethStates) {
+                                var choroSurface = new Surface()
+                                    .target("choroSurface")
+                                    .title("States/Palette")
+                                    .icon_faChar("\uf024")
+                                    .content(new ChoroplethStates().testData().paletteID("BuPu"))
+                                    .menu(Palette.rainbow())
+                                    .render()
+                                ;
+                                choroSurface._menu.click = function (d) {
+                                    choroSurface._content
+                                        .paletteID(d)
+                                        .render(d)
+                                    ;
+                                }
+                            });
+                        });
+                    }
+
+                    function displayOther() {
+                        //  Other  ---
+                        var slider = new Slider()
+                            .target("slider")
+                            .low(2000)
+                            .high(2010)
+                            .step(2)
+                            .render();
+                        ;
+                        var slider = new Slider()
+                            .target("rangeSlider")
+                            .allowRange(true)
+                            .low(2000)
+                            .high(2010)
+                            .step(2)
+                            .render();
+                        ;
+
+                        require(["src/other/WordCloud", "lib/wordcloud/d3.layout.cloud"], function (WordCloud) {
+                            var wordCloud = new WordCloud()
+                                .target("wordCloud")
+                                .testData()
+                                .render()
+                            ;
+                        });
+
+                        new Table()
+                            .target("table")
+                            .testData()
+                            .render()
+                        ;
+                        var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+                        var morphText = new MorphText()
+                            .target("morphText")
+                            .text(alphabet.join(""))
+                            .render()
+                        ;
+                        function shuffle(array) {
+                            var m = array.length, t, i;
+                            while (m) {
+                                i = Math.floor(Math.random() * m--);
+                                t = array[m], array[m] = array[i], array[i] = t;
+                            }
+                            return array;
+                        }
+                        setInterval(function () {
+                            var randomAlphabet = shuffle(alphabet)
+                                .slice(0, Math.floor(Math.random() * 26))
+                                .sort()
+                            ;
+                            morphText
+                                .text(randomAlphabet.join(""))
+                                .render()
+                            ;
+                        }, 1500);
+                    }
+
+                    function displayPalettes() {
+                        //  Palettes  ---
+                        require(["d3/d3", "src/common/Palette"], function (d3, Palette) {
+                            var customArr = document.getElementById("customColors").value.split("\n");
+                            var steps = document.getElementById("steps").value;
+                            Palette.test("#ordinal", "#brewer", "#custom", customArr, steps);
+                        });
+                    }
+                });
             });
         }
         doLayout = function (graph, layout) {
@@ -416,7 +439,7 @@
         }
         function doPalette() {
             require([
-                    "d3/d3", "viz/common/Palette"
+                    "d3/d3", "src/common/Palette"
                 ], function (d3, Palette) {
                 var customArr = document.getElementById("customColors").value.split("\n");
                 var steps = document.getElementById("steps").value;
