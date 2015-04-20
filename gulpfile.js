@@ -10,7 +10,7 @@ const sort = require('gulp-natural-sort')
 const dir = require('node-dir')
 
 function css(minify) {
-  return gulp.src('viz/**/*.css')
+  return gulp.src('src/**/*.css')
     .pipe(sort())
     .pipe(concatCss(minify ? 'viz.min.css' : 'viz.css'))
     .pipe(minify ? minifyCss({keepBreaks:true}) : gutil.noop())
@@ -21,21 +21,21 @@ gulp.task('css-combine', css.bind(null, false))
 gulp.task('css-optimize', css.bind(null, true))
 
 gulp.task('optimize', ['css-combine', 'css-optimize'], function (done) {
-  dir.files('viz', function (err, files) {
+  dir.files('src', function (err, files) {
     if (err) return done(err)
 
     const excludes = {
       // TODO: exclude only data files
-      'viz/map/ChoroplethCountries.js': true,
-      'viz/map/countries.js': true,
-      'viz/map/ChoroplethCounties.js': true,
-      'viz/map/us-counties.js': true,
-      'viz/map/ChoroplethStates.js': true,
-      'viz/map/us-states.js': true
+      'src/map/ChoroplethCountries.js': true,
+      'src/map/countries.js': true,
+      'src/map/ChoroplethCounties.js': true,
+      'src/map/us-counties.js': true,
+      'src/map/ChoroplethStates.js': true,
+      'src/map/us-states.js': true
     }
 
     const opts = {
-      baseUrl: 'viz',
+      baseUrl: 'src',
       paths: {
         // plugins
         'async': '../rjs.noop',
@@ -53,7 +53,7 @@ gulp.task('optimize', ['css-combine', 'css-optimize'], function (done) {
       },
       include: files
         .filter(function (file) { return path.extname(file) === '.js' && !excludes[file] })
-        .map(function (file) { return file.substring('viz/'.length) })
+        .map(function (file) { return file.substring('src/'.length) })
     }
 
     async.parallel([
@@ -66,7 +66,7 @@ gulp.task('optimize', ['css-combine', 'css-optimize'], function (done) {
 gulp.task('default', ['optimize'], function (done) {
   var opts = {
     dir: 'dist/build/viz',
-    appDir: 'viz',
+    appDir: 'src',
     baseUrl: '.'
   }
   optimize(opts, done)

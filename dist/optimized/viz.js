@@ -1282,25 +1282,6 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('c3/Area.js',["./CommonND"], factory);
-    } else {
-        root.c3_Area = factory(root.c3_CommonND);
-    }
-}(this, function (CommonND) {
-    function Area(target) {
-        CommonND.call(this);
-        this._class = "c3_Area";
-
-        this._type = "area";
-    };
-    Area.prototype = Object.create(CommonND.prototype);
-
-    return Area;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
         define('c3/Column.js',["./CommonND"], factory);
     } else {
         root.c3_Column = factory(root.c3_CommonND);
@@ -1334,6 +1315,25 @@
     Bar.prototype = Object.create(Column.prototype);
 
     return Bar;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('c3/Area.js',["./CommonND"], factory);
+    } else {
+        root.c3_Area = factory(root.c3_CommonND);
+    }
+}(this, function (CommonND) {
+    function Area(target) {
+        CommonND.call(this);
+        this._class = "c3_Area";
+
+        this._type = "area";
+    };
+    Area.prototype = Object.create(CommonND.prototype);
+
+    return Area;
 }));
 
 
@@ -1474,56 +1474,6 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('c3/Gauge.js',["./Common1D"], factory);
-    } else {
-        root.c3_Gauge = factory(root.c3_Common1D);
-    }
-}(this, function (Common1D) {
-    function Gauge(target) {
-        Common1D.call(this);
-
-        this._class = "c3_Gauge";
-        this._type = "gauge";
-
-        var context = this;
-        this._config.data.onclick = function (d, element) {
-            var clickEvent = {};
-            clickEvent[d.id] = d.value;
-            context.click(clickEvent, d.id);
-        };
-        this._config.data.color = function (color, d) {
-            return context._palette(context._data, context._low, context._high);
-        };
-    };
-    Gauge.prototype = Object.create(Common1D.prototype);
-
-    Gauge.prototype.publish("low", 0, "number", "Gauge lower bound");
-    Gauge.prototype.publish("high", 100, "number", "Gauge higher bound");
-    Gauge.prototype.publish("value_format", "Percent", "set", "Value Display Format", ["Percent", "Value"]);
-    Gauge.prototype.publish("arc_width", 50, "number", "Gauge width of arc");
-    Gauge.prototype.publish("show_labels", true, "boolean", "Show Labels");
-    Gauge.prototype.publish("show_value_label", true, "boolean", "Show Value Label");
-
-    Gauge.prototype.update = function (domNode, element) {
-        Common1D.prototype.update.apply(this, arguments);
-
-        this.c3Chart.internal.config.gauge_min = this.low();
-        this.c3Chart.internal.config.gauge_max = this.high();
-        this.c3Chart.internal.config.gauge_units = this.show_value_label() ? this.columns() : "";
-        this.c3Chart.internal.config.gauge_width = this.arc_width();
-        this.c3Chart.internal.config.gauge_label_format = this.value_format() === "Percent" ? null : function (value, ratio) { return value; };
-        this.c3Chart.internal.config.gauge_label_show = this.show_labels();
-        this.c3Chart.load({
-            columns: [[this._columns, this._data]]
-        });
-    };
-
-    return Gauge;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
         define('c3/Donut.js',["./Common2D"], factory);
     } else {
         root.c3_Donut = factory(root.c3_Common2D);
@@ -1579,6 +1529,56 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
+        define('c3/Gauge.js',["./Common1D"], factory);
+    } else {
+        root.c3_Gauge = factory(root.c3_Common1D);
+    }
+}(this, function (Common1D) {
+    function Gauge(target) {
+        Common1D.call(this);
+
+        this._class = "c3_Gauge";
+        this._type = "gauge";
+
+        var context = this;
+        this._config.data.onclick = function (d, element) {
+            var clickEvent = {};
+            clickEvent[d.id] = d.value;
+            context.click(clickEvent, d.id);
+        };
+        this._config.data.color = function (color, d) {
+            return context._palette(context._data, context._low, context._high);
+        };
+    };
+    Gauge.prototype = Object.create(Common1D.prototype);
+
+    Gauge.prototype.publish("low", 0, "number", "Gauge lower bound");
+    Gauge.prototype.publish("high", 100, "number", "Gauge higher bound");
+    Gauge.prototype.publish("value_format", "Percent", "set", "Value Display Format", ["Percent", "Value"]);
+    Gauge.prototype.publish("arc_width", 50, "number", "Gauge width of arc");
+    Gauge.prototype.publish("show_labels", true, "boolean", "Show Labels");
+    Gauge.prototype.publish("show_value_label", true, "boolean", "Show Value Label");
+
+    Gauge.prototype.update = function (domNode, element) {
+        Common1D.prototype.update.apply(this, arguments);
+
+        this.c3Chart.internal.config.gauge_min = this.low();
+        this.c3Chart.internal.config.gauge_max = this.high();
+        this.c3Chart.internal.config.gauge_units = this.show_value_label() ? this.columns() : "";
+        this.c3Chart.internal.config.gauge_width = this.arc_width();
+        this.c3Chart.internal.config.gauge_label_format = this.value_format() === "Percent" ? null : function (value, ratio) { return value; };
+        this.c3Chart.internal.config.gauge_label_show = this.show_labels();
+        this.c3Chart.load({
+            columns: [[this._columns, this._data]]
+        });
+    };
+
+    return Gauge;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
         define('c3/Line',["./CommonND"], factory);
     } else {
         root.c3_Line = factory(root.c3_CommonND);
@@ -1593,6 +1593,25 @@
     Line.prototype = Object.create(CommonND.prototype);
 
     return Line;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('c3/Scatter.js',["./CommonND"], factory);
+    } else {
+        root.c3_Scatter = factory(root.c3_CommonND);
+    }
+}(this, function (CommonND) {
+    function Scatter(target) {
+        CommonND.call(this);
+        this._class = "c3_Scatter";
+
+        this._type = "scatter";
+    };
+    Scatter.prototype = Object.create(CommonND.prototype);
+
+    return Scatter;
 }));
 
 
@@ -1623,25 +1642,6 @@
     };
 
     return Pie;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('c3/Scatter.js',["./CommonND"], factory);
-    } else {
-        root.c3_Scatter = factory(root.c3_CommonND);
-    }
-}(this, function (CommonND) {
-    function Scatter(target) {
-        CommonND.call(this);
-        this._class = "c3_Scatter";
-
-        this._type = "scatter";
-    };
-    Scatter.prototype = Object.create(CommonND.prototype);
-
-    return Scatter;
 }));
 
 
@@ -1679,6 +1679,8 @@
         this._boundingBox = null;
 
         this.transition = new Transition(this);
+
+        this._drawStartPos = "center"; 
     };
     SVGWidget.prototype = Object.create(Widget.prototype);
 
@@ -1713,10 +1715,21 @@
             .attr("width", this._size.width)
             .attr("height", this._size.height)
         ;
-        this.pos({
-            x: this._size.width / 2,
-            y: this._size.height / 2
-        });
+        switch (this._drawStartPos) {
+            case "origin":
+                this.pos({
+                    x: 0,
+                    y: 0
+                });
+                break;
+            case "center":
+            default:
+                this.pos({
+                    x: this._size.width / 2,
+                    y: this._size.height / 2
+                });
+                break;
+        }
         return retVal;
     };
 
@@ -1993,6 +2006,191 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
+        define('common/Text.js',["./SVGWidget", "css!./Text"], factory);
+    } else {
+        root.common_Text = factory(root.common_SVGWidget);
+    }
+}(this, function (SVGWidget) {
+    function Text() {
+        SVGWidget.call(this);
+        this._class = "common_Text";
+    };
+    Text.prototype = Object.create(SVGWidget.prototype);
+    Text.prototype.publish("text", "", "string", "Display Text");
+    Text.prototype.publish("font_family", "", "string", "Font Family");
+    Text.prototype.publish("font_size", null, "number", "Font Size (px)");
+    Text.prototype.publish("anchor", "middle", "set", "Anchor Position", ["start", "middle", "end"]);
+    Text.prototype.publish("color_fill", null, "html-color", "Fill Color");
+
+    Text.prototype.testData = function () {
+        this.text("Hello\nand\nWelcome!");
+        return this;
+    }
+
+    Text.prototype.enter = function (domNode, element) {
+        SVGWidget.prototype.enter.apply(this, arguments);
+        this._textElement = element.append("text");
+    };
+
+    Text.prototype.update = function (domNode, element) {
+        SVGWidget.prototype.update.apply(this, arguments);
+        this._textElement
+            .attr("font-family", this.__meta_font_family.defaultValue !== this._font_family ? this._font_family : null)
+            .attr("font-size", this.__meta_font_size.defaultValue !== this._font_size ? this._font_size : null)
+        ;
+        var textParts = this._text.split("\n");
+        var textLine = this._textElement.selectAll("tspan").data(textParts, function (d) { return d; });
+        textLine.enter().append("tspan")
+            .attr("class", function (d, i) { return "tspan_" + i; })
+            .attr("dy", "1em")
+            .attr("x", "0")
+        ;
+        textLine
+            .style("fill", this.__meta_color_fill.defaultValue !== this._color_fill ? this._color_fill : null)
+            .text(function (d) { return d; })
+        ;
+        textLine.exit()
+            .remove()
+        ;
+
+        var bbox = { width: 0, height: 0 };
+        try {   //  https://bugzilla.mozilla.org/show_bug.cgi?id=612118
+            bbox = this._textElement.node().getBBox();
+        } catch (e) {
+        }
+        var xOffset = 0;
+        switch(this._anchor) {
+            case "start":
+                xOffset = -bbox.width / 2;
+                break;
+            case "end":
+                xOffset = bbox.width / 2;
+                break;
+        };
+        var yOffset = -(bbox.y + bbox.height / 2);
+
+        this._textElement
+            .style("text-anchor", this._anchor)
+            .attr("transform", function (d) { return "translate(" + xOffset + "," + yOffset + ")"; })
+        ;
+    };
+
+    return Text;
+}));
+
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/FAChar',["./SVGWidget", "./Text", "css!font-awesome/css/font-awesome", "css!./FAChar"], factory);
+    } else {
+        root.common_FAChar = factory(root.common_SVGWidget, root.common_Text);
+    }
+}(this, function (SVGWidget, Text) {
+    function FAChar() {
+        SVGWidget.call(this);
+        this._class = "common_FAChar";
+
+        this._text = new Text()
+            .font_family("FontAwesome")
+        ;
+    };
+    FAChar.prototype = Object.create(SVGWidget.prototype);
+    FAChar.prototype.publish("char", "", "string", "Font Awesome Item");
+    FAChar.prototype.publish("font_size", null, "number", "Font Size");
+    FAChar.prototype.publishProxy("color_fill", "_text");
+
+    FAChar.prototype.testData = function () {
+        this.char("\uf007");
+        return this;
+    }
+
+    FAChar.prototype.enter = function (domNode, element) {
+        SVGWidget.prototype.enter.apply(this, arguments);
+        this._text
+            .target(domNode)
+        ;
+    };
+
+    FAChar.prototype.update = function (domNode, element) {
+        SVGWidget.prototype.update.apply(this, arguments);
+        this._text
+            .text(this._char)
+            .scale((this.font_size() || 14) / 14) //  Scale rather than font_size to prevent Chrome glitch  ---
+            .render()
+        ;
+    };
+
+    return FAChar;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/IList',[], factory);
+    } else {
+        root.common_IList = factory();
+    }
+}(this, function () {
+    function IList() {
+    };
+
+    //  Data ---
+    IList.prototype.testData = function () {
+        var data = ["This", "is a", "list", "of some text."];
+        this.data(data);
+        return this;
+    };
+
+    //  Properties  ---
+
+    //  Events  ---
+    IList.prototype.click = function (d) {
+        console.log("Click:  " + d);
+    };
+
+    return IList;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/IMenu',[], factory);
+    } else {
+        root.common_IMenu = factory();
+    }
+}(this, function () {
+    function IMenu() {
+    };
+
+    //  Data ---
+    IMenu.prototype.testData = function () {
+        var data = ["This", "is a", "list", "of some text."];
+        this.data(data);
+        return this;
+    };
+
+    //  Properties  ---
+
+    //  Events  ---
+    IMenu.prototype.click = function (d) {
+        console.log("Click:  " + d);
+    };
+    IMenu.prototype.preShowMenu = function () {
+        console.log("preShowMenu");
+    };
+    IMenu.prototype.postHideMenu = function (d) {
+        console.log("postHideMenu");
+    };
+
+    return IMenu;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
         define('common/Shape.js',["./SVGWidget", "css!./Shape"], factory);
     } else {
         root.common_Shape = factory(root.common_SVGWidget);
@@ -2084,76 +2282,67 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('common/Text.js',["./SVGWidget", "css!./Text"], factory);
+        define('common/Icon',["./SVGWidget", "./Shape", "./FAChar", "css!./Icon"], factory);
     } else {
-        root.common_Text = factory(root.common_SVGWidget);
+        root.common_Icon = factory(root.common_SVGWidget, root.common_Shape, root.common_FAChar);
     }
-}(this, function (SVGWidget) {
-    function Text() {
+}(this, function (SVGWidget, Shape, FAChar) {
+    function Icon() {
         SVGWidget.call(this);
-        this._class = "common_Text";
-    };
-    Text.prototype = Object.create(SVGWidget.prototype);
-    Text.prototype.publish("text", "", "string", "Display Text");
-    Text.prototype.publish("font_family", "", "string", "Font Family");
-    Text.prototype.publish("font_size", null, "number", "Font Size (px)");
-    Text.prototype.publish("anchor", "middle", "set", "Anchor Position", ["start", "middle", "end"]);
-    Text.prototype.publish("color_fill", null, "html-color", "Fill Color");
+        this._class = "common_Icon";
 
-    Text.prototype.testData = function () {
-        this.text("Hello\nand\nWelcome!");
+        this._shapeWidget = new Shape();
+        this._faChar = new FAChar();
+    };
+    Icon.prototype = Object.create(SVGWidget.prototype);
+
+    Icon.prototype.publish("shape", "circle", "set", "Shape Type", ["circle", "square"]);
+    Icon.prototype.publishProxy("faChar", "_faChar", "char");
+    Icon.prototype.publishProxy("image_color_fill", "_faChar", "color_fill");
+    Icon.prototype.publish("tooltip", "", "string", "Tooltip");
+    Icon.prototype.publish("diameter", 24, "number", "Diameter");
+    Icon.prototype.publish("padding_percent", 45, "number", "Padding Percent");
+    Icon.prototype.publishProxy("shape_color_fill", "_shapeWidget", "color_fill");
+    Icon.prototype.publishProxy("shape_color_stroke", "_shapeWidget", "color_stroke");
+
+    Icon.prototype.testData = function () {
+        this._faChar.testData();
         return this;
-    }
+    };
 
-    Text.prototype.enter = function (domNode, element) {
+    Icon.prototype.intersection = function (pointA, pointB) {
+        return this._shapeWidget.intersection(pointA, pointB);
+    };
+
+    Icon.prototype.enter = function (domNode, element) {
         SVGWidget.prototype.enter.apply(this, arguments);
-        this._textElement = element.append("text");
+        this._shapeWidget
+            .target(domNode)
+            .render()
+        ;
+        this._faChar
+            .target(domNode)
+            .render()
+        ;
+        this._tooltipElement = element.append("title");
     };
 
-    Text.prototype.update = function (domNode, element) {
+    Icon.prototype.update = function (domNode, element) {
         SVGWidget.prototype.update.apply(this, arguments);
-        this._textElement
-            .attr("font-family", this.__meta_font_family.defaultValue !== this._font_family ? this._font_family : null)
-            .attr("font-size", this.__meta_font_size.defaultValue !== this._font_size ? this._font_size : null)
+        this._faChar
+            .font_size(this._diameter * (100 - this._padding_percent) / 100)
+            .render()
         ;
-        var textParts = this._text.split("\n");
-        var textLine = this._textElement.selectAll("tspan").data(textParts, function (d) { return d; });
-        textLine.enter().append("tspan")
-            .attr("class", function (d, i) { return "tspan_" + i; })
-            .attr("dy", "1em")
-            .attr("x", "0")
+        this._shapeWidget
+            .shape(this._shape)
+            .width(this._diameter)
+            .height(this._diameter)
+            .render()
         ;
-        textLine
-            .style("fill", this.__meta_color_fill.defaultValue !== this._color_fill ? this._color_fill : null)
-            .text(function (d) { return d; })
-        ;
-        textLine.exit()
-            .remove()
-        ;
-
-        var bbox = { width: 0, height: 0 };
-        try {   //  https://bugzilla.mozilla.org/show_bug.cgi?id=612118
-            bbox = this._textElement.node().getBBox();
-        } catch (e) {
-        }
-        var xOffset = 0;
-        switch(this._anchor) {
-            case "start":
-                xOffset = -bbox.width / 2;
-                break;
-            case "end":
-                xOffset = bbox.width / 2;
-                break;
-        };
-        var yOffset = -(bbox.y + bbox.height / 2);
-
-        this._textElement
-            .style("text-anchor", this._anchor)
-            .attr("transform", function (d) { return "translate(" + xOffset + "," + yOffset + ")"; })
-        ;
+        this._tooltipElement.text(this._tooltip);
     };
 
-    return Text;
+    return Icon;
 }));
 
 
@@ -2246,6 +2435,2333 @@
     };
 
     return TextBox;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/List',["d3/d3", "../common/SVGWidget", "./IList", "../common/TextBox", "css!./List"], factory);
+    } else {
+        root.common_List = factory(root.d3, root.common_SVGWidget, root.common_IList, root.common_TextBox);
+    }
+}(this, function (d3, SVGWidget, IList, TextBox) {
+    function List(target) {
+        SVGWidget.call(this);
+        IList.call(this);
+        this._class = "common_List";
+
+        this._listWidgets = {};
+    };
+    List.prototype = Object.create(SVGWidget.prototype);
+    List.prototype.implements(IList.prototype);
+
+    List.prototype.publish("anchor", "start", "set", "Anchor Position", ["", "start", "middle", "end"]);
+
+    List.prototype.update = function (domNode, element) {
+        SVGWidget.prototype.update.apply(this, arguments);
+        var context = this;
+
+        var line = element.selectAll(".line").data(this._data, function (d) { return d; });
+        line.enter().append("g")
+            .attr("class", "line")
+            .each(function (d) {
+                var newTextBox = new TextBox()
+                    .target(this)
+                    .padding_top(0)
+                    .padding_bottom(0)
+                    .padding_left(8)
+                    .padding_right(8)
+                    .text(d)
+                    .render()
+                ;
+                newTextBox.element()
+                    .on("click", function (d) {
+                        context.click(d.text());
+                    })
+                ;
+                context._listWidgets[d] = newTextBox;
+            })
+        ;
+
+        var listHeight = 0;
+        var listWidth = 0;
+        var listCount = 0;
+        for (var key in this._listWidgets) {
+            var bbox = this._listWidgets[key].getBBox();
+            listHeight += bbox.height;
+            if (listWidth < bbox.width)
+                listWidth = bbox.width;
+            ++listCount;
+        }
+        var lineHeight = listHeight / listCount;
+
+        var xPos = -listWidth / 2;
+        var yPos = -listHeight / 2;// + lineHeight / 2;
+        line
+            .each(function (d) {
+                var widget = context._listWidgets[d];
+                var bbox = widget.getBBox();
+                widget
+                    .pos({ x: 0, y: yPos + bbox.height / 2 })
+                    .anchor(context._anchor)
+                    .fixedSize({ width: listWidth, height: bbox.height })
+                    .render()
+                ;
+                yPos += bbox.height;
+            })
+        ;
+        line.exit()
+            .remove()
+            .each(function (d) {
+                delete context._listWidgets[d];
+            })
+        ;
+    };
+
+    return List;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/Menu',["./SVGWidget", "./IMenu", "./Icon", "./List", "css!./Menu"], factory);
+    } else {
+        root.common_Menu = factory(root.common_SVGWidget, root.common_IMenu, root.common_Icon, root.common_List);
+    }
+}(this, function (SVGWidget, IMenu, Icon, List) {
+    function Menu() {
+        SVGWidget.call(this);
+        IMenu.call(this);
+        this._class = "common_Menu";
+
+        this._icon = new Icon()
+            .shape("rect")
+            .diameter(14)
+        ;
+        this._list = new List();
+
+        var context = this;
+        this._list.click = function (d) {
+            d3.event.stopPropagation();
+            context.hideMenu();
+            context.click(d);
+        };
+        this._visible = false;
+    };
+    Menu.prototype = Object.create(SVGWidget.prototype);
+    Menu.prototype.implements(IMenu.prototype);
+
+    Menu.prototype.publishProxy("faChar", "_icon", null, "\uf0c9");
+    Menu.prototype.publishProxy("padding_percent", "_icon", null, 10);
+
+    Menu.prototype.toggleMenu = function () {
+        if (!this._visible) {
+            this.showMenu();
+        } else {
+            this.hideMenu();
+        }
+    };
+
+    Menu.prototype.showMenu = function () {
+        this.preShowMenu();
+        this._visible = true;
+        this._list
+            .data(this._data)
+            .render()
+        ;
+
+        var bbox = this._icon.getBBox(true);
+        var menuBBox = this._list.getBBox(true);
+        var pos = {
+            x: bbox.width / 2 - menuBBox.width / 2,
+            y: bbox.height / 2 + menuBBox.height / 2
+        };
+        this._list
+            .move(pos)
+        ;
+        var context = this;
+        d3.select("body")
+            .on("click." + this._id, function () {
+                console.log("click:  body - " + context._id)
+                if (context._visible) {
+                    context.hideMenu();
+                }
+            })
+        ;
+    };
+
+    Menu.prototype.hideMenu = function () {
+        d3.select("body")
+            .on("click." + this._id, null)
+        ;
+        this._visible = false;
+        this._list
+            .data([])
+            .render()
+        ;
+        this.postHideMenu();
+    };
+
+    Menu.prototype.testData = function () {
+        this
+            .data(["Menu A", "And B", "a longer C"])
+        ;
+        return this;
+    }
+
+    Menu.prototype.enter = function (domNode, element) {
+        SVGWidget.prototype.enter.apply(this, arguments);
+
+        this._icon
+            .target(domNode)
+            .render()
+        ;
+
+        this._list
+            .target(domNode)
+            .render()
+        ;
+
+        var context = this;
+        this._icon.element()
+            .on("click", function (d) {
+                d3.event.stopPropagation();
+                context.toggleMenu();
+            })
+        ;
+    };
+
+    Menu.prototype.update = function (domNode, element) {
+        SVGWidget.prototype.update.apply(this, arguments);
+        element
+            .classed("disabled", this._data.length === 0)
+        ;
+
+        this._icon
+            .faChar(this.faChar())
+            .padding_percent(this.padding_percent())
+            .render()
+        ;
+    };
+
+    return Menu;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/Surface.js',["./SVGWidget", "./Icon", "./Shape", "./Text", "./FAChar", "./Menu", "css!./Surface"], factory);
+    } else {
+        root.common_Surface = factory(root.common_SVGWidget, root.common_Icon, root.common_Shape, root.common_Text, root.common_FAChar, root.common_Menu);
+    }
+}(this, function (SVGWidget, Icon, Shape, Text, FAChar, Menu) {
+    function Surface() {
+        SVGWidget.call(this);
+        this._class = "common_Surface";
+
+        this._menuPadding = 2;
+        this._icon = new Icon()
+            .faChar("\uf07b")
+            .padding_percent(50)
+        ;
+        this._container = new Shape()
+            .class("container")
+            .shape("rect")
+        ;
+        this._titleRect = new Shape()
+            .class("title")
+            .shape("rect")
+        ;
+        this._text = new Text()
+            .class("title")
+        ;
+        this._menu = new Menu()
+            .padding_percent(0)
+        ;
+        var context = this;
+        this._menu.preShowMenu = function () {
+            if (context._content && context._content.hasOverlay()) {
+                context._content.visible(false);
+            }
+        }
+        this._menu.postHideMenu = function () {
+            if (context._content && context._content.hasOverlay()) {
+                context._content.visible(true);
+            }
+        }
+
+        this._showContent = true;
+        this._content = null;
+    };
+    Surface.prototype = Object.create(SVGWidget.prototype);
+
+    Surface.prototype.publish("show_title", true, "boolean", "Show Title");
+    Surface.prototype.publish("title", "", "string", "Title");
+    Surface.prototype.publishProxy("title_font_size", "_text", "font_size");
+    Surface.prototype.publish("show_icon", true, "boolean", "Show Title");
+    Surface.prototype.publishProxy("icon_faChar", "_icon", "faChar");
+    Surface.prototype.publishProxy("icon_shape", "_icon", "shape");
+    //Surface.prototype.publish("menu");
+    Surface.prototype.publish("content", null, "widget", "Content");
+
+    Surface.prototype.menu = function (_) {
+        if (!arguments.length) return this._menu.data();
+        this._menu.data(_);
+        return this;
+    };
+
+    Surface.prototype.showContent = function (_) {
+        if (!arguments.length) return this._showContent;
+        this._showContent = _;
+        if (this._content) {
+            this._content.visible(this._showContent);
+        }
+        return this;
+    };
+
+    Surface.prototype.content = function (_) {
+        if (!arguments.length) return this._content;
+        this._content = _;
+        switch (this._content.class()) {
+            case "bar":
+                this.icon_faChar("\uf080")
+                break;
+            case "bubble":
+                this.icon_faChar("\uf192")
+                break;
+            case "pie":
+                this.icon_faChar("\uf200")
+                break;
+            case "table":
+                this.icon_faChar("\uf0ce")
+                break;
+        }
+
+        return this;
+    };
+
+    Surface.prototype.testData = function () {
+        this.title("Hello and welcome!");
+        this.menu(["aaa", "bbb", "ccc"]);
+        return this;
+    }
+
+    Surface.prototype.enter = function (_domNode, _element) {
+        SVGWidget.prototype.enter.apply(this, arguments);
+        var element = _element.append("g").attr("class", "frame");
+        var domNode = element.node();
+        this._clipRect = element.append("defs").append("clipPath")
+            .attr("id", this.id() + "_clip")
+            .append("rect")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", this._size.width)
+                .attr("height", this._size.height)
+        ;
+        this._titleRect
+            .target(domNode)
+            .render()
+            .display(this._show_title && this._show_icon)
+        ;
+        this._icon
+            .target(domNode)
+            .render()
+        ;
+        var menuViz = false;
+        this._menu
+            .target(_domNode)
+        ;
+        this._text
+            .target(domNode)
+        ;
+        this._container
+            .target(domNode)
+        ;
+    };
+
+    Surface.prototype.update = function (domNode, element) {
+        SVGWidget.prototype.update.apply(this, arguments);
+
+        this._icon
+            .display(this._show_title && this._show_icon)
+            .render()
+        ;
+        this._menu
+            .render()
+        ;
+        this._text
+            .text(this._title)
+            .display(this._show_title)
+            .render()
+        ;
+        var iconClientSize = this._show_icon ? this._icon.getBBox(true) : {width:0, height: 0};
+        var textClientSize = this._text.getBBox(true);
+        var menuClientSize = this._menu.getBBox(true);
+        var titleRegionHeight = Math.max(iconClientSize.height, textClientSize.height, menuClientSize.height);
+        var yTitle = (-this._size.height + titleRegionHeight) / 2;
+
+        var titleTextHeight = Math.max(textClientSize.height, menuClientSize.height);
+
+        var topMargin = titleRegionHeight <= titleTextHeight ? 0 : (titleRegionHeight - titleTextHeight) / 2;
+        var leftMargin = topMargin;
+
+        this._titleRect
+            .pos({ x: leftMargin, y: yTitle })
+            .width(this._size.width - leftMargin * 2)
+            .height(titleTextHeight)
+            .display(this._show_title)
+            .render()
+        ;
+        this._icon
+            .move({ x: -this._size.width / 2 + iconClientSize.width / 2, y: yTitle })
+        ;
+        this._menu
+            .move({ x: this._size.width / 2 - menuClientSize.width / 2 - this._menuPadding, y: yTitle })
+        ;
+        this._text
+            .move({ x: (iconClientSize.width / 2 - menuClientSize.width / 2) / 2, y: yTitle })
+        ;
+        if (this._show_title) {
+            this._container
+                .pos({ x: leftMargin / 2, y: titleRegionHeight / 2 - topMargin / 2 })
+                .width(this._size.width - leftMargin)
+                .height(this._size.height - titleRegionHeight + topMargin)
+                .render()
+            ;
+        } else {
+            this._container
+                .pos({ x: 0, y: 0 })
+                .width(this._size.width)
+                .height(this._size.height)
+                .render()
+            ;
+        }
+
+        if (this._showContent) {
+            var xOffset = leftMargin;
+            var yOffset = titleRegionHeight - topMargin;
+            var context = this;
+            var content = element.selectAll(".content").data(this._content ? [this._content] : [], function (d) { return d._id; });
+            content.enter().append("g")
+                .attr("class", "content")
+                .attr("clip-path", "url(#" + this.id() + "_clip)")
+                .each(function (d) {
+                    d.target(this);
+                })
+            ;
+            content
+                .each(function (d) {
+                    var padding = {
+                        left: 4,
+                        top: 4,
+                        right: 4,
+                        bottom: 4
+                    };
+                    d
+                        .pos({ x: xOffset / 2, y: yOffset / 2 })
+                        .size({
+                            width: context._size.width - xOffset - (padding.left + padding.right),
+                            height: context._size.height - yOffset - (padding.top + padding.bottom)
+                        })
+                    ;
+                })
+            ;
+            if (this._content) {
+                this._clipRect
+                    .attr("x", -this._size.width / 2 + xOffset)
+                    .attr("y", -this._size.height / 2 + yOffset)
+                    .attr("width", this._size.width - xOffset)
+                    .attr("height", this._size.height - yOffset)
+                ;
+            }
+            content.exit().transition()
+                .each(function (d) { d.target(null); })
+                .remove()
+            ;
+        }
+
+        this._menu.element().node().parentNode.appendChild(this._menu.element().node());
+    };
+
+    Surface.prototype.exit = function (domNode, element) {
+        if (this._content) {
+            this._content.target(null);
+        }
+        SVGWidget.prototype.exit.apply(this, arguments);
+    };
+
+    Surface.prototype.render = function (callback) {
+        if (!this._content) {
+            SVGWidget.prototype.render.apply(this, arguments);
+        }
+        SVGWidget.prototype.render.call(this);
+        var context = this;
+        if (this._content) {
+            this._content.render(function (contentWidget) {
+                if (callback) {
+                    callback(context);
+                }
+            });
+        }
+        return this;
+    }
+
+    Surface.prototype.intersection = function (pointA, pointB) {
+        var hits = [];
+        var i1 = this._icon.intersection(pointA, pointB, this._pos);
+        if (i1) {
+            hits.push({i: i1, d: this.distance(i1, pointB)});
+        }
+        var i2 = this._titleRect.intersection(pointA, pointB);
+        if (i2) {
+            hits.push({i: i2, d: this.distance(i2, pointB)});
+        }
+        var i3 = this._container.intersection(pointA, pointB);
+        if (i3) {
+            hits.push({i: i3, d: this.distance(i3, pointB)});
+        }
+        var nearest = null;
+        hits.forEach(function (item) {
+            if (nearest === null || nearest.d > item.d) {
+                nearest = item;
+            }
+        });
+        return nearest && nearest.i ? nearest.i : null;
+    };
+
+    return Surface;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('common/ResizeSurface',["./Surface", "css!./ResizeSurface"], factory);
+    } else {
+        root.common_ResizeSurface = factory(root.common_Surface);
+    }
+}(this, function (Surface) {
+    function ResizeSurface() {
+        Surface.call(this);
+
+        this.handleWidth = 8;
+        this.handles = [{ loc: "NW" }, { loc: "N" }, { loc: "NE" }, { loc: "E" }, { loc: "SE" }, { loc: "S" }, { loc: "SW" }, { loc: "W" }];
+
+        this._allowResize = true;
+
+        var context = this;
+        this.dispatch = d3.dispatch("sizestart", "size", "sizeend");
+        this.drag = d3.behavior.drag()
+            .origin(function (d) { return d; })
+            .on("dragstart", function (d) {
+                context.dispatch.sizestart(context, d.loc);
+                if (context._allowResize) {
+                    d3.event.sourceEvent.stopPropagation();
+                    context._dragHandlePos = { x: d.x, y: d.y };
+                    context._dragStartPos = context.pos();
+                    context._dragStartSize = context.size();
+                    context._prevPosSize = {
+                        x: context._dragStartPos.x,
+                        y: context._dragStartPos.y,
+                        width: context._dragStartSize.width,
+                        height: context._dragStartSize.height
+                    }
+                    context._textPosSize = context._text.getBBox(true);
+                    context._iconPosSize = context._icon.getBBox(true);
+                    context.showContent(false);
+                }
+            })
+            .on("drag", function (d) {
+                if (context._allowResize) {
+                    d3.event.sourceEvent.stopPropagation();
+                    var _dx = d3.event.x - context._dragHandlePos.x;
+                    var _dy = d3.event.y - context._dragHandlePos.y;
+                    var delta = { x: 0, y: 0, w: 0, h: 0 };
+                    switch (d.loc) {
+                        case "NW":
+                            delta.x = _dx / 2;
+                            delta.w = -_dx;
+                        case "N":
+                            delta.y = _dy / 2;
+                            delta.h = -_dy;
+                            break;
+                        case "NE":
+                            delta.y = _dy / 2;
+                            delta.h = -_dy;
+                        case "E":
+                            delta.x = _dx / 2;
+                            delta.w = _dx;
+                            break;
+                        case "SE":
+                            delta.x = _dx / 2;
+                            delta.w = _dx;
+                        case "S":
+                            delta.y = _dy / 2;
+                            delta.h = _dy;
+                            break;
+                        case "SW":
+                            delta.y = _dy / 2;
+                            delta.h = _dy;
+                        case "W":
+                            delta.x = _dx / 2;
+                            delta.w = -_dx;
+                            break;
+                    }
+                    var posSize = {
+                        x: context._dragStartPos.x + delta.x,
+                        y: context._dragStartPos.y + delta.y,
+                        width: context._dragStartSize.width + delta.w,
+                        height: context._dragStartSize.height + delta.h
+                    };
+                    if (posSize.width < context._iconPosSize.width * 2 + context._textPosSize.width) {
+                        posSize.x = context._prevPosSize.x;
+                        posSize.width = context._prevPosSize.width;
+                    }
+                    if (posSize.height < context._textPosSize.height + 48) {
+                        posSize.y = context._prevPosSize.y;
+                        posSize.height = context._prevPosSize.height;
+                    }
+                    context
+                        .pos({ x: posSize.x, y: posSize.y }, false, false)
+                        .size({ width: posSize.width, height: posSize.height })
+                        .render()
+                        .getBBox(true)
+                    ;
+                    context.dispatch.size(context, d.loc);
+                    context._prevPosSize = posSize;
+                }
+            })
+            .on("dragend", function (d) {
+                if (context._allowResize) {
+                    d3.event.sourceEvent.stopPropagation();
+                    context
+                        .showContent(true)
+                        .render()
+                    ;
+                    context._container.getBBox(true);
+                    context._titleRect.getBBox(true);
+                    context.dispatch.sizeend(context, d.loc);
+                }
+            })
+        ;
+    };
+    ResizeSurface.prototype = Object.create(Surface.prototype);
+
+    ResizeSurface.prototype.allowResize = function (_) {
+        if (!arguments.length) return this._allowResize;
+        this._allowResize = _;
+        return this;
+    };
+
+    ResizeSurface.prototype.move = function (_) {
+        var retVal = Surface.prototype.move.apply(this, arguments);
+        this.updateHandles(this._domNode, this._element);
+        return retVal;
+    };
+
+    ResizeSurface.prototype.update = function (domNode, element) {
+        Surface.prototype.update.apply(this, arguments);
+        this.updateHandles(domNode, element);
+    };
+
+    ResizeSurface.prototype.updateHandles = function (domNode, element) {
+        var sizeHandles = this._parentElement.selectAll("rect").data(this.handles, function (d) { return d.loc; });
+        sizeHandles.enter().append("rect")
+            .attr("class", function (d) { return "resize" + d.loc; })
+            .call(this.drag)
+        ;
+
+        var l = this._pos.x + this._container._pos.x - this._container.width() / 2;
+        var t = this._pos.y + this._titleRect._pos.y - this._titleRect.height() / 2;
+        var r = this._pos.x + this._container._pos.x + this._container.width() / 2;
+        var b = this._pos.y + this._container._pos.y + this._container.height() / 2;
+        var w = r - l;
+        var h = b - t;
+        var context = this;
+        sizeHandles
+            .each(function (d) {
+                switch (d.loc) {
+                    case "NW":
+                        d.x = l - context.handleWidth / 2;
+                        d.y = t - context.handleWidth / 2;
+                        d.width = context.handleWidth;
+                        d.height = context.handleWidth;
+                        break;
+                    case "N":
+                        d.x = l + context.handleWidth / 2;
+                        d.y = t - context.handleWidth / 2;
+                        d.width = w - context.handleWidth;
+                        d.height = context.handleWidth;
+                        break;
+                    case "NE":
+                        d.x = r - context.handleWidth / 2;
+                        d.y = t - context.handleWidth / 2;
+                        d.width = context.handleWidth;
+                        d.height = context.handleWidth;
+                        break;
+                    case "E":
+                        d.x = r - context.handleWidth / 2;
+                        d.y = t + context.handleWidth / 2;
+                        d.width = context.handleWidth;
+                        d.height = h - context.handleWidth;
+                        break;
+                    case "SE":
+                        d.x = r - context.handleWidth / 2;
+                        d.y = b - context.handleWidth / 2;
+                        d.width = context.handleWidth;
+                        d.height = context.handleWidth;
+                        break;
+                    case "S":
+                        d.x = l + context.handleWidth / 2;
+                        d.y = b - context.handleWidth / 2;
+                        d.width = w - context.handleWidth;
+                        d.height = context.handleWidth;
+                        break;
+                    case "SW":
+                        d.x = l - context.handleWidth / 2;
+                        d.y = b - context.handleWidth / 2;
+                        d.width = context.handleWidth;
+                        d.height = context.handleWidth;
+                        break;
+                    case "W":
+                        d.x = l - context.handleWidth / 2;
+                        d.y = t + context.handleWidth / 2;
+                        d.width = context.handleWidth;
+                        d.height = h - context.handleWidth;
+                        break;
+                }
+                d3.select(this)
+                    .attr("x", d.x)
+                    .attr("y", d.y)
+                    .attr("width", d.width)
+                    .attr("height", d.height)
+                ;
+            })
+        ;
+    };
+
+    return ResizeSurface;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('chart/Bubble.js',["d3/d3", "../common/SVGWidget", "./I2DChart", "../common/Text", "../common/FAChar", "css!./Bubble"], factory);
+    } else {
+        root.chart_Bubble = factory(root.d3, root.common_SVGWidget, root.chart_I2DChart, root.common_Text, root.common_FAChar);
+    }
+}(this, function (d3, SVGWidget, I2DChart, Text, FAChar) {
+    function Bubble(target) {
+        SVGWidget.call(this);
+        I2DChart.call(this);
+        this._class = "chart_Bubble";
+
+        this.labelWidgets = {};
+
+        this.d3Pack = d3.layout.pack()
+            .sort(function (a, b) { return a < b ? -1 : a > b ? 1 : 0; })
+            .size([this.width(), this.height()])
+            .value(function (d) { return d[1]; })
+        ;
+    };
+    Bubble.prototype = Object.create(SVGWidget.prototype);
+    Bubble.prototype.implements(I2DChart.prototype);
+
+    Bubble.prototype.publish("paletteID", "default", "set", "Palette ID", Bubble.prototype._palette.switch());
+
+    Bubble.prototype.size = function (_) {
+        var retVal = SVGWidget.prototype.size.apply(this, arguments);
+        if (arguments.length) {
+            this.d3Pack
+                .size([this.width(), this.height()])
+            ;
+        }
+        return retVal;
+    };
+
+    Bubble.prototype.update = function (domNode, element) {
+        var context = this;
+
+        this._palette = this._palette.switch(this._paletteID);
+        var node = element.selectAll(".node")
+            .data(this._data.length ? this.d3Pack.nodes({ children: this.cloneData() }).filter(function (d) { return !d.children; }) : [], function (d) { return d[0]; })
+        ;
+
+        //  Enter  ---
+        node.enter().append("g")
+            .attr("class", "node")
+            .attr("opacity", 0)
+            .on("click", function (d) {
+                context.click(context.rowToObj(d), context._columns[1]);
+            })
+            .each(function (d) {
+                var element = d3.select(this);
+                element.append("circle")
+                    .attr("r", function (d) { return d.r; })
+                    .append("title")
+                ;
+                if (d.__viz_faChar) {
+                    context.labelWidgets[d[0]] = new FAChar()
+                        .char(d.__viz_faChar)
+                        .target(this)
+                        .render()
+                    ;
+                } else {
+                    context.labelWidgets[d[0]] = new Text()
+                        .text(d[0])
+                        .target(this)
+                        .render()
+                    ;
+                }
+            })
+        ;
+
+        //  Update  ---
+        node.transition()
+            .attr("opacity", 1)
+            .each(function (d) {
+                var element = d3.select(this);
+                var pos = { x: d.x - context._size.width / 2, y: d.y - context._size.height / 2 }
+                element.select("circle").transition()
+                    .attr("transform", function (d) { return "translate(" + pos.x + "," + pos.y + ")"; })
+                    .style("fill", function (d) { return context._palette(d[0]); })
+                    .attr("r", function (d) { return d.r; })
+                    .select("title")
+                        .text(function (d) { return d[0] + " (" + d[1] + ")"; })
+                ;
+                if (d.__viz_faChar) {
+                    context.labelWidgets[d[0]]
+                        .pos(pos)
+                        .render()
+                    ;
+                } else {
+                    var label = d[0];
+                    var labelWidth = context.labelWidgets[d[0]].getBBox().width;
+                    if (d.r * 2 < 16) {
+                        label = "";
+                    } else if (d.r * 2 < labelWidth) {
+                        label = label[0] + "...";
+                    }
+                    context.labelWidgets[d[0]]
+                        .pos(pos)
+                        .text(label)
+                        .render()
+                    ;
+                }
+            })
+        ;
+
+        //  Exit  ---
+        node.exit().transition()
+            .style("opacity", 0)
+            .remove()
+        ;
+    };
+
+    return Bubble;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('chart/XYAxis.js',["d3/d3", "../common/SVGWidget"], factory);
+    } else {
+        root.chart_XYAxis = factory(root.d3, root.common_SVGWidget);
+    }
+}(this, function (d3, SVGWidget) {
+    function XYAxis(target) {
+        SVGWidget.call(this);
+
+        this._xScale = "";
+        this.parseDate = d3.time.format("%Y-%m-%d").parse;
+    };
+    XYAxis.prototype = Object.create(SVGWidget.prototype);
+
+    XYAxis.prototype.xScale = function (_) {
+        if (!arguments.length) return this._xScale;
+        this._xScale = _;
+        return this;
+    };
+
+    XYAxis.prototype.enter = function (domNode, element) {
+        var context = this;
+
+        this.x = null;
+        switch (this._xScale) {
+            case "DATE":
+                this.x = d3.time.scale();
+                break;
+            default:
+                this.x = d3.scale.ordinal();
+                break;
+        }
+        this.y = d3.scale.linear();
+
+        this.xAxis = d3.svg.axis()
+            .orient("bottom")
+            .scale(this.x)
+        ;
+
+        this.yAxis = d3.svg.axis()
+            .orient("left")
+            .scale(this.y)
+            .tickFormat(d3.format(".2s"))
+            .ticks(10)
+        ;
+
+        this.recenterG = element.append("g");
+        this.svg = this.recenterG.append("g");
+        this.svgData = this.svg.append("g");
+        this.svgXAxis = this.svg.append("g")
+            .attr("class", "x axis")
+        ;
+        this.svgYAxis = this.svg.append("g")
+            .attr("class", "y axis")
+        ;
+    };
+
+    XYAxis.prototype.calcMargin = function (domNode, element) {
+        var context = this;
+        var margin = { top: 8, right: 0, bottom: 24, left: 40 };
+        var width = this.width() - margin.left - margin.right,
+            height = this.height() - margin.top - margin.bottom;
+
+        var test = element.append("g");
+
+        var svgXAxis = test.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(this.xAxis)
+        ;
+        var svgYAxis = test.append("g")
+            .attr("class", "y axis")
+            .call(this.yAxis)
+        ;
+
+        var x_bbox = svgXAxis.node().getBBox();
+        var y_bbox = svgYAxis.node().getBBox();
+        margin.bottom = x_bbox.height;
+        margin.left = y_bbox.width;
+        test.remove();
+        return margin;
+    }
+
+    XYAxis.prototype.update = function (domNode, element) {
+        var context = this;
+
+        //  Update Domain  ---
+        switch (this._xScale) {
+            case "DATE":
+                var min = d3.min(this._data, function (data) {
+                    return d3.min(data, function (d) { return context.parseDate(d[0]); });
+                });
+                var max = d3.max(this._data, function (data) {
+                    return d3.max(data, function (d) { return context.parseDate(d[0]); });
+                });
+                this.x.domain([min, max]);
+                break;
+            default:
+                this.x.domain(this._data.map(function (d) { return d[0]; }));
+                break;
+        }
+        var min = d3.min(this._data, function (data) {
+            return d3.min(data.filter(function (cell, i) { return i > 0 && context._columns[i] && context._columns[i].indexOf("__") !== 0; }), function (d) { return d; });
+        });
+        var max = d3.max(this._data, function (data) {
+            return d3.max(data.filter(function (row, i) { return i > 0 && context._columns[i] && context._columns[i].indexOf("__") !== 0; }), function (d) { return d; });
+        });
+        var newMin = min - (max - min) / 10;
+        if (min >= 0 && newMin < 0)
+            newMin = 0;
+        this.y.domain([newMin, max]);
+
+        //  Calculate Range  ---
+        if (this.x.rangeRoundBands) {
+            this.x.rangeRoundBands([0, this.width()], .1);
+        } else if (this.x.rangeRound) {
+            this.x.range([0, this.width()]);
+        }
+        this.y.range([this.height(), 0]);
+        var margin = this.calcMargin(domNode, element);
+
+        //  Update Range  ---
+        var width = this.width() - margin.left - margin.right,
+            height = this.height() - margin.top - margin.bottom;
+
+        if (this.x.rangeRoundBands) {
+            this.x.rangeRoundBands([0, width], .1);
+        } else if (this.x.rangeRound) {
+            this.x.range([0, width]);
+        }
+        this.y.range([height, 0]);
+
+        //  Render  ---
+        this.svg.transition()
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        ;
+
+        this.svgXAxis.transition()
+            .attr("transform", "translate(0," + height + ")")
+            .call(this.xAxis)
+        ;
+
+        this.svgYAxis.transition()
+            .call(this.yAxis)
+        ;
+
+        this.updateChart(domNode, element, margin, width, height);
+
+        this.recenterG.transition()
+            .attr("transform", "translate(" + -this.width() / 2 + "," + -this.height() / 2 + ")")
+        ;
+    };
+
+    XYAxis.prototype.updateChart = function (domNode, element, margin, width, height) {
+    };
+
+    return XYAxis;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('chart/Column.js',["d3/d3", "./XYAxis", "./I2DChart", "css!./Column"], factory);
+    } else {
+        root.chart_Column = factory(root.d3, root.chart_XYAxis, root.chart_I2DChart);
+    }
+}(this, function (d3, XYAxis, I2DChart) {
+    function Column(target) {
+        XYAxis.call(this);
+        I2DChart.call(this);
+        this._class = "chart_Column";
+    };
+    Column.prototype = Object.create(XYAxis.prototype);
+    Column.prototype.implements(I2DChart.prototype);
+
+    Column.prototype.publish("paletteID", "default", "set", "Palette ID", Column.prototype._palette.switch());
+
+    Column.prototype.updateChart = function (domNode, element, margin, width, height) {
+        var context = this;
+
+        this._palette = this._palette.switch(this._paletteID);
+
+        var column = this.svgData.selectAll(".columnRect")
+            .data(this._data)
+        ;
+
+        var title = column
+          .enter().append("rect")
+            .attr("class", "columnRect")
+            .on("click", function (d) {
+                context.click(context.rowToObj(d), context._columns[1]);
+            })
+            .append("title")
+        ;
+
+        column.transition()
+            .attr("class", "columnRect")
+            .attr("x", function (d) { return context.x(d[0]); })
+            .attr("width", this.x.rangeBand())
+            .attr("y", function (d) { return context.y(d[1]); })
+            .attr("height", function (d) { return height - context.y(d[1]); })
+            .style("fill", function (d) { return context._palette(d[0]); })
+        ;
+
+        title
+            .text(function (d) { return d[0] + " (" + d[1] + ")"; })
+        ;
+
+        column.exit().transition()
+            .remove()
+        ;
+    };
+
+    return Column;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('other/Persist.js',["require"], factory);
+    } else {
+        root.other_Persist = factory(root.common_Widget.prototype.require);
+    }
+}(this, function (require) {
+    return {
+        discover: function (widget, includePrivate) {
+            var retVal = [];
+            for (var key in widget) {
+                if (key.indexOf("__meta_") >= 0) {
+                    var item = widget;
+                    var meta = item[key];
+                    if (meta.type || includePrivate) {
+                        while (meta.type === "proxy") {
+                            item = item[meta.proxy];
+                            meta = item["__meta_" + meta.method];
+                        }
+                        if (meta.id !== widget[key].id) {
+                            meta = JSON.parse(JSON.stringify(meta));  //  Clone meta so we can safely replace the id.
+                            meta.id = widget[key].id;
+                        }
+                        retVal.push(meta);
+                    }
+                }
+            }
+            return retVal;
+        },
+
+        serializeToObject: function (widget, properties, includeData) {
+            var retVal = {
+                __version: 3,
+                __class: widget._class,
+                __id: widget._id,
+                __properties: {}
+            };
+            if (properties && properties.length) {
+                properties.forEach.forEach(function (item) {
+                    if (widget[item.id + "_modified"]()) {
+                        retVal.__properties[item] = widget[item]();
+                    }
+                });
+            } else {
+                this.discover(widget, true).forEach(function (item) {
+                    if (widget[item.id + "_modified"]()) {
+                        switch (item.type) {
+                            case "widget":
+                                retVal.__properties[item.id] = this.serializeToObject(widget[item.id](), null, includeData);
+                                break;
+                            case "widgetArray":
+                                retVal.__properties[item.id] = [];
+                                var widgetArray = widget[item.id]();
+                                widgetArray.forEach(function (widget, idx) {
+                                    retVal.__properties[item.id].push(this.serializeToObject(widget, null, includeData));
+                                }, this);
+                                break;
+                            default:
+                                retVal.__properties[item.id] = widget[item.id]();
+                                break;
+                        }
+                    }
+                }, this);
+            }
+            if (widget._class === "marshaller_Graph") {
+                var vertices = widget.data().vertices;
+                if (vertices) {
+                    this.__vertices = vertices.map(function (item) {
+                        return this.serializeToObject(item, null, includeData);
+                    }, this);
+                }
+            }
+            if (includeData) {
+                retVal.__data = {};
+                retVal.__data.columns = widget.columns();
+                retVal.__data.data = widget.data();
+            }
+            return retVal;
+        },
+
+        serialize: function (widget, properties, includeData) {
+            return JSON.stringify(this.serializeToObject(widget, properties, includeData));
+        },
+
+        deserialize: function (state, callback) {
+            var context = this;
+            var path = "../" + state.__class.split("_").join("/");
+            require([path], function (Widget) {
+                var widget = new Widget();
+                if (state instanceof String) {
+                    state = JSON.parse(state)
+                }
+                if (state.__id.indexOf("_w") !== 0) {
+                    widget._id = state.__id;
+                }
+                var widgets = [];
+                var createCount = 0;
+                for (var key in state.__properties) {
+                    if (widget["__meta_" + key]) {
+                        switch (widget["__meta_" + key].type) {
+                            case "widget":
+                                ++createCount;
+                                context.deserialize(state.__properties[key], function (widgetItem) {
+                                    widget[key](widgetItem);
+                                    --createCount;
+                                });
+                                break;
+                            case "widgetArray":
+                                ++createCount;
+                                var widgetStateArray = state.__properties[key];
+                                var widgetArray = [];
+                                widgetArray.length = widgetStateArray.length;
+                                var arrayCreateCount = 0;
+                                widgetStateArray.forEach(function (widgetState, idx) {
+                                    ++arrayCreateCount;
+                                    context.deserialize(widgetState, function (widgetItem) {
+                                        widgetArray[idx] = widgetItem;
+                                        --arrayCreateCount;
+                                    });
+                                    var arrayIntervalHandler = setInterval(function () {
+                                        if (arrayCreateCount <= 0) {
+                                            clearInterval(arrayIntervalHandler);
+                                            arrayCreateCount = undefined;
+                                            widget[key](widgetArray);
+                                            --createCount;
+                                        }
+                                    }, 20);
+                                });
+                                break;
+                            default:
+                                widget[key](state.__properties[key]);
+                                break;
+                        }
+                    } else {
+                        var d = 0;
+                    }
+                }
+                var intervalHandler = setInterval(function () {
+                    if (createCount <= 0) {
+                        clearInterval(intervalHandler);
+                        createCount = undefined;
+                        if (state.__data) {
+                            for (var key in state.__data) {
+                                widget[key](state.__data[key]);
+                            }
+                        }
+                        callback(widget);
+                    }
+                }, 20);
+            });
+        },
+
+        create: function (state, callback) {
+            if (typeof state === "string") {
+                state = JSON.parse(state)
+            }
+            this.deserialize(state, callback);
+        },
+
+        clone: function (widget, callback) {
+            this.create(this.serializeToObject(widget, [], true), callback);
+        }
+    };
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('chart/MultiChart',["d3/d3", "../common/SVGWidget", "./INDChart", "../other/Persist", "require"], factory);
+    } else {
+        root.chart_MultiChart = factory(root.d3, root.common_SVGWidget, root.chart_INDChart, root.other_Persist, root.require);
+    }
+}(this, function (d3, SVGWidget, INDChart, Persist, require) {
+    var _2dChartTypes = [
+        { id: "BUBBLE", display: "Bubble", widgetClass: "chart_Bubble" },
+        { id: "COLUMN", display: "Column", widgetClass: "chart_Column" },
+        { id: "PIE", display: "Pie", widgetClass: "chart_Pie" },
+        { id: "GOOGLE_PIE", display: "Pie (Google)", widgetClass: "google_Pie" },
+        { id: "C3_PIE", display: "Pie (C3)", widgetClass: "c3_Pie" },
+        { id: "C3_DONUT", display: "Donut (C3)", widgetClass: "c3_Donut" },
+        { id: "WORD_CLOUD", display: "Word Cloud", widgetClass: "other_WordCloud" }
+    ];
+    var _multiChartTypes = [
+        { id: "GOOGLE_BAR", display: "Bar (Google)", widgetClass: "google_Bar" },
+        { id: "GOOGLE_COLUMN", display: "Column (Google)", widgetClass: "google_Column" },
+        { id: "LINE", display: "Line", widgetClass: "chart_Line" },
+        { id: "GOOGLE_LINE", display: "Line (Google)", widgetClass: "google_Line" },
+        { id: "C3_LINE", display: "Line (C3)", widgetClass: "c3_Line" },
+        { id: "C3_BAR", display: "Bar (C3)", widgetClass: "c3_Bar" },
+        { id: "C3_COLUMN", display: "Column (C3)", widgetClass: "c3_Column" },
+        { id: "C3_STEP", display: "Step (C3)", widgetClass: "c3_Step" },
+        { id: "C3_AREA", display: "Area (C3)", widgetClass: "c3_Area" },
+        { id: "C3_SCATTER", display: "Scatter (C3)", widgetClass: "c3_Scatter" }
+    ];
+    var _anyChartTypes = [
+        { id: "TABLE", display: "Table", widgetClass: "other_Table" }
+    ];
+    var _allChartTypes = _2dChartTypes.concat(_multiChartTypes.concat(_anyChartTypes));
+
+    function MultiChart() {
+        SVGWidget.call(this);
+        INDChart.call(this);
+        this._class = "chart_MultiChart";
+
+        this._chart = null;
+
+        this._2dChartTypes = _2dChartTypes;
+        this._multiChartTypes = _multiChartTypes;
+        this._anyChartTypes = _anyChartTypes;
+        this._allChartTypes = _allChartTypes;
+
+        this._allCharts = {};
+        this._allChartTypes.forEach(function (item) {
+            var newItem = JSON.parse(JSON.stringify(item));
+            newItem.widget = null;
+            this._allCharts[item.id] = newItem;
+            this._allCharts[item.display] = newItem;
+            this._allCharts[item.widgetClass] = newItem;
+        }, this);
+        //  Backward compatability until we roll our own BAR  ---
+        this._allCharts["BAR"] = this._allCharts["COLUMN"];
+    };
+    MultiChart.prototype = Object.create(SVGWidget.prototype);
+    MultiChart.prototype.implements(INDChart.prototype);
+
+    MultiChart.prototype.publish("chart_type", "BUBBLE", "set", "Chart Type", _allChartTypes.map(function (item) { return item.id; }));
+    MultiChart.prototype.publish("chart", null, "widget", "Chart");
+
+    MultiChart.prototype.columns = function (_) {
+        var retVal = SVGWidget.prototype.columns.apply(this, arguments);
+        if (arguments.length && this._chart) {
+            this._chart.columns(_);
+        }
+        return retVal;
+    };
+
+    MultiChart.prototype.data = function (_) {
+        var retVal = SVGWidget.prototype.data.apply(this, arguments);
+        if (arguments.length && this._chart) {
+            this._chart.data(_);
+        }
+        return retVal;
+    };
+
+    MultiChart.prototype.hasOverlay = function () {
+        return this._chart && this._chart.hasOverlay();
+    };
+
+    MultiChart.prototype.visible = function (_) {
+        if (!arguments.length) return this._chart.visible();
+        if (this._chart) {
+            this._chart.visible(_);
+        }
+        return this;
+    };
+
+    MultiChart.prototype.requireContent = function (chartType, callback) {
+        var retVal = this._allCharts[chartType].widget;
+        if (retVal) {
+            callback(retVal);
+            return;
+        }
+
+        var context = this;
+        var path = "../" + this._allCharts[chartType].widgetClass.split("_").join("/");
+        require([path], function (widgetClass) {
+            retVal = new widgetClass();
+            context._allCharts[chartType].widget = retVal;
+            callback(retVal);
+        });
+    };
+
+    MultiChart.prototype.switchChart = function (callback) {
+        var oldContent = this._chart;
+        var context = this;
+        this.requireContent(this._chart_type, function (newContent) {
+            if (newContent !== oldContent) {
+                var size = context.size();
+                context._chart = newContent
+                    .columns(context._columns)
+                    .data(context._data)
+                    .size(size)
+                ;
+                newContent.click = function (row, column) {
+                    context.click(row, column);
+                }
+                if (oldContent) {
+                    oldContent
+                        .data([])
+                        .size({ width: 1, height: 1 })
+                        .render()
+                    ;
+                }
+            }
+            if (callback) {
+                callback(this);
+            }
+        });
+    };
+
+    MultiChart.prototype.update = function (domNode, element) {
+        SVGWidget.prototype.update.apply(this, arguments);
+        var content = element.selectAll(".multiChart").data(this._chart ? [this._chart] : [], function (d) { return d._id; });
+        content.enter().append("g")
+            .attr("class", "multiChart")
+            .each(function (d) {
+                d.target(this);
+            })
+        ;
+
+        var size = this.size();
+        content
+            .each(function (d) {
+                d
+                    .size(size)
+                    .render()
+                ;
+            })
+        ;
+
+        content.exit().transition()
+            .each(function (d) { d.target(null); })
+            .remove()
+        ;
+    };
+
+    MultiChart.prototype.exit = function (domNode, element) {
+        if (this._chart) {
+            this._chart.target(null);
+        }
+        SVGWidget.prototype.exit.apply(this, arguments);
+    };
+
+
+    MultiChart.prototype.render = function (callback) {
+        if (this._chart_type && (!this._chart || (this._chart._class !== this._allCharts[this._chart_type].widgetClass))) {
+            var context = this;
+            var args = arguments;
+            this.switchChart(function () {
+                SVGWidget.prototype.render.apply(context, args);
+            });
+            return this;
+        }
+        return SVGWidget.prototype.render.apply(this, arguments);
+    }
+
+    return MultiChart;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('chart/Line.js',["d3/d3", "./XYAxis", "./INDChart", "css!./Line"], factory);
+    } else {
+        root.chart_Line = factory(root.d3, root.chart_XYAxis, root.chart_INDChart);
+    }
+}(this, function (d3, XYAxis, INDChart) {
+    function Line(target) {
+        XYAxis.call(this);
+        INDChart.call(this);
+        this._class = "chart_Line";
+    };
+    Line.prototype = Object.create(XYAxis.prototype);
+    Line.prototype.implements(INDChart.prototype);
+
+    Line.prototype.publish("paletteID", "default", "set", "Palette ID", Line.prototype._palette.switch());
+
+    Line.prototype.enter = function (domNode, element) {
+        XYAxis.prototype.enter.apply(this, arguments);
+        var context = this;
+    };
+
+    Line.prototype.updateChart = function (domNode, element, margin, width, height) {
+        var context = this;
+
+        this._palette = this._palette.switch(this._paletteID);
+        var d3Line = d3.svg.line()
+            .x(function (d) {
+                switch (context._xScale) {
+                    case "DATE":
+                        return context.x(context.parseDate(d[0]));
+                }
+                return context.x(d[0]) + (context.x.rangeBand ? context.x.rangeBand() / 2 : 0);
+            })
+            .y(function (d) { return context.y(d[1]); })
+        ;
+
+        var line = this.svgData.selectAll(".dataLine")
+            .data(this._columns.filter(function(d, i) {return i > 0;}))
+        ;
+
+        line.enter().append("path")
+            .attr("class", "dataLine")
+        ;
+        line
+            .style("stroke", function (d, i) {
+                return context._palette(context._columns[i + 1]);
+            })
+            .append("title")
+            .text(function(d) { return d; })
+        ;
+        line
+            .datum(function (d, i) { return context._data.map(function (row, rowIdx) { return [row[0], row[i + 1]];}); })
+            .attr("d", d3Line)
+        ;
+
+        line.exit().remove();
+    };
+
+    return Line;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('chart/MultiChartSurface',["d3/d3", "../common/ResizeSurface", "./MultiChart", "./INDChart"], factory);
+    } else {
+        root.chart_MultiChartSurface = factory(root.d3, root.common_ResizeSurface, root.chart_MultiChart, root.chart_INDChart);
+    }
+}(this, function (d3, ResizeSurface, MultiChart, INDChart) {
+    function MultiChartSurface() {
+        ResizeSurface.call(this);
+        INDChart.call(this);
+        this.class = "chart_MultiChartSurface";
+
+        this._title = "MultiChartSurface";
+        this._content = new MultiChart();
+        this._content.click = function (row, column) {
+            context.click(row, column);
+        }
+
+        var context = this;
+        this._menu.click = function (d) {
+            context._content.chart_type(d).render();
+        }
+        this.mode("all");
+    };
+    MultiChartSurface.prototype = Object.create(ResizeSurface.prototype);
+    MultiChartSurface.prototype.implements(INDChart.prototype);
+    MultiChartSurface.prototype.testData = INDChart.prototype.testData;
+
+    MultiChartSurface.prototype.publishProxy("chart_type", "_content");
+
+    MultiChartSurface.prototype.columns = function (_) {
+        if (!arguments.length) return this._content.columns();
+        this._content.columns(_);
+        return this;
+    };
+
+    MultiChartSurface.prototype.data = function (_) {
+        if (!arguments.length) return this._content.data();
+        this._content.data(_);
+        return this;
+    };
+
+    MultiChartSurface.prototype.mode = function (_) {
+        if (!arguments.length) return this._mode;
+        this._mode = _;
+        switch (this._mode) {
+            case "2d":
+                this.menu(this._content._2dChartTypes.concat(this._content._anyChartTypes).map(function (item) { return item.display; }).sort());
+                break;
+            case "multi":
+                this.menu(this._content._multiChartTypes.concat(this._content._anyChartTypes).map(function (item) { return item.display; }).sort());
+                break;
+            case "all":
+            default:
+                this.menu(this._content._allChartTypes.map(function (item) { return item.display; }).sort());
+        }
+        return this;
+    };
+
+    return MultiChartSurface;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('chart/Pie',["d3/d3", "../common/SVGWidget", "./I2DChart", "../common/Text", "../common/FAChar", "css!./Pie"], factory);
+    } else {
+        root.chart_Pie = factory(root.d3, root.common_SVGWidget, root.chart_I2DChart, root.common_Text, root.common_FAChar);
+    }
+}(this, function (d3, SVGWidget, I2DChart, Text, FAChar) {
+    function Pie(target) {
+        SVGWidget.call(this);
+        I2DChart.call(this);
+        this._class = "chart_Pie";
+
+        this._outerText = false;  //  Put label inside pie or outside (true/false)
+        this._radius = 100;       // px
+        this._innerRadius = 0;    // px
+
+        this.labelWidgets = {};
+
+        this.d3Pie = d3.layout.pie()
+            .sort(function (a, b) {
+                return a < b ? -1 : a > b ? 1 : 0;
+            })
+            .value(function (d) { return d[1]; })
+        ;
+        this.d3Arc = d3.svg.arc()
+            .outerRadius(this._radius)
+            .innerRadius(this._innerRadius)
+        ;
+    };
+    Pie.prototype = Object.create(SVGWidget.prototype);
+    Pie.prototype.implements(I2DChart.prototype);
+
+    Pie.prototype.publish("paletteID", "default", "set", "Palette ID", Pie.prototype._palette.switch());
+
+    Pie.prototype.size = function (_) {
+        var retVal = SVGWidget.prototype.size.apply(this, arguments);
+        if (arguments.length) {
+            this.radius(Math.min(this._size.width, this._size.height) / 2);
+        }
+        return retVal;
+    };
+
+    Pie.prototype.radius = function (_) {
+        if (!arguments.length) return this._radius;
+        this.d3Arc.outerRadius(_);
+        this._radius = _;
+        return this;
+    };
+
+    Pie.prototype.innerRadius = function (_) {
+        if (!arguments.length) return this._innerRadius;
+        this.d3Arc.innerRadius(_);
+        this._innerRadius = _;
+        return this;
+    };
+
+    Pie.prototype.outerText = function (_) {
+        if (!arguments.length) return this._outerText;
+        this._outerText = _;
+        return this;
+    };
+
+    Pie.prototype.intersection = function (pointA, pointB) {
+        return this.intersectCircle(pointA, pointB);
+    };
+
+    Pie.prototype.update = function (domNode, element) {
+        var context = this;
+
+        this._palette = this._palette.switch(this._paletteID);
+        var arc = element.selectAll(".arc").data(this.d3Pie(this._data), function (d) { return d.data[0]; });
+
+        //  Enter  ---
+        arc.enter().append("g")
+            .attr("class", "arc")
+            .attr("opacity", 0)
+            .on("click", function (d) {
+                context.click(context.rowToObj(d.data), context._columns[1]);
+            })
+            .each(function (d) {
+                var element = d3.select(this);
+                element.append("path")
+                    .attr("d", context.d3Arc)
+                    .append("title")
+                ;
+                if (d.data.__viz_faChar) {
+                    context.labelWidgets[d.data[0]] = new FAChar()
+                        .char(d.data.__viz_faChar)
+                        .target(this)
+                        .render()
+                    ;
+                } else {
+                    context.labelWidgets[d.data[0]] = new Text()
+                        .text(d.data[0])
+                        .target(this)
+                        .render()
+                    ;
+                }
+            })
+        ;
+
+        //  Update  ---
+        arc.transition()
+            .attr("opacity", 1)
+            .each(function (d) {
+                var pos = { x: 0, y: 1 };
+                if (context._outerText) {
+                    var xFactor = Math.cos((d.startAngle + d.endAngle - Math.PI) / 2);
+                    var yFactor = Math.sin((d.startAngle + d.endAngle - Math.PI) / 2);
+
+                    var textBBox = context.labelWidgets[d.data[0]].getBBox();
+                    var textOffset = Math.abs(xFactor) > Math.abs(yFactor) ? textBBox.width : textBBox.height;
+                    pos.x = xFactor * (context._radius + textOffset);
+                    pos.y = yFactor * (context._radius + textOffset);
+                } else {
+                    var centroid = context.d3Arc.centroid(d);
+                    pos = { x: centroid[0], y: centroid[1] };
+                }
+
+                var element = d3.select(this);
+                element.select("path").transition()
+                    .attr("d", context.d3Arc)
+                    .style("fill", function (d) { return context._palette(d.data[0]); })
+                    .select("title")
+                        .text(function (d) { return d.data[0] + " (" + d.data[1] + ")"; })
+                ;
+                context.labelWidgets[d.data[0]]
+                    .pos(pos)
+                    .render()
+                    .element()
+                        .classed("innerLabel", !context._outerText)
+                        .classed("outerLabel", context._outerText)
+                ;
+            })
+        ;
+
+        //  Exit  ---
+        arc.exit().transition()
+            .style("opacity", 0)
+            .remove()
+        ;
+
+        //  Label Lines  ---
+        if (context._outerText) {
+            var lines = element.selectAll("line").data(this.d3Pie(this._data), function (d) { return d.data[0]; });
+            var r = this.radius();
+            lines.enter().append("line")
+              .attr("x1", 0)
+              .attr("x2", 0)
+              .attr("y1", -this._radius - 3)
+              .attr("y2", -this._radius - 8)
+              .attr("stroke", "gray")
+              .attr("transform", function (d) {
+                  return "rotate(" + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ")";
+              });
+            lines.transition()
+              .attr("transform", function (d) {
+                  return "rotate(" + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ")";
+              });
+            lines.exit().remove();
+        }
+    };
+
+    return Pie;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/Common.js',["d3/d3", "../common/HTMLWidget", "goog!visualization,1,packages:[corechart]"], factory);
+    } else {
+        root.google_Common = factory(root.d3, root.common_HTMLWidget);
+    }
+}(this, function (d3, HTMLWidget) {
+
+    function Common(tget) {
+        HTMLWidget.call(this);
+        this._class = "google_Common";
+
+        this._tag = "div";
+
+        this.columns([]);
+        this.data([]);
+        this._data_google = [];
+
+        this._chart = null;
+    };
+    Common.prototype = Object.create(HTMLWidget.prototype);
+
+    Common.prototype.publish("chartAreaWidth", "80%", "string", "Chart Area Width");
+    Common.prototype.publish("chartAreaHeight", "80%", "string", "Chart Area Height");
+
+    Common.prototype.publish("fontSize", null, "number", "Font Size");
+    Common.prototype.publish("fontName", null, "string", "Font Name");
+
+    Common.prototype.publish("legendShow", true, "boolean", "Show Legend");
+    Common.prototype.publish("legendAlignment", "center", "set", "Legend Alignment", ["", "start", "center", "end"]);
+    Common.prototype.publish("legendPosition", "right", "set", "Legend Position", ["", "bottom", "labeled", "left", "right", "top"]);
+    Common.prototype.publish("legendFontColor", "#000", "html-color", "Legend Font Color");
+    Common.prototype.publish("legendFontName", null, "string", "Legend Font Name");
+    Common.prototype.publish("legendFontSize", null, "number", "Legend Font Size");
+    Common.prototype.publish("legendFontBold", false, "boolean", "Legend Font Bold");
+    Common.prototype.publish("legendFontItalic", false, "boolean", "Legend Font Italic");
+
+    Common.prototype.publish("animationDuration", 0, "number", "Animation Duration");
+    Common.prototype.publish("animationOnStartup", true, "boolean", "Animate On Startup");
+    Common.prototype.publish("animationEasing", "linear", "set", "Animation Easing", ["", "linear", "in", "out", "inAndOut"]);
+
+    Common.prototype.data = function (_) {
+        var retVal = HTMLWidget.prototype.data.apply(this, arguments);
+        if (arguments.length) {
+            var data = null;
+            if (this._data.length) {
+                data = [this._columns].concat(this._data);
+            } else {
+                data = [
+                    ['', { role: 'annotation' }],
+                    ['', '']
+                ];
+            }
+            this._data_google = google.visualization.arrayToDataTable(data);
+        }
+        return retVal;
+    };
+
+    Common.prototype.getChartOptions = function () {
+        var colors = this._columns.filter(function (d, i) { return i > 0; }).map(function (row) {
+            return this._palette(row);
+        }, this);
+
+        return {
+            backgroundColor: "none",
+            width: this.width(),
+            height: this.height(),
+            colors: colors,
+            fontSize: this._fontSize,
+            fontName: this._fontName,
+            chartArea: {
+                width: this._chartAreaWidth,
+                height: this._chartAreaHeight
+            },
+            animation: {
+                duration: this._animationDuration,
+                startup: this._animationOnStartup,
+                easing: this._animationEasing
+            },
+            legend: {
+                alignment: this._legendAlignment,
+                position: this._legendShow ? this._legendPosition : "none",
+                maxLines: 2,
+                textStyle: {
+                    color: this._legendFontColor,
+                    fontName: this._legendFontName,
+                    fontSize: this._legendFontSize,
+                    bold: this._legendFontBold,
+                    italic: this._legendFontItalic
+                }
+            },
+        };
+    },
+
+    Common.prototype.enter = function (domNode, element) {
+        element.style("overflow", "hidden");
+
+        this._chart = new google.visualization[this._chartType](domNode);
+
+        var context = this;
+        google.visualization.events.addListener(this._chart, "select", function () {
+            var selectedItem = context._chart.getSelection()[0];
+            if (selectedItem) {
+                context.click(context.rowToObj(context._data[selectedItem.row]), context._columns[selectedItem.column]);
+            }
+        });
+    }
+
+    Common.prototype.update = function(domNode, element) {
+        HTMLWidget.prototype.update.apply(this, arguments);
+
+        this._chart.draw(this._data_google, this.getChartOptions());
+    };
+
+    return Common;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/CommonND.js',["d3/d3", "../google/Common", "../chart/INDChart", "goog!visualization,1,packages:[corechart]"], factory);
+    } else {
+        root.google_CommonND = factory(root.d3, root.google_Common, root.chart_INDChart);
+    }
+}(this, function (d3, Common, INDChart) {
+
+    function CommonND() {
+        Common.call(this);
+        INDChart.call(this);
+        this._class = "google_CommonND";
+    };
+    CommonND.prototype = Object.create(Common.prototype);
+    CommonND.prototype.implements(INDChart.prototype);
+
+    CommonND.prototype.publish("paletteID", "default", "set", "Palette ID", CommonND.prototype._palette.switch());
+
+    CommonND.prototype.update = function(domNode, element) {
+        this._palette = this._palette.switch(this._paletteID);
+
+        Common.prototype.update.apply(this, arguments);
+    }
+
+    return CommonND;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/Bar.js',["d3/d3", "./CommonND"], factory);
+    } else {
+        root.google_Bar = factory(root.d3, root.google_CommonND);
+    }
+}(this, function (d3, CommonND) {
+
+    function Bar() {
+        CommonND.call(this);
+        this._class = "google_Bar";
+
+        this._chartType = "BarChart";
+    };
+    Bar.prototype = Object.create(CommonND.prototype);
+
+    //  TODO:  Publish Bar Properties Here
+
+    Bar.prototype.getChartOptions = function () {
+        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
+        //  TODO:  Add Bar Properties Here
+        return retVal;
+    };
+
+    Bar.prototype.enter = function (domNode, element) {
+        CommonND.prototype.enter.apply(this, arguments);
+    };
+
+    Bar.prototype.update = function (domNode, element) {
+        CommonND.prototype.update.apply(this, arguments);
+    };
+
+    return Bar;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/Column.js',["d3/d3", "./CommonND"], factory);
+    } else {
+        root.google_Column = factory(root.d3, root.google_CommonND);
+    }
+}(this, function (d3, CommonND) {
+
+    function Column() {
+        CommonND.call(this);
+        this._class = "google_Column";
+
+        this._chartType = "ColumnChart";
+    };
+    Column.prototype = Object.create(CommonND.prototype);
+    //  TODO:  Publish Column Properties Here
+
+    Column.prototype.getChartOptions = function () {
+        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
+        //  TODO:  Add Column Properties Here
+        return retVal;
+    };
+
+    Column.prototype.enter = function (domNode, element) {
+        CommonND.prototype.enter.apply(this, arguments);
+    };
+
+    Column.prototype.update = function (domNode, element) {
+        CommonND.prototype.update.apply(this, arguments);
+    };
+
+    return Column;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/Common2D',["d3/d3", "../google/Common", "../chart/I2DChart", "goog!visualization,1,packages:[corechart]"], factory);
+    } else {
+        root.google_Common2D = factory(root.d3, root.google_Common, root.chart_I2DChart);
+    }
+}(this, function (d3, Common, I2DChart) {
+
+    function Common2D() {
+        Common.call(this);
+        I2DChart.call(this);
+        this._class = "google_Common2D";
+    };
+    Common2D.prototype = Object.create(Common.prototype);
+    Common2D.prototype.implements(I2DChart.prototype);
+
+    Common2D.prototype.publish("paletteID", "default", "set", "Palette ID", Common2D.prototype._palette.switch());
+
+    Common2D.prototype.update = function(domNode, element) {
+        this._palette = this._palette.switch(this._paletteID);
+
+        Common.prototype.update.apply(this, arguments);
+    }
+
+    return Common2D;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/Line.js',["d3/d3", "./CommonND"], factory);
+    } else {
+        root.google_Line = factory(root.d3, root.google_CommonND);
+    }
+}(this, function (d3, CommonND) {
+
+    function Line() {
+        CommonND.call(this);
+        this._class = "google_Line";
+
+        this._chartType = "LineChart";
+    };
+    Line.prototype = Object.create(CommonND.prototype);
+    //  TODO:  Publish Line Properties Here
+
+    Line.prototype.getChartOptions = function () {
+        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
+        //  TODO:  Add Line Properties Here
+        return retVal;
+    };
+
+    Line.prototype.enter = function (domNode, element) {
+        CommonND.prototype.enter.apply(this, arguments);
+    };
+
+    Line.prototype.update = function (domNode, element) {
+        CommonND.prototype.update.apply(this, arguments);
+    };
+
+    return Line;
+}));
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('google/Pie.js',["d3/d3", "./Common2D"], factory);
+    } else {
+        root.google_Pie = factory(root.d3, root.google_Common2D);
+    }
+}(this, function (d3, Common2D) {
+
+    function Pie() {
+        Common2D.call(this);
+        this._class = "google_Pie";
+
+        this._chartType = "PieChart";
+    };
+    Pie.prototype = Object.create(Common2D.prototype);
+
+    Pie.prototype.publish("is3D", true, "boolean", "Enable 3D");
+    Pie.prototype.publish("pieHole", 0, "number", "Pie Hole Size");
+    Pie.prototype.publish("pieStartAngle", 0, "number", "Pie Start Angle");
+
+    Pie.prototype.getChartOptions = function () {
+        var retVal = Common2D.prototype.getChartOptions.apply(this, arguments);
+
+        retVal.colors = this._data.map(function (row) {
+            return this._palette(row[0]);
+        }, this);
+        retVal.is3D = this._is3D;
+        retVal.pieHole = this._pieHole;
+        retVal.pieStartAngle = this._pieStartAngle;
+        return retVal;
+    };
+
+    Pie.prototype.enter = function (domNode, element) {
+        Common2D.prototype.enter.apply(this, arguments);
+    };
+
+    Pie.prototype.update = function (domNode, element) {
+        Common2D.prototype.update.apply(this, arguments);
+    };
+
+    return Pie;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('layout/Surface.js',["../common/HTMLWidget", "../chart/MultiChart", "../c3/Column", "../c3/Line", "css!./Surface"], factory);
+    } else {
+        root.layout_Surface = factory(root.common_HTMLWidget, root.chart_MultiChart, root.c3_Column, root.c3_Line);
+    }
+}(this, function (HTMLWidget, MultiChart, Column, Line) {
+    function Surface() {
+        HTMLWidget.call(this);
+        this._class = "layout_Surface";
+
+        this._tag = "div";
+    };
+    Surface.prototype = Object.create(HTMLWidget.prototype);
+
+    Surface.prototype.publish("title", "", "string", "Title");
+    Surface.prototype.publish("widget", null, "widget", "Widget");
+
+    Surface.prototype.testData = function () {
+        this.title("ABC");
+        this.widget(new Surface().widget(new MultiChart().testData()));
+        return this;
+    };
+
+    Surface.prototype.enter = function (domNode, element) {
+        HTMLWidget.prototype.enter.apply(this, arguments);
+    };
+
+    Surface.prototype.update = function (domNode, element) {
+        HTMLWidget.prototype.update.apply(this, arguments);
+        var titles = element.selectAll(".surfaceTitle").data(this._title ? [this._title] : []);
+        titles.enter().insert("h3", "div")
+            .attr("class", "surfaceTitle")
+        ;
+        titles
+            .text(function (d) { return d; })
+        ;
+        titles.exit().remove();
+
+        var widgets = element.selectAll("#" + this._id + " > .surfaceWidget").data(this._widget ? [this._widget] : [], function (d) { return d._id; });
+
+        var context = this;
+        widgets.enter().append("div")
+            .attr("class", "surfaceWidget")
+            .each(function (d) {
+                //console.log("surface enter:" + d._class + d._id);
+                d.target(this);
+            })
+        ;
+        widgets
+            .each(function (d) {
+                //console.log("surface update:" + d._class + d._id);
+                var width = context.clientWidth();
+                var height = context.clientHeight();
+                if (context._title) {
+                    height -= context.calcHeight(element.select("h3"));
+                }
+                var widgetDiv = d3.select(this);
+                height -= context.calcFrameHeight(widgetDiv);
+                width -= context.calcFrameWidth(widgetDiv);
+                d
+                    .resize({ width: width, height: height })
+                ;
+            })
+        ;
+        widgets.exit().each(function (d) {
+            //console.log("surface exit:" + d._class + d._id);
+            d.target(null);
+        }).remove();
+    };
+
+    Surface.prototype.exit = function (domNode, element) {
+        if (this._widget) {
+            this._widget = null;
+            this.render();
+        }
+        HTMLWidget.prototype.exit.apply(this, arguments);
+    };
+
+    Surface.prototype.render = function (callback) {
+        var context = this;
+        HTMLWidget.prototype.render.call(this, function (widget) {
+            if (context._widget) {
+                context._widget.render(function (widget) {
+                    if (callback) {
+                        callback(widget);
+                    }
+                });
+            } else {
+                if (callback) {
+                    callback(widget);
+                }
+            }
+        });
+    }
+
+    return Surface;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('layout/Cell',["./Surface", "../chart/Pie", "../c3/Column", "../c3/Line", "css!./Cell"], factory);
+    } else {
+        root.layout_Cell = factory(root.layout_Surface, root.chart_Pie, root.c3_Column, root.c3_Line);
+    }
+}(this, function (Surface, Pie, Column, Line) {
+    function Cell() {
+        Surface.call(this);
+        this._class = "layout_Cell";
+    };
+    Cell.prototype = Object.create(Surface.prototype);
+
+    Cell.prototype.publish("gridRow", 0, "number", "Grid Row Position");
+    Cell.prototype.publish("gridCol", 0, "number", "Grid Column Position");
+    Cell.prototype.publish("gridRowSpan", 1, "number", "Grid Row Span");
+    Cell.prototype.publish("gridColSpan", 1, "number", "Grid Column Span");
+
+    Cell.prototype.enter = function (domNode, element) {
+        Surface.prototype.enter.apply(this, arguments);
+        element.classed("layout_Surface", true);
+    };
+
+    return Cell;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('layout/Grid',["../common/HTMLWidget", "./Cell", "../common/Text", "../chart/Pie", "../chart/MultiChart", "../c3/Column", "../c3/Line", "css!./Grid"], factory);
+    } else {
+        root.layout_Grid = factory(root.common_HTMLWidget, root.layout_Cell, root.common_Text, root.chart_Pie, root.chart_MultiChart, root.c3_Column, root.c3_Line);
+    }
+}(this, function (HTMLWidget, Cell, Text, Pie, MultiChart, Column, Line) {
+	function Grid() {
+        HTMLWidget.call(this);
+        this._class = "layout_Grid";
+
+        this._tag = "div";
+
+        this._content = [];
+    };
+    Grid.prototype = Object.create(HTMLWidget.prototype);
+
+    Grid.prototype.publish("gutter", 4, "number", "Gap Between Widgets");
+    Grid.prototype.publish("fitTo", "all", "set", "Sizing Strategy", ["all", "width"]);
+    Grid.prototype.publish("content", [], "widgetArray", "widgets");
+
+    Grid.prototype.testData = function () {
+        this.setContent(0, 0, new Pie().testData())
+        this.setContent(0, 1, new Pie().testData())
+        this.setContent(1, 0, new Pie().testData())
+        this.setContent(1, 1, new Pie().testData())
+        this.setContent(0, 2, new MultiChart().testData(), "Title AAA", 2, 2)
+        this.setContent(2, 0, new Line().testData(), "Title BBB", 2, 4)
+        return this;
+    };
+
+    Grid.prototype.getDimensions = function () {
+        var size = { width: 0, height: 0 };
+        this._content.forEach(function (cell) {
+            if (size.width < cell.gridCol() + cell.gridColSpan()) {
+            	size.width = cell.gridCol() + cell.gridColSpan();
+            }
+            if (size.height < cell.gridRow() + cell.gridRowSpan()) {
+            	size.height = cell.gridRow() + cell.gridRowSpan();
+            }
+        }, this);
+        return size;
+    };
+
+    Grid.prototype.clearContent = function () {
+        this._content = this._content.filter(function (contentWidget) {
+            contentWidget.target(null);
+            return false;
+        });
+    };
+
+    Grid.prototype.setContent = function (row, col, widget, title, rowSpan, colSpan) {
+        rowSpan = rowSpan || 1;
+        colSpan = colSpan || 1;
+        title = title || "";
+        this._content = this._content.filter(function (contentWidget) {
+            if (contentWidget._gridRow === row && contentWidget._gridCol === col) {
+                contentWidget.target(null);
+                return false;
+            }
+            return true;
+        });
+
+        if (widget) {
+            var cell = new Cell()
+                .gridRow(row)
+                .gridCol(col)
+                .widget(widget)
+                .title(title)
+                .gridRowSpan(rowSpan)
+                .gridColSpan(colSpan)
+            ;
+            this._content.push(cell);
+        }
+        return this;
+    };
+
+    Grid.prototype.getContent = function (id) {
+        var retVal = null;
+        this._content.some(function (cell) {
+            if (cell._widget._id === id) {
+                retVal = cell._widget;
+                return true;
+            }
+            return false;
+        });
+        return retVal;
+    }
+
+    Grid.prototype.childMoved = Grid.prototype.debounce(function (domNode, element) {
+        this.render();
+    }, 250);
+
+    Grid.prototype.enter = function (domNode, element) {
+        HTMLWidget.prototype.enter.apply(this, arguments);
+        element.style("position", "relative");
+        this._scrollBarWidth = this.getScrollbarWidth();
+    };
+
+    Grid.prototype.update = function (domNode, element) {
+        HTMLWidget.prototype.update.apply(this, arguments);
+        this._parentElement.style("overflow-x", this._fitTo === "width" ? "hidden" : null);
+        this._parentElement.style("overflow-y", this._fitTo === "width" ? "scroll" : null);
+        var dimensions = this.getDimensions();
+        var cellWidth = (this.width() - (this._fitTo === "width" ? this._scrollBarWidth : 0)) / dimensions.width;
+        var cellHeight = this._fitTo === "all" ? this.height() / dimensions.height : cellWidth;
+
+        var context = this;
+        var rows = element.selectAll(".cell_" + this._id).data(this._content, function (d) { return d._id; });
+        rows.enter().append("div")
+            .attr("class", "cell_" + this._id)
+            .style("position", "absolute")
+            .each(function (d) {
+                //console.log("Grid :enter - " + d._class + d._id);
+                d
+                   .target(this)
+                ;
+                d.__grid_watch = d.watch(function (key, newVal, oldVal) {
+                    if (context._renderCount && key.indexOf("grid") === 0 && newVal !== oldVal) {
+                        context.childMoved();
+                    }
+                });
+            })
+        ;
+        rows
+            .style("left", function (d) { return d.gridCol() * cellWidth + context._gutter / 2 + "px"; })
+            .style("top", function (d) { return d.gridRow() * cellHeight + context._gutter / 2 + "px"; })
+            .style("width", function (d) { return d.gridColSpan() * cellWidth - context._gutter + "px"; })
+            .style("height", function (d) { return d.gridRowSpan() * cellHeight - context._gutter + "px"; })
+            .each(function (d) {
+                //console.log("Grid :update - " + d._class + d._id);
+                d
+                    .resize()
+                ;
+            })
+        ;
+        rows.exit().each(function (d) {
+            //console.log("Grid: exit - " + d._class + d._id);
+            d
+               .target(null)
+            ;
+            if (d.__grid_watch) {
+                d.__grid_watch.remove();
+            }
+        }).remove();
+    };
+
+    Grid.prototype.exit = function (domNode, element) {
+        HTMLWidget.prototype.exit.apply(this, arguments);
+    };
+
+    Grid.prototype.render = function (callback) {
+        var context = this;
+        HTMLWidget.prototype.render.call(this, function (widget) {
+            if (context._content.length) {
+                var renderCount = context._content.length;
+                context._content.forEach(function (contentWidget, idx) {
+                    setTimeout(function () {
+                        contentWidget.render(function () {
+                            if (--renderCount === 0) {
+                                if (callback) {
+                                    callback(widget);
+                                }
+                            }
+                        });
+                    }, 0);
+                });
+            } else {
+                if (callback) {
+                    callback(widget);
+                }
+            }
+        });
+        return this;
+    }
+
+    return Grid;
 }));
 
 
@@ -2466,120 +4982,6 @@
     };
 
     return IGraph;
-}));
-
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/FAChar.js',["./SVGWidget", "./Text", "css!font-awesome/css/font-awesome", "css!./FAChar"], factory);
-    } else {
-        root.common_FAChar = factory(root.common_SVGWidget, root.common_Text);
-    }
-}(this, function (SVGWidget, Text) {
-    function FAChar() {
-        SVGWidget.call(this);
-        this._class = "common_FAChar";
-
-        this._text = new Text()
-            .font_family("FontAwesome")
-        ;
-    };
-    FAChar.prototype = Object.create(SVGWidget.prototype);
-    FAChar.prototype.publish("char", "", "string", "Font Awesome Item");
-    FAChar.prototype.publish("font_size", null, "number", "Font Size");
-    FAChar.prototype.publishProxy("color_fill", "_text");
-
-    FAChar.prototype.testData = function () {
-        this.char("\uf007");
-        return this;
-    }
-
-    FAChar.prototype.enter = function (domNode, element) {
-        SVGWidget.prototype.enter.apply(this, arguments);
-        this._text
-            .target(domNode)
-        ;
-    };
-
-    FAChar.prototype.update = function (domNode, element) {
-        SVGWidget.prototype.update.apply(this, arguments);
-        this._text
-            .text(this._char)
-            .scale((this.font_size() || 14) / 14) //  Scale rather than font_size to prevent Chrome glitch  ---
-            .render()
-        ;
-    };
-
-    return FAChar;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/Icon.js',["./SVGWidget", "./Shape", "./FAChar", "css!./Icon"], factory);
-    } else {
-        root.common_Icon = factory(root.common_SVGWidget, root.common_Shape, root.common_FAChar);
-    }
-}(this, function (SVGWidget, Shape, FAChar) {
-    function Icon() {
-        SVGWidget.call(this);
-        this._class = "common_Icon";
-
-        this._shapeWidget = new Shape();
-        this._faChar = new FAChar();
-    };
-    Icon.prototype = Object.create(SVGWidget.prototype);
-
-    Icon.prototype.publish("shape", "circle", "set", "Shape Type", ["circle", "square"]);
-    Icon.prototype.publishProxy("faChar", "_faChar", "char");
-    Icon.prototype.publishProxy("image_color_fill", "_faChar", "color_fill");
-    Icon.prototype.publish("tooltip", "", "string", "Tooltip");
-    Icon.prototype.publish("diameter", 24, "number", "Diameter");
-    Icon.prototype.publish("padding_percent", 45, "number", "Padding Percent");
-    Icon.prototype.publishProxy("shape_color_fill", "_shapeWidget", "color_fill");
-    Icon.prototype.publishProxy("shape_color_stroke", "_shapeWidget", "color_stroke");
-
-    Icon.prototype.testData = function () {
-        this._faChar.testData();
-        return this;
-    };
-
-    Icon.prototype.intersection = function (pointA, pointB) {
-        return this._shapeWidget.intersection(pointA, pointB);
-    };
-
-    Icon.prototype.enter = function (domNode, element) {
-        SVGWidget.prototype.enter.apply(this, arguments);
-        this._shapeWidget
-            .target(domNode)
-            .render()
-        ;
-        this._faChar
-            .target(domNode)
-            .render()
-        ;
-        this._tooltipElement = element.append("title");
-    };
-
-    Icon.prototype.update = function (domNode, element) {
-        SVGWidget.prototype.update.apply(this, arguments);
-        this._faChar
-            .font_size(this._diameter * (100 - this._padding_percent) / 100)
-            .render()
-        ;
-        this._shapeWidget
-            .shape(this._shape)
-            .width(this._diameter)
-            .height(this._diameter)
-            .render()
-        ;
-        this._tooltipElement.text(this._tooltip);
-    };
-
-    return Icon;
 }));
 
 
@@ -3917,2392 +6319,486 @@
 }));
 
 
-
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('google/Common.js',["d3/d3", "../common/HTMLWidget", "goog!visualization,1,packages:[corechart]"], factory);
+        define('map/IChoropleth.js',["../common/Palette"], factory);
     } else {
-        root.google_Common = factory(root.d3, root.common_HTMLWidget);
+        root.map_IChoropleth = factory(root.common_Palette, root.usStates, root.usCounties);
     }
-}(this, function (d3, HTMLWidget) {
-
-    function Common(tget) {
-        HTMLWidget.call(this);
-        this._class = "google_Common";
-
-        this._tag = "div";
-
-        this.columns([]);
-        this.data([]);
-        this._data_google = [];
-
-        this._chart = null;
+}(this, function (Palette, usStates, usCounties) {
+    function IChoropleth() {
     };
-    Common.prototype = Object.create(HTMLWidget.prototype);
-
-    Common.prototype.publish("chartAreaWidth", "80%", "string", "Chart Area Width");
-    Common.prototype.publish("chartAreaHeight", "80%", "string", "Chart Area Height");
-
-    Common.prototype.publish("fontSize", null, "number", "Font Size");
-    Common.prototype.publish("fontName", null, "string", "Font Name");
-
-    Common.prototype.publish("legendShow", true, "boolean", "Show Legend");
-    Common.prototype.publish("legendAlignment", "center", "set", "Legend Alignment", ["", "start", "center", "end"]);
-    Common.prototype.publish("legendPosition", "right", "set", "Legend Position", ["", "bottom", "labeled", "left", "right", "top"]);
-    Common.prototype.publish("legendFontColor", "#000", "html-color", "Legend Font Color");
-    Common.prototype.publish("legendFontName", null, "string", "Legend Font Name");
-    Common.prototype.publish("legendFontSize", null, "number", "Legend Font Size");
-    Common.prototype.publish("legendFontBold", false, "boolean", "Legend Font Bold");
-    Common.prototype.publish("legendFontItalic", false, "boolean", "Legend Font Italic");
-
-    Common.prototype.publish("animationDuration", 0, "number", "Animation Duration");
-    Common.prototype.publish("animationOnStartup", true, "boolean", "Animate On Startup");
-    Common.prototype.publish("animationEasing", "linear", "set", "Animation Easing", ["", "linear", "in", "out", "inAndOut"]);
-
-    Common.prototype.data = function (_) {
-        var retVal = HTMLWidget.prototype.data.apply(this, arguments);
-        if (arguments.length) {
-            var data = null;
-            if (this._data.length) {
-                data = [this._columns].concat(this._data);
-            } else {
-                data = [
-                    ['', { role: 'annotation' }],
-                    ['', '']
-                ];
-            }
-            this._data_google = google.visualization.arrayToDataTable(data);
-        }
-        return retVal;
+    IChoropleth.prototype._palette = Palette.rainbow("default");
+    
+    //  Events  ---
+    IChoropleth.prototype.click = function (row, column) {
+        console.log("Click:  " + JSON.stringify(row) + ", " + column);
     };
 
-    Common.prototype.getChartOptions = function () {
-        var colors = this._columns.filter(function (d, i) { return i > 0; }).map(function (row) {
-            return this._palette(row);
-        }, this);
 
-        return {
-            backgroundColor: "none",
-            width: this.width(),
-            height: this.height(),
-            colors: colors,
-            fontSize: this._fontSize,
-            fontName: this._fontName,
-            chartArea: {
-                width: this._chartAreaWidth,
-                height: this._chartAreaHeight
-            },
-            animation: {
-                duration: this._animationDuration,
-                startup: this._animationOnStartup,
-                easing: this._animationEasing
-            },
-            legend: {
-                alignment: this._legendAlignment,
-                position: this._legendShow ? this._legendPosition : "none",
-                maxLines: 2,
-                textStyle: {
-                    color: this._legendFontColor,
-                    fontName: this._legendFontName,
-                    fontSize: this._legendFontSize,
-                    bold: this._legendFontBold,
-                    italic: this._legendFontItalic
-                }
-            },
-        };
-    },
-
-    Common.prototype.enter = function (domNode, element) {
-        element.style("overflow", "hidden");
-
-        this._chart = new google.visualization[this._chartType](domNode);
-
-        var context = this;
-        google.visualization.events.addListener(this._chart, "select", function () {
-            var selectedItem = context._chart.getSelection()[0];
-            if (selectedItem) {
-                context.click(context.rowToObj(context._data[selectedItem.row]), context._columns[selectedItem.column]);
-            }
-        });
-    }
-
-    Common.prototype.update = function(domNode, element) {
-        HTMLWidget.prototype.update.apply(this, arguments);
-
-        this._chart.draw(this._data_google, this.getChartOptions());
-    };
-
-    return Common;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/CommonND.js',["d3/d3", "../google/Common", "../chart/INDChart", "goog!visualization,1,packages:[corechart]"], factory);
-    } else {
-        root.google_CommonND = factory(root.d3, root.google_Common, root.chart_INDChart);
-    }
-}(this, function (d3, Common, INDChart) {
-
-    function CommonND() {
-        Common.call(this);
-        INDChart.call(this);
-        this._class = "google_CommonND";
-    };
-    CommonND.prototype = Object.create(Common.prototype);
-    CommonND.prototype.implements(INDChart.prototype);
-
-    CommonND.prototype.publish("paletteID", "default", "set", "Palette ID", CommonND.prototype._palette.switch());
-
-    CommonND.prototype.update = function(domNode, element) {
-        this._palette = this._palette.switch(this._paletteID);
-
-        Common.prototype.update.apply(this, arguments);
-    }
-
-    return CommonND;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/Bar.js',["d3/d3", "./CommonND"], factory);
-    } else {
-        root.google_Bar = factory(root.d3, root.google_CommonND);
-    }
-}(this, function (d3, CommonND) {
-
-    function Bar() {
-        CommonND.call(this);
-        this._class = "google_Bar";
-
-        this._chartType = "BarChart";
-    };
-    Bar.prototype = Object.create(CommonND.prototype);
-
-    //  TODO:  Publish Bar Properties Here
-
-    Bar.prototype.getChartOptions = function () {
-        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
-        //  TODO:  Add Bar Properties Here
-        return retVal;
-    };
-
-    Bar.prototype.enter = function (domNode, element) {
-        CommonND.prototype.enter.apply(this, arguments);
-    };
-
-    Bar.prototype.update = function (domNode, element) {
-        CommonND.prototype.update.apply(this, arguments);
-    };
-
-    return Bar;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/Column.js',["d3/d3", "./CommonND"], factory);
-    } else {
-        root.google_Column = factory(root.d3, root.google_CommonND);
-    }
-}(this, function (d3, CommonND) {
-
-    function Column() {
-        CommonND.call(this);
-        this._class = "google_Column";
-
-        this._chartType = "ColumnChart";
-    };
-    Column.prototype = Object.create(CommonND.prototype);
-    //  TODO:  Publish Column Properties Here
-
-    Column.prototype.getChartOptions = function () {
-        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
-        //  TODO:  Add Column Properties Here
-        return retVal;
-    };
-
-    Column.prototype.enter = function (domNode, element) {
-        CommonND.prototype.enter.apply(this, arguments);
-    };
-
-    Column.prototype.update = function (domNode, element) {
-        CommonND.prototype.update.apply(this, arguments);
-    };
-
-    return Column;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/Common2D',["d3/d3", "../google/Common", "../chart/I2DChart", "goog!visualization,1,packages:[corechart]"], factory);
-    } else {
-        root.google_Common2D = factory(root.d3, root.google_Common, root.chart_I2DChart);
-    }
-}(this, function (d3, Common, I2DChart) {
-
-    function Common2D() {
-        Common.call(this);
-        I2DChart.call(this);
-        this._class = "google_Common2D";
-    };
-    Common2D.prototype = Object.create(Common.prototype);
-    Common2D.prototype.implements(I2DChart.prototype);
-
-    Common2D.prototype.publish("paletteID", "default", "set", "Palette ID", Common2D.prototype._palette.switch());
-
-    Common2D.prototype.update = function(domNode, element) {
-        this._palette = this._palette.switch(this._paletteID);
-
-        Common.prototype.update.apply(this, arguments);
-    }
-
-    return Common2D;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/Line.js',["d3/d3", "./CommonND"], factory);
-    } else {
-        root.google_Line = factory(root.d3, root.google_CommonND);
-    }
-}(this, function (d3, CommonND) {
-
-    function Line() {
-        CommonND.call(this);
-        this._class = "google_Line";
-
-        this._chartType = "LineChart";
-    };
-    Line.prototype = Object.create(CommonND.prototype);
-    //  TODO:  Publish Line Properties Here
-
-    Line.prototype.getChartOptions = function () {
-        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
-        //  TODO:  Add Line Properties Here
-        return retVal;
-    };
-
-    Line.prototype.enter = function (domNode, element) {
-        CommonND.prototype.enter.apply(this, arguments);
-    };
-
-    Line.prototype.update = function (domNode, element) {
-        CommonND.prototype.update.apply(this, arguments);
-    };
-
-    return Line;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('google/Pie.js',["d3/d3", "./Common2D"], factory);
-    } else {
-        root.google_Pie = factory(root.d3, root.google_Common2D);
-    }
-}(this, function (d3, Common2D) {
-
-    function Pie() {
-        Common2D.call(this);
-        this._class = "google_Pie";
-
-        this._chartType = "PieChart";
-    };
-    Pie.prototype = Object.create(Common2D.prototype);
-
-    Pie.prototype.publish("is3D", true, "boolean", "Enable 3D");
-    Pie.prototype.publish("pieHole", 0, "number", "Pie Hole Size");
-    Pie.prototype.publish("pieStartAngle", 0, "number", "Pie Start Angle");
-
-    Pie.prototype.getChartOptions = function () {
-        var retVal = Common2D.prototype.getChartOptions.apply(this, arguments);
-
-        retVal.colors = this._data.map(function (row) {
-            return this._palette(row[0]);
-        }, this);
-        retVal.is3D = this._is3D;
-        retVal.pieHole = this._pieHole;
-        retVal.pieStartAngle = this._pieStartAngle;
-        return retVal;
-    };
-
-    Pie.prototype.enter = function (domNode, element) {
-        Common2D.prototype.enter.apply(this, arguments);
-    };
-
-    Pie.prototype.update = function (domNode, element) {
-        Common2D.prototype.update.apply(this, arguments);
-    };
-
-    return Pie;
+    return IChoropleth;
 }));
 
 
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('chart/Bubble.js',["d3/d3", "../common/SVGWidget", "./I2DChart", "../common/Text", "../common/FAChar", "css!./Bubble"], factory);
+        define('map/Choropleth.js',["d3/d3", "../common/SVGWidget", "./IChoropleth", "css!./Choropleth"], factory);
     } else {
-        root.chart_Bubble = factory(root.d3, root.common_SVGWidget, root.chart_I2DChart, root.common_Text, root.common_FAChar);
+        root.map_Choropleth = factory(root.d3, root.common_SVGWidget, root.map_IChoropleth);
     }
-}(this, function (d3, SVGWidget, I2DChart, Text, FAChar) {
-    function Bubble(target) {
+}(this, function (d3, SVGWidget, IChoropleth) {
+    function Choropleth() {
         SVGWidget.call(this);
-        I2DChart.call(this);
-        this._class = "chart_Bubble";
+        IChoropleth.call(this);
+        this._class = "map_Choropleth";
 
-        this.labelWidgets = {};
-
-        this.d3Pack = d3.layout.pack()
-            .sort(function (a, b) { return a < b ? -1 : a > b ? 1 : 0; })
-            .size([this.width(), this.height()])
-            .value(function (d) { return d[1]; })
-        ;
+        this._dataMap = {};
+        this._dataMinWeight = 0;
+        this._dataMaxWeight = 0;
     };
-    Bubble.prototype = Object.create(SVGWidget.prototype);
-    Bubble.prototype.implements(I2DChart.prototype);
-
-    Bubble.prototype.publish("paletteID", "default", "set", "Palette ID", Bubble.prototype._palette.switch());
-
-    Bubble.prototype.size = function (_) {
-        var retVal = SVGWidget.prototype.size.apply(this, arguments);
-        if (arguments.length) {
-            this.d3Pack
-                .size([this.width(), this.height()])
-            ;
-        }
-        return retVal;
-    };
-
-    Bubble.prototype.update = function (domNode, element) {
-        var context = this;
-
-        this._palette = this._palette.switch(this._paletteID);
-        var node = element.selectAll(".node")
-            .data(this._data.length ? this.d3Pack.nodes({ children: this.cloneData() }).filter(function (d) { return !d.children; }) : [], function (d) { return d[0]; })
-        ;
-
-        //  Enter  ---
-        node.enter().append("g")
-            .attr("class", "node")
-            .attr("opacity", 0)
-            .on("click", function (d) {
-                context.click(context.rowToObj(d), context._columns[1]);
-            })
-            .each(function (d) {
-                var element = d3.select(this);
-                element.append("circle")
-                    .attr("r", function (d) { return d.r; })
-                    .append("title")
-                ;
-                if (d.__viz_faChar) {
-                    context.labelWidgets[d[0]] = new FAChar()
-                        .char(d.__viz_faChar)
-                        .target(this)
-                        .render()
-                    ;
-                } else {
-                    context.labelWidgets[d[0]] = new Text()
-                        .text(d[0])
-                        .target(this)
-                        .render()
-                    ;
-                }
-            })
-        ;
-
-        //  Update  ---
-        node.transition()
-            .attr("opacity", 1)
-            .each(function (d) {
-                var element = d3.select(this);
-                var pos = { x: d.x - context._size.width / 2, y: d.y - context._size.height / 2 }
-                element.select("circle").transition()
-                    .attr("transform", function (d) { return "translate(" + pos.x + "," + pos.y + ")"; })
-                    .style("fill", function (d) { return context._palette(d[0]); })
-                    .attr("r", function (d) { return d.r; })
-                    .select("title")
-                        .text(function (d) { return d[0] + " (" + d[1] + ")"; })
-                ;
-                if (d.__viz_faChar) {
-                    context.labelWidgets[d[0]]
-                        .pos(pos)
-                        .render()
-                    ;
-                } else {
-                    var label = d[0];
-                    var labelWidth = context.labelWidgets[d[0]].getBBox().width;
-                    if (d.r * 2 < 16) {
-                        label = "";
-                    } else if (d.r * 2 < labelWidth) {
-                        label = label[0] + "...";
-                    }
-                    context.labelWidgets[d[0]]
-                        .pos(pos)
-                        .text(label)
-                        .render()
-                    ;
-                }
-            })
-        ;
-
-        //  Exit  ---
-        node.exit().transition()
-            .style("opacity", 0)
-            .remove()
-        ;
-    };
-
-    return Bubble;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('chart/XYAxis.js',["d3/d3", "../common/SVGWidget"], factory);
-    } else {
-        root.chart_XYAxis = factory(root.d3, root.common_SVGWidget);
-    }
-}(this, function (d3, SVGWidget) {
-    function XYAxis(target) {
-        SVGWidget.call(this);
-
-        this._xScale = "";
-        this.parseDate = d3.time.format("%Y-%m-%d").parse;
-    };
-    XYAxis.prototype = Object.create(SVGWidget.prototype);
-
-    XYAxis.prototype.xScale = function (_) {
-        if (!arguments.length) return this._xScale;
-        this._xScale = _;
-        return this;
-    };
-
-    XYAxis.prototype.enter = function (domNode, element) {
-        var context = this;
-
-        this.x = null;
-        switch (this._xScale) {
-            case "DATE":
-                this.x = d3.time.scale();
-                break;
-            default:
-                this.x = d3.scale.ordinal();
-                break;
-        }
-        this.y = d3.scale.linear();
-
-        this.xAxis = d3.svg.axis()
-            .orient("bottom")
-            .scale(this.x)
-        ;
-
-        this.yAxis = d3.svg.axis()
-            .orient("left")
-            .scale(this.y)
-            .tickFormat(d3.format(".2s"))
-            .ticks(10)
-        ;
-
-        this.recenterG = element.append("g");
-        this.svg = this.recenterG.append("g");
-        this.svgData = this.svg.append("g");
-        this.svgXAxis = this.svg.append("g")
-            .attr("class", "x axis")
-        ;
-        this.svgYAxis = this.svg.append("g")
-            .attr("class", "y axis")
-        ;
-    };
-
-    XYAxis.prototype.calcMargin = function (domNode, element) {
-        var context = this;
-        var margin = { top: 8, right: 0, bottom: 24, left: 40 };
-        var width = this.width() - margin.left - margin.right,
-            height = this.height() - margin.top - margin.bottom;
-
-        var test = element.append("g");
-
-        var svgXAxis = test.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(this.xAxis)
-        ;
-        var svgYAxis = test.append("g")
-            .attr("class", "y axis")
-            .call(this.yAxis)
-        ;
-
-        var x_bbox = svgXAxis.node().getBBox();
-        var y_bbox = svgYAxis.node().getBBox();
-        margin.bottom = x_bbox.height;
-        margin.left = y_bbox.width;
-        test.remove();
-        return margin;
-    }
-
-    XYAxis.prototype.update = function (domNode, element) {
-        var context = this;
-
-        //  Update Domain  ---
-        switch (this._xScale) {
-            case "DATE":
-                var min = d3.min(this._data, function (data) {
-                    return d3.min(data, function (d) { return context.parseDate(d[0]); });
-                });
-                var max = d3.max(this._data, function (data) {
-                    return d3.max(data, function (d) { return context.parseDate(d[0]); });
-                });
-                this.x.domain([min, max]);
-                break;
-            default:
-                this.x.domain(this._data.map(function (d) { return d[0]; }));
-                break;
-        }
-        var min = d3.min(this._data, function (data) {
-            return d3.min(data.filter(function (cell, i) { return i > 0 && context._columns[i] && context._columns[i].indexOf("__") !== 0; }), function (d) { return d; });
-        });
-        var max = d3.max(this._data, function (data) {
-            return d3.max(data.filter(function (row, i) { return i > 0 && context._columns[i] && context._columns[i].indexOf("__") !== 0; }), function (d) { return d; });
-        });
-        var newMin = min - (max - min) / 10;
-        if (min >= 0 && newMin < 0)
-            newMin = 0;
-        this.y.domain([newMin, max]);
-
-        //  Calculate Range  ---
-        if (this.x.rangeRoundBands) {
-            this.x.rangeRoundBands([0, this.width()], .1);
-        } else if (this.x.rangeRound) {
-            this.x.range([0, this.width()]);
-        }
-        this.y.range([this.height(), 0]);
-        var margin = this.calcMargin(domNode, element);
-
-        //  Update Range  ---
-        var width = this.width() - margin.left - margin.right,
-            height = this.height() - margin.top - margin.bottom;
-
-        if (this.x.rangeRoundBands) {
-            this.x.rangeRoundBands([0, width], .1);
-        } else if (this.x.rangeRound) {
-            this.x.range([0, width]);
-        }
-        this.y.range([height, 0]);
-
-        //  Render  ---
-        this.svg.transition()
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        ;
-
-        this.svgXAxis.transition()
-            .attr("transform", "translate(0," + height + ")")
-            .call(this.xAxis)
-        ;
-
-        this.svgYAxis.transition()
-            .call(this.yAxis)
-        ;
-
-        this.updateChart(domNode, element, margin, width, height);
-
-        this.recenterG.transition()
-            .attr("transform", "translate(" + -this.width() / 2 + "," + -this.height() / 2 + ")")
-        ;
-    };
-
-    XYAxis.prototype.updateChart = function (domNode, element, margin, width, height) {
-    };
-
-    return XYAxis;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('chart/Column.js',["d3/d3", "./XYAxis", "./I2DChart", "css!./Column"], factory);
-    } else {
-        root.chart_Column = factory(root.d3, root.chart_XYAxis, root.chart_I2DChart);
-    }
-}(this, function (d3, XYAxis, I2DChart) {
-    function Column(target) {
-        XYAxis.call(this);
-        I2DChart.call(this);
-        this._class = "chart_Column";
-    };
-    Column.prototype = Object.create(XYAxis.prototype);
-    Column.prototype.implements(I2DChart.prototype);
-
-    Column.prototype.publish("paletteID", "default", "set", "Palette ID", Column.prototype._palette.switch());
-
-    Column.prototype.updateChart = function (domNode, element, margin, width, height) {
-        var context = this;
-
-        this._palette = this._palette.switch(this._paletteID);
-
-        var column = this.svgData.selectAll(".columnRect")
-            .data(this._data)
-        ;
-
-        var title = column
-          .enter().append("rect")
-            .attr("class", "columnRect")
-            .on("click", function (d) {
-                context.click(context.rowToObj(d), context._columns[1]);
-            })
-            .append("title")
-        ;
-
-        column.transition()
-            .attr("class", "columnRect")
-            .attr("x", function (d) { return context.x(d[0]); })
-            .attr("width", this.x.rangeBand())
-            .attr("y", function (d) { return context.y(d[1]); })
-            .attr("height", function (d) { return height - context.y(d[1]); })
-            .style("fill", function (d) { return context._palette(d[0]); })
-        ;
-
-        title
-            .text(function (d) { return d[0] + " (" + d[1] + ")"; })
-        ;
-
-        column.exit().transition()
-            .remove()
-        ;
-    };
-
-    return Column;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('chart/Line.js',["d3/d3", "./XYAxis", "./INDChart", "css!./Line"], factory);
-    } else {
-        root.chart_Line = factory(root.d3, root.chart_XYAxis, root.chart_INDChart);
-    }
-}(this, function (d3, XYAxis, INDChart) {
-    function Line(target) {
-        XYAxis.call(this);
-        INDChart.call(this);
-        this._class = "chart_Line";
-    };
-    Line.prototype = Object.create(XYAxis.prototype);
-    Line.prototype.implements(INDChart.prototype);
-
-    Line.prototype.publish("paletteID", "default", "set", "Palette ID", Line.prototype._palette.switch());
-
-    Line.prototype.enter = function (domNode, element) {
-        XYAxis.prototype.enter.apply(this, arguments);
-        var context = this;
-    };
-
-    Line.prototype.updateChart = function (domNode, element, margin, width, height) {
-        var context = this;
-
-        this._palette = this._palette.switch(this._paletteID);
-        var d3Line = d3.svg.line()
-            .x(function (d) {
-                switch (context._xScale) {
-                    case "DATE":
-                        return context.x(context.parseDate(d[0]));
-                }
-                return context.x(d[0]) + (context.x.rangeBand ? context.x.rangeBand() / 2 : 0);
-            })
-            .y(function (d) { return context.y(d[1]); })
-        ;
-
-        var line = this.svgData.selectAll(".dataLine")
-            .data(this._columns.filter(function(d, i) {return i > 0;}))
-        ;
-
-        line.enter().append("path")
-            .attr("class", "dataLine")
-        ;
-        line
-            .style("stroke", function (d, i) {
-                return context._palette(context._columns[i + 1]);
-            })
-            .append("title")
-            .text(function(d) { return d; })
-        ;
-        line
-            .datum(function (d, i) { return context._data.map(function (row, rowIdx) { return [row[0], row[i + 1]];}); })
-            .attr("d", d3Line)
-        ;
-
-        line.exit().remove();
-    };
-
-    return Line;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('other/Persist.js',["require"], factory);
-    } else {
-        root.other_Persist = factory(root.common_Widget.prototype.require);
-    }
-}(this, function (require) {
-    return {
-        discover: function (widget, includePrivate) {
-            var retVal = [];
-            for (var key in widget) {
-                if (key.indexOf("__meta_") >= 0) {
-                    var item = widget;
-                    var meta = item[key];
-                    if (meta.type || includePrivate) {
-                        while (meta.type === "proxy") {
-                            item = item[meta.proxy];
-                            meta = item["__meta_" + meta.method];
-                        }
-                        if (meta.id !== widget[key].id) {
-                            meta = JSON.parse(JSON.stringify(meta));  //  Clone meta so we can safely replace the id.
-                            meta.id = widget[key].id;
-                        }
-                        retVal.push(meta);
-                    }
-                }
-            }
-            return retVal;
-        },
-
-        serializeToObject: function (widget, properties, includeData) {
-            var retVal = {
-                __version: 3,
-                __class: widget._class,
-                __id: widget._id,
-                __properties: {}
-            };
-            if (properties && properties.length) {
-                properties.forEach.forEach(function (item) {
-                    if (widget[item.id + "_modified"]()) {
-                        retVal.__properties[item] = widget[item]();
-                    }
-                });
-            } else {
-                this.discover(widget, true).forEach(function (item) {
-                    if (widget[item.id + "_modified"]()) {
-                        switch (item.type) {
-                            case "widget":
-                                retVal.__properties[item.id] = this.serializeToObject(widget[item.id](), null, includeData);
-                                break;
-                            case "widgetArray":
-                                retVal.__properties[item.id] = [];
-                                var widgetArray = widget[item.id]();
-                                widgetArray.forEach(function (widget, idx) {
-                                    retVal.__properties[item.id].push(this.serializeToObject(widget, null, includeData));
-                                }, this);
-                                break;
-                            default:
-                                retVal.__properties[item.id] = widget[item.id]();
-                                break;
-                        }
-                    }
-                }, this);
-            }
-            if (widget._class === "marshaller_Graph") {
-                var vertices = widget.data().vertices;
-                if (vertices) {
-                    this.__vertices = vertices.map(function (item) {
-                        return this.serializeToObject(item, null, includeData);
-                    }, this);
-                }
-            }
-            if (includeData) {
-                retVal.__data = {};
-                retVal.__data.columns = widget.columns();
-                retVal.__data.data = widget.data();
-            }
-            return retVal;
-        },
-
-        serialize: function (widget, properties, includeData) {
-            return JSON.stringify(this.serializeToObject(widget, properties, includeData));
-        },
-
-        deserialize: function (state, callback) {
-            var context = this;
-            var path = "../" + state.__class.split("_").join("/");
-            require([path], function (Widget) {
-                var widget = new Widget();
-                if (state instanceof String) {
-                    state = JSON.parse(state)
-                }
-                if (state.__id.indexOf("_w") !== 0) {
-                    widget._id = state.__id;
-                }
-                var widgets = [];
-                var createCount = 0;
-                for (var key in state.__properties) {
-                    if (widget["__meta_" + key]) {
-                        switch (widget["__meta_" + key].type) {
-                            case "widget":
-                                ++createCount;
-                                context.deserialize(state.__properties[key], function (widgetItem) {
-                                    widget[key](widgetItem);
-                                    --createCount;
-                                });
-                                break;
-                            case "widgetArray":
-                                ++createCount;
-                                var widgetStateArray = state.__properties[key];
-                                var widgetArray = [];
-                                widgetArray.length = widgetStateArray.length;
-                                var arrayCreateCount = 0;
-                                widgetStateArray.forEach(function (widgetState, idx) {
-                                    ++arrayCreateCount;
-                                    context.deserialize(widgetState, function (widgetItem) {
-                                        widgetArray[idx] = widgetItem;
-                                        --arrayCreateCount;
-                                    });
-                                    var arrayIntervalHandler = setInterval(function () {
-                                        if (arrayCreateCount <= 0) {
-                                            clearInterval(arrayIntervalHandler);
-                                            arrayCreateCount = undefined;
-                                            widget[key](widgetArray);
-                                            --createCount;
-                                        }
-                                    }, 20);
-                                });
-                                break;
-                            default:
-                                widget[key](state.__properties[key]);
-                                break;
-                        }
-                    } else {
-                        var d = 0;
-                    }
-                }
-                var intervalHandler = setInterval(function () {
-                    if (createCount <= 0) {
-                        clearInterval(intervalHandler);
-                        createCount = undefined;
-                        if (state.__data) {
-                            for (var key in state.__data) {
-                                widget[key](state.__data[key]);
-                            }
-                        }
-                        callback(widget);
-                    }
-                }, 20);
-            });
-        },
-
-        create: function (state, callback) {
-            if (typeof state === "string") {
-                state = JSON.parse(state)
-            }
-            this.deserialize(state, callback);
-        },
-
-        clone: function (widget, callback) {
-            this.create(this.serializeToObject(widget, [], true), callback);
-        }
-    };
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('chart/MultiChart',["d3/d3", "../common/SVGWidget", "./INDChart", "../other/Persist", "require"], factory);
-    } else {
-        root.chart_MultiChart = factory(root.d3, root.common_SVGWidget, root.chart_INDChart, root.other_Persist, root.require);
-    }
-}(this, function (d3, SVGWidget, INDChart, Persist, require) {
-    var _2dChartTypes = [
-        { id: "BUBBLE", display: "Bubble", widgetClass: "chart_Bubble" },
-        { id: "COLUMN", display: "Column", widgetClass: "chart_Column" },
-        { id: "PIE", display: "Pie", widgetClass: "chart_Pie" },
-        { id: "GOOGLE_PIE", display: "Pie (Google)", widgetClass: "google_Pie" },
-        { id: "C3_PIE", display: "Pie (C3)", widgetClass: "c3_Pie" },
-        { id: "C3_DONUT", display: "Donut (C3)", widgetClass: "c3_Donut" },
-        { id: "WORD_CLOUD", display: "Word Cloud", widgetClass: "other_WordCloud" }
-    ];
-    var _multiChartTypes = [
-        { id: "GOOGLE_BAR", display: "Bar (Google)", widgetClass: "google_Bar" },
-        { id: "GOOGLE_COLUMN", display: "Column (Google)", widgetClass: "google_Column" },
-        { id: "LINE", display: "Line", widgetClass: "chart_Line" },
-        { id: "GOOGLE_LINE", display: "Line (Google)", widgetClass: "google_Line" },
-        { id: "C3_LINE", display: "Line (C3)", widgetClass: "c3_Line" },
-        { id: "C3_BAR", display: "Bar (C3)", widgetClass: "c3_Bar" },
-        { id: "C3_COLUMN", display: "Column (C3)", widgetClass: "c3_Column" },
-        { id: "C3_STEP", display: "Step (C3)", widgetClass: "c3_Step" },
-        { id: "C3_AREA", display: "Area (C3)", widgetClass: "c3_Area" },
-        { id: "C3_SCATTER", display: "Scatter (C3)", widgetClass: "c3_Scatter" }
-    ];
-    var _anyChartTypes = [
-        { id: "TABLE", display: "Table", widgetClass: "other_Table" }
-    ];
-    var _allChartTypes = _2dChartTypes.concat(_multiChartTypes.concat(_anyChartTypes));
-
-    function MultiChart() {
-        SVGWidget.call(this);
-        INDChart.call(this);
-        this._class = "chart_MultiChart";
-
-        this._chart = null;
-
-        this._2dChartTypes = _2dChartTypes;
-        this._multiChartTypes = _multiChartTypes;
-        this._anyChartTypes = _anyChartTypes;
-        this._allChartTypes = _allChartTypes;
-
-        this._allCharts = {};
-        this._allChartTypes.forEach(function (item) {
-            var newItem = JSON.parse(JSON.stringify(item));
-            newItem.widget = null;
-            this._allCharts[item.id] = newItem;
-            this._allCharts[item.display] = newItem;
-            this._allCharts[item.widgetClass] = newItem;
-        }, this);
-        //  Backward compatability until we roll our own BAR  ---
-        this._allCharts["BAR"] = this._allCharts["COLUMN"];
-    };
-    MultiChart.prototype = Object.create(SVGWidget.prototype);
-    MultiChart.prototype.implements(INDChart.prototype);
-
-    MultiChart.prototype.publish("chart_type", "BUBBLE", "set", "Chart Type", _allChartTypes.map(function (item) { return item.id; }));
-    MultiChart.prototype.publish("chart", null, "widget", "Chart");
-
-    MultiChart.prototype.columns = function (_) {
-        var retVal = SVGWidget.prototype.columns.apply(this, arguments);
-        if (arguments.length && this._chart) {
-            this._chart.columns(_);
-        }
-        return retVal;
-    };
-
-    MultiChart.prototype.data = function (_) {
+    Choropleth.prototype = Object.create(SVGWidget.prototype);
+    Choropleth.prototype.implements(IChoropleth.prototype);
+    Choropleth.prototype.publish("paletteID", "YlOrRd", "set", "Palette ID", Choropleth.prototype._palette.switch());
+
+    Choropleth.prototype.data = function (_) {
         var retVal = SVGWidget.prototype.data.apply(this, arguments);
-        if (arguments.length && this._chart) {
-            this._chart.data(_);
+        if (arguments.length) {
+            this._dataMap = {};
+            this._dataMinWeight = null;
+            this._dataMaxWeight = null;
+
+            var context = this;
+            this._data.forEach(function (item) {
+                context._dataMap[item[0]] = item;
+                if (!context._dataMinWeight || item[1] < context._dataMinWeight) {
+                    context._dataMinWeight = item[1];
+                }
+                if (!context._dataMaxWeight || item[1] > context._dataMaxWeight) {
+                    context._dataMaxWeight = item[1];
+                }
+            });
         }
         return retVal;
     };
 
-    MultiChart.prototype.hasOverlay = function () {
-        return this._chart && this._chart.hasOverlay();
-    };
-
-    MultiChart.prototype.visible = function (_) {
-        if (!arguments.length) return this._chart.visible();
-        if (this._chart) {
-            this._chart.visible(_);
-        }
-        return this;
-    };
-
-    MultiChart.prototype.requireContent = function (chartType, callback) {
-        var retVal = this._allCharts[chartType].widget;
-        if (retVal) {
-            callback(retVal);
-            return;
-        }
-
-        var context = this;
-        var path = "../" + this._allCharts[chartType].widgetClass.split("_").join("/");
-        require([path], function (widgetClass) {
-            retVal = new widgetClass();
-            context._allCharts[chartType].widget = retVal;
-            callback(retVal);
-        });
-    };
-
-    MultiChart.prototype.switchChart = function (callback) {
-        var oldContent = this._chart;
-        var context = this;
-        this.requireContent(this._chart_type, function (newContent) {
-            if (newContent !== oldContent) {
-                var size = context.size();
-                context._chart = newContent
-                    .columns(context._columns)
-                    .data(context._data)
-                    .size(size)
-                ;
-                newContent.click = function (row, column) {
-                    context.click(row, column);
-                }
-                if (oldContent) {
-                    oldContent
-                        .data([])
-                        .size({ width: 1, height: 1 })
-                        .render()
-                    ;
-                }
-            }
-            if (callback) {
-                callback(this);
-            }
-        });
-    };
-
-    MultiChart.prototype.update = function (domNode, element) {
-        SVGWidget.prototype.update.apply(this, arguments);
-        var content = element.selectAll(".multiChart").data(this._chart ? [this._chart] : [], function (d) { return d._id; });
-        content.enter().append("g")
-            .attr("class", "multiChart")
-            .each(function (d) {
-                d.target(this);
-            })
-        ;
-
-        var size = this.size();
-        content
-            .each(function (d) {
-                d
-                    .size(size)
-                    .render()
-                ;
-            })
-        ;
-
-        content.exit().transition()
-            .each(function (d) { d.target(null); })
-            .remove()
-        ;
-    };
-
-    MultiChart.prototype.exit = function (domNode, element) {
-        if (this._chart) {
-            this._chart.target(null);
-        }
-        SVGWidget.prototype.exit.apply(this, arguments);
-    };
-
-
-    MultiChart.prototype.render = function (callback) {
-        if (this._chart_type && (!this._chart || (this._chart._class !== this._allCharts[this._chart_type].widgetClass))) {
-            var context = this;
-            var args = arguments;
-            this.switchChart(function () {
-                SVGWidget.prototype.render.apply(context, args);
-            });
-            return this;
-        }
-        return SVGWidget.prototype.render.apply(this, arguments);
-    }
-
-    return MultiChart;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/IMenu.js',[], factory);
-    } else {
-        root.common_IMenu = factory();
-    }
-}(this, function () {
-    function IMenu() {
-    };
-
-    //  Data ---
-    IMenu.prototype.testData = function () {
-        var data = ["This", "is a", "list", "of some text."];
-        this.data(data);
-        return this;
-    };
-
-    //  Properties  ---
-
-    //  Events  ---
-    IMenu.prototype.click = function (d) {
-        console.log("Click:  " + d);
-    };
-    IMenu.prototype.preShowMenu = function () {
-        console.log("preShowMenu");
-    };
-    IMenu.prototype.postHideMenu = function (d) {
-        console.log("postHideMenu");
-    };
-
-    return IMenu;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/IList.js',[], factory);
-    } else {
-        root.common_IList = factory();
-    }
-}(this, function () {
-    function IList() {
-    };
-
-    //  Data ---
-    IList.prototype.testData = function () {
-        var data = ["This", "is a", "list", "of some text."];
-        this.data(data);
-        return this;
-    };
-
-    //  Properties  ---
-
-    //  Events  ---
-    IList.prototype.click = function (d) {
-        console.log("Click:  " + d);
-    };
-
-    return IList;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/List.js',["d3/d3", "../common/SVGWidget", "./IList", "../common/TextBox", "css!./List"], factory);
-    } else {
-        root.common_List = factory(root.d3, root.common_SVGWidget, root.common_IList, root.common_TextBox);
-    }
-}(this, function (d3, SVGWidget, IList, TextBox) {
-    function List(target) {
-        SVGWidget.call(this);
-        IList.call(this);
-        this._class = "common_List";
-
-        this._listWidgets = {};
-    };
-    List.prototype = Object.create(SVGWidget.prototype);
-    List.prototype.implements(IList.prototype);
-
-    List.prototype.publish("anchor", "start", "set", "Anchor Position", ["", "start", "middle", "end"]);
-
-    List.prototype.update = function (domNode, element) {
-        SVGWidget.prototype.update.apply(this, arguments);
-        var context = this;
-
-        var line = element.selectAll(".line").data(this._data, function (d) { return d; });
-        line.enter().append("g")
-            .attr("class", "line")
-            .each(function (d) {
-                var newTextBox = new TextBox()
-                    .target(this)
-                    .padding_top(0)
-                    .padding_bottom(0)
-                    .padding_left(8)
-                    .padding_right(8)
-                    .text(d)
-                    .render()
-                ;
-                newTextBox.element()
-                    .on("click", function (d) {
-                        context.click(d.text());
-                    })
-                ;
-                context._listWidgets[d] = newTextBox;
-            })
-        ;
-
-        var listHeight = 0;
-        var listWidth = 0;
-        var listCount = 0;
-        for (var key in this._listWidgets) {
-            var bbox = this._listWidgets[key].getBBox();
-            listHeight += bbox.height;
-            if (listWidth < bbox.width)
-                listWidth = bbox.width;
-            ++listCount;
-        }
-        var lineHeight = listHeight / listCount;
-
-        var xPos = -listWidth / 2;
-        var yPos = -listHeight / 2;// + lineHeight / 2;
-        line
-            .each(function (d) {
-                var widget = context._listWidgets[d];
-                var bbox = widget.getBBox();
-                widget
-                    .pos({ x: 0, y: yPos + bbox.height / 2 })
-                    .anchor(context._anchor)
-                    .fixedSize({ width: listWidth, height: bbox.height })
-                    .render()
-                ;
-                yPos += bbox.height;
-            })
-        ;
-        line.exit()
-            .remove()
-            .each(function (d) {
-                delete context._listWidgets[d];
-            })
-        ;
-    };
-
-    return List;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/Menu.js',["./SVGWidget", "./IMenu", "./Icon", "./List", "css!./Menu"], factory);
-    } else {
-        root.common_Menu = factory(root.common_SVGWidget, root.common_IMenu, root.common_Icon, root.common_List);
-    }
-}(this, function (SVGWidget, IMenu, Icon, List) {
-    function Menu() {
-        SVGWidget.call(this);
-        IMenu.call(this);
-        this._class = "common_Menu";
-
-        this._icon = new Icon()
-            .shape("rect")
-            .diameter(14)
-        ;
-        this._list = new List();
-
-        var context = this;
-        this._list.click = function (d) {
-            d3.event.stopPropagation();
-            context.hideMenu();
-            context.click(d);
-        };
-        this._visible = false;
-    };
-    Menu.prototype = Object.create(SVGWidget.prototype);
-    Menu.prototype.implements(IMenu.prototype);
-
-    Menu.prototype.publishProxy("faChar", "_icon", null, "\uf0c9");
-    Menu.prototype.publishProxy("padding_percent", "_icon", null, 10);
-
-    Menu.prototype.toggleMenu = function () {
-        if (!this._visible) {
-            this.showMenu();
-        } else {
-            this.hideMenu();
-        }
-    };
-
-    Menu.prototype.showMenu = function () {
-        this.preShowMenu();
-        this._visible = true;
-        this._list
-            .data(this._data)
-            .render()
-        ;
-
-        var bbox = this._icon.getBBox(true);
-        var menuBBox = this._list.getBBox(true);
-        var pos = {
-            x: bbox.width / 2 - menuBBox.width / 2,
-            y: bbox.height / 2 + menuBBox.height / 2
-        };
-        this._list
-            .move(pos)
-        ;
-        var context = this;
-        d3.select("body")
-            .on("click." + this._id, function () {
-                console.log("click:  body - " + context._id)
-                if (context._visible) {
-                    context.hideMenu();
-                }
-            })
-        ;
-    };
-
-    Menu.prototype.hideMenu = function () {
-        d3.select("body")
-            .on("click." + this._id, null)
-        ;
-        this._visible = false;
-        this._list
-            .data([])
-            .render()
-        ;
-        this.postHideMenu();
-    };
-
-    Menu.prototype.testData = function () {
-        this
-            .data(["Menu A", "And B", "a longer C"])
-        ;
-        return this;
-    }
-
-    Menu.prototype.enter = function (domNode, element) {
-        SVGWidget.prototype.enter.apply(this, arguments);
-
-        this._icon
-            .target(domNode)
-            .render()
-        ;
-
-        this._list
-            .target(domNode)
-            .render()
-        ;
-
-        var context = this;
-        this._icon.element()
-            .on("click", function (d) {
-                d3.event.stopPropagation();
-                context.toggleMenu();
-            })
-        ;
-    };
-
-    Menu.prototype.update = function (domNode, element) {
-        SVGWidget.prototype.update.apply(this, arguments);
-        element
-            .classed("disabled", this._data.length === 0)
-        ;
-
-        this._icon
-            .faChar(this.faChar())
-            .padding_percent(this.padding_percent())
-            .render()
-        ;
-    };
-
-    return Menu;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/Surface.js',["./SVGWidget", "./Icon", "./Shape", "./Text", "./FAChar", "./Menu", "css!./Surface"], factory);
-    } else {
-        root.common_Surface = factory(root.common_SVGWidget, root.common_Icon, root.common_Shape, root.common_Text, root.common_FAChar, root.common_Menu);
-    }
-}(this, function (SVGWidget, Icon, Shape, Text, FAChar, Menu) {
-    function Surface() {
-        SVGWidget.call(this);
-        this._class = "common_Surface";
-
-        this._menuPadding = 2;
-        this._icon = new Icon()
-            .faChar("\uf07b")
-            .padding_percent(50)
-        ;
-        this._container = new Shape()
-            .class("container")
-            .shape("rect")
-        ;
-        this._titleRect = new Shape()
-            .class("title")
-            .shape("rect")
-        ;
-        this._text = new Text()
-            .class("title")
-        ;
-        this._menu = new Menu()
-            .padding_percent(0)
-        ;
-        var context = this;
-        this._menu.preShowMenu = function () {
-            if (context._content && context._content.hasOverlay()) {
-                context._content.visible(false);
-            }
-        }
-        this._menu.postHideMenu = function () {
-            if (context._content && context._content.hasOverlay()) {
-                context._content.visible(true);
-            }
-        }
-
-        this._showContent = true;
-        this._content = null;
-    };
-    Surface.prototype = Object.create(SVGWidget.prototype);
-
-    Surface.prototype.publish("show_title", true, "boolean", "Show Title");
-    Surface.prototype.publish("title", "", "string", "Title");
-    Surface.prototype.publishProxy("title_font_size", "_text", "font_size");
-    Surface.prototype.publish("show_icon", true, "boolean", "Show Title");
-    Surface.prototype.publishProxy("icon_faChar", "_icon", "faChar");
-    Surface.prototype.publishProxy("icon_shape", "_icon", "shape");
-    //Surface.prototype.publish("menu");
-    Surface.prototype.publish("content", null, "widget", "Content");
-
-    Surface.prototype.menu = function (_) {
-        if (!arguments.length) return this._menu.data();
-        this._menu.data(_);
-        return this;
-    };
-
-    Surface.prototype.showContent = function (_) {
-        if (!arguments.length) return this._showContent;
-        this._showContent = _;
-        if (this._content) {
-            this._content.visible(this._showContent);
-        }
-        return this;
-    };
-
-    Surface.prototype.content = function (_) {
-        if (!arguments.length) return this._content;
-        this._content = _;
-        switch (this._content.class()) {
-            case "bar":
-                this.icon_faChar("\uf080")
-                break;
-            case "bubble":
-                this.icon_faChar("\uf192")
-                break;
-            case "pie":
-                this.icon_faChar("\uf200")
-                break;
-            case "table":
-                this.icon_faChar("\uf0ce")
-                break;
-        }
-
-        return this;
-    };
-
-    Surface.prototype.testData = function () {
-        this.title("Hello and welcome!");
-        this.menu(["aaa", "bbb", "ccc"]);
-        return this;
-    }
-
-    Surface.prototype.enter = function (_domNode, _element) {
-        SVGWidget.prototype.enter.apply(this, arguments);
-        var element = _element.append("g").attr("class", "frame");
-        var domNode = element.node();
-        this._clipRect = element.append("defs").append("clipPath")
-            .attr("id", this.id() + "_clip")
-            .append("rect")
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", this._size.width)
-                .attr("height", this._size.height)
-        ;
-        this._titleRect
-            .target(domNode)
-            .render()
-            .display(this._show_title && this._show_icon)
-        ;
-        this._icon
-            .target(domNode)
-            .render()
-        ;
-        var menuViz = false;
-        this._menu
-            .target(_domNode)
-        ;
-        this._text
-            .target(domNode)
-        ;
-        this._container
-            .target(domNode)
-        ;
-    };
-
-    Surface.prototype.update = function (domNode, element) {
-        SVGWidget.prototype.update.apply(this, arguments);
-
-        this._icon
-            .display(this._show_title && this._show_icon)
-            .render()
-        ;
-        this._menu
-            .render()
-        ;
-        this._text
-            .text(this._title)
-            .display(this._show_title)
-            .render()
-        ;
-        var iconClientSize = this._show_icon ? this._icon.getBBox(true) : {width:0, height: 0};
-        var textClientSize = this._text.getBBox(true);
-        var menuClientSize = this._menu.getBBox(true);
-        var titleRegionHeight = Math.max(iconClientSize.height, textClientSize.height, menuClientSize.height);
-        var yTitle = (-this._size.height + titleRegionHeight) / 2;
-
-        var titleTextHeight = Math.max(textClientSize.height, menuClientSize.height);
-
-        var topMargin = titleRegionHeight <= titleTextHeight ? 0 : (titleRegionHeight - titleTextHeight) / 2;
-        var leftMargin = topMargin;
-
-        this._titleRect
-            .pos({ x: leftMargin, y: yTitle })
-            .width(this._size.width - leftMargin * 2)
-            .height(titleTextHeight)
-            .display(this._show_title)
-            .render()
-        ;
-        this._icon
-            .move({ x: -this._size.width / 2 + iconClientSize.width / 2, y: yTitle })
-        ;
-        this._menu
-            .move({ x: this._size.width / 2 - menuClientSize.width / 2 - this._menuPadding, y: yTitle })
-        ;
-        this._text
-            .move({ x: (iconClientSize.width / 2 - menuClientSize.width / 2) / 2, y: yTitle })
-        ;
-        if (this._show_title) {
-            this._container
-                .pos({ x: leftMargin / 2, y: titleRegionHeight / 2 - topMargin / 2 })
-                .width(this._size.width - leftMargin)
-                .height(this._size.height - titleRegionHeight + topMargin)
-                .render()
-            ;
-        } else {
-            this._container
-                .pos({ x: 0, y: 0 })
-                .width(this._size.width)
-                .height(this._size.height)
-                .render()
-            ;
-        }
-
-        if (this._showContent) {
-            var xOffset = leftMargin;
-            var yOffset = titleRegionHeight - topMargin;
-            var context = this;
-            var content = element.selectAll(".content").data(this._content ? [this._content] : [], function (d) { return d._id; });
-            content.enter().append("g")
-                .attr("class", "content")
-                .attr("clip-path", "url(#" + this.id() + "_clip)")
-                .each(function (d) {
-                    d.target(this);
-                })
-            ;
-            content
-                .each(function (d) {
-                    var padding = {
-                        left: 4,
-                        top: 4,
-                        right: 4,
-                        bottom: 4
-                    };
-                    d
-                        .pos({ x: xOffset / 2, y: yOffset / 2 })
-                        .size({
-                            width: context._size.width - xOffset - (padding.left + padding.right),
-                            height: context._size.height - yOffset - (padding.top + padding.bottom)
-                        })
-                    ;
-                })
-            ;
-            if (this._content) {
-                this._clipRect
-                    .attr("x", -this._size.width / 2 + xOffset)
-                    .attr("y", -this._size.height / 2 + yOffset)
-                    .attr("width", this._size.width - xOffset)
-                    .attr("height", this._size.height - yOffset)
-                ;
-            }
-            content.exit().transition()
-                .each(function (d) { d.target(null); })
-                .remove()
-            ;
-        }
-
-        this._menu.element().node().parentNode.appendChild(this._menu.element().node());
-    };
-
-    Surface.prototype.exit = function (domNode, element) {
-        if (this._content) {
-            this._content.target(null);
-        }
-        SVGWidget.prototype.exit.apply(this, arguments);
-    };
-
-    Surface.prototype.render = function (callback) {
-        if (!this._content) {
-            SVGWidget.prototype.render.apply(this, arguments);
-        }
-        SVGWidget.prototype.render.call(this);
-        var context = this;
-        if (this._content) {
-            this._content.render(function (contentWidget) {
-                if (callback) {
-                    callback(context);
-                }
-            });
-        }
-        return this;
-    }
-
-    Surface.prototype.intersection = function (pointA, pointB) {
-        var hits = [];
-        var i1 = this._icon.intersection(pointA, pointB, this._pos);
-        if (i1) {
-            hits.push({i: i1, d: this.distance(i1, pointB)});
-        }
-        var i2 = this._titleRect.intersection(pointA, pointB);
-        if (i2) {
-            hits.push({i: i2, d: this.distance(i2, pointB)});
-        }
-        var i3 = this._container.intersection(pointA, pointB);
-        if (i3) {
-            hits.push({i: i3, d: this.distance(i3, pointB)});
-        }
-        var nearest = null;
-        hits.forEach(function (item) {
-            if (nearest === null || nearest.d > item.d) {
-                nearest = item;
-            }
-        });
-        return nearest && nearest.i ? nearest.i : null;
-    };
-
-    return Surface;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('common/ResizeSurface.js',["./Surface", "css!./ResizeSurface"], factory);
-    } else {
-        root.common_ResizeSurface = factory(root.common_Surface);
-    }
-}(this, function (Surface) {
-    function ResizeSurface() {
-        Surface.call(this);
-
-        this.handleWidth = 8;
-        this.handles = [{ loc: "NW" }, { loc: "N" }, { loc: "NE" }, { loc: "E" }, { loc: "SE" }, { loc: "S" }, { loc: "SW" }, { loc: "W" }];
-
-        this._allowResize = true;
-
-        var context = this;
-        this.dispatch = d3.dispatch("sizestart", "size", "sizeend");
-        this.drag = d3.behavior.drag()
-            .origin(function (d) { return d; })
-            .on("dragstart", function (d) {
-                context.dispatch.sizestart(context, d.loc);
-                if (context._allowResize) {
-                    d3.event.sourceEvent.stopPropagation();
-                    context._dragHandlePos = { x: d.x, y: d.y };
-                    context._dragStartPos = context.pos();
-                    context._dragStartSize = context.size();
-                    context._prevPosSize = {
-                        x: context._dragStartPos.x,
-                        y: context._dragStartPos.y,
-                        width: context._dragStartSize.width,
-                        height: context._dragStartSize.height
-                    }
-                    context._textPosSize = context._text.getBBox(true);
-                    context._iconPosSize = context._icon.getBBox(true);
-                    context.showContent(false);
-                }
-            })
-            .on("drag", function (d) {
-                if (context._allowResize) {
-                    d3.event.sourceEvent.stopPropagation();
-                    var _dx = d3.event.x - context._dragHandlePos.x;
-                    var _dy = d3.event.y - context._dragHandlePos.y;
-                    var delta = { x: 0, y: 0, w: 0, h: 0 };
-                    switch (d.loc) {
-                        case "NW":
-                            delta.x = _dx / 2;
-                            delta.w = -_dx;
-                        case "N":
-                            delta.y = _dy / 2;
-                            delta.h = -_dy;
-                            break;
-                        case "NE":
-                            delta.y = _dy / 2;
-                            delta.h = -_dy;
-                        case "E":
-                            delta.x = _dx / 2;
-                            delta.w = _dx;
-                            break;
-                        case "SE":
-                            delta.x = _dx / 2;
-                            delta.w = _dx;
-                        case "S":
-                            delta.y = _dy / 2;
-                            delta.h = _dy;
-                            break;
-                        case "SW":
-                            delta.y = _dy / 2;
-                            delta.h = _dy;
-                        case "W":
-                            delta.x = _dx / 2;
-                            delta.w = -_dx;
-                            break;
-                    }
-                    var posSize = {
-                        x: context._dragStartPos.x + delta.x,
-                        y: context._dragStartPos.y + delta.y,
-                        width: context._dragStartSize.width + delta.w,
-                        height: context._dragStartSize.height + delta.h
-                    };
-                    if (posSize.width < context._iconPosSize.width * 2 + context._textPosSize.width) {
-                        posSize.x = context._prevPosSize.x;
-                        posSize.width = context._prevPosSize.width;
-                    }
-                    if (posSize.height < context._textPosSize.height + 48) {
-                        posSize.y = context._prevPosSize.y;
-                        posSize.height = context._prevPosSize.height;
-                    }
-                    context
-                        .pos({ x: posSize.x, y: posSize.y }, false, false)
-                        .size({ width: posSize.width, height: posSize.height })
-                        .render()
-                        .getBBox(true)
-                    ;
-                    context.dispatch.size(context, d.loc);
-                    context._prevPosSize = posSize;
-                }
-            })
-            .on("dragend", function (d) {
-                if (context._allowResize) {
-                    d3.event.sourceEvent.stopPropagation();
-                    context
-                        .showContent(true)
-                        .render()
-                    ;
-                    context._container.getBBox(true);
-                    context._titleRect.getBBox(true);
-                    context.dispatch.sizeend(context, d.loc);
-                }
-            })
-        ;
-    };
-    ResizeSurface.prototype = Object.create(Surface.prototype);
-
-    ResizeSurface.prototype.allowResize = function (_) {
-        if (!arguments.length) return this._allowResize;
-        this._allowResize = _;
-        return this;
-    };
-
-    ResizeSurface.prototype.move = function (_) {
-        var retVal = Surface.prototype.move.apply(this, arguments);
-        this.updateHandles(this._domNode, this._element);
-        return retVal;
-    };
-
-    ResizeSurface.prototype.update = function (domNode, element) {
-        Surface.prototype.update.apply(this, arguments);
-        this.updateHandles(domNode, element);
-    };
-
-    ResizeSurface.prototype.updateHandles = function (domNode, element) {
-        var sizeHandles = this._parentElement.selectAll("rect").data(this.handles, function (d) { return d.loc; });
-        sizeHandles.enter().append("rect")
-            .attr("class", function (d) { return "resize" + d.loc; })
-            .call(this.drag)
-        ;
-
-        var l = this._pos.x + this._container._pos.x - this._container.width() / 2;
-        var t = this._pos.y + this._titleRect._pos.y - this._titleRect.height() / 2;
-        var r = this._pos.x + this._container._pos.x + this._container.width() / 2;
-        var b = this._pos.y + this._container._pos.y + this._container.height() / 2;
-        var w = r - l;
-        var h = b - t;
-        var context = this;
-        sizeHandles
-            .each(function (d) {
-                switch (d.loc) {
-                    case "NW":
-                        d.x = l - context.handleWidth / 2;
-                        d.y = t - context.handleWidth / 2;
-                        d.width = context.handleWidth;
-                        d.height = context.handleWidth;
-                        break;
-                    case "N":
-                        d.x = l + context.handleWidth / 2;
-                        d.y = t - context.handleWidth / 2;
-                        d.width = w - context.handleWidth;
-                        d.height = context.handleWidth;
-                        break;
-                    case "NE":
-                        d.x = r - context.handleWidth / 2;
-                        d.y = t - context.handleWidth / 2;
-                        d.width = context.handleWidth;
-                        d.height = context.handleWidth;
-                        break;
-                    case "E":
-                        d.x = r - context.handleWidth / 2;
-                        d.y = t + context.handleWidth / 2;
-                        d.width = context.handleWidth;
-                        d.height = h - context.handleWidth;
-                        break;
-                    case "SE":
-                        d.x = r - context.handleWidth / 2;
-                        d.y = b - context.handleWidth / 2;
-                        d.width = context.handleWidth;
-                        d.height = context.handleWidth;
-                        break;
-                    case "S":
-                        d.x = l + context.handleWidth / 2;
-                        d.y = b - context.handleWidth / 2;
-                        d.width = w - context.handleWidth;
-                        d.height = context.handleWidth;
-                        break;
-                    case "SW":
-                        d.x = l - context.handleWidth / 2;
-                        d.y = b - context.handleWidth / 2;
-                        d.width = context.handleWidth;
-                        d.height = context.handleWidth;
-                        break;
-                    case "W":
-                        d.x = l - context.handleWidth / 2;
-                        d.y = t + context.handleWidth / 2;
-                        d.width = context.handleWidth;
-                        d.height = h - context.handleWidth;
-                        break;
-                }
-                d3.select(this)
-                    .attr("x", d.x)
-                    .attr("y", d.y)
-                    .attr("width", d.width)
-                    .attr("height", d.height)
-                ;
-            })
-        ;
-    };
-
-    return ResizeSurface;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('chart/MultiChartSurface',["d3/d3", "../common/ResizeSurface", "./MultiChart", "./INDChart"], factory);
-    } else {
-        root.chart_MultiChartSurface = factory(root.d3, root.common_ResizeSurface, root.chart_MultiChart, root.chart_INDChart);
-    }
-}(this, function (d3, ResizeSurface, MultiChart, INDChart) {
-    function MultiChartSurface() {
-        ResizeSurface.call(this);
-        INDChart.call(this);
-        this.class = "chart_MultiChartSurface";
-
-        this._title = "MultiChartSurface";
-        this._content = new MultiChart();
-        this._content.click = function (row, column) {
-            context.click(row, column);
-        }
-
-        var context = this;
-        this._menu.click = function (d) {
-            context._content.chart_type(d).render();
-        }
-        this.mode("all");
-    };
-    MultiChartSurface.prototype = Object.create(ResizeSurface.prototype);
-    MultiChartSurface.prototype.implements(INDChart.prototype);
-    MultiChartSurface.prototype.testData = INDChart.prototype.testData;
-
-    MultiChartSurface.prototype.publishProxy("chart_type", "_content");
-
-    MultiChartSurface.prototype.columns = function (_) {
-        if (!arguments.length) return this._content.columns();
-        this._content.columns(_);
-        return this;
-    };
-
-    MultiChartSurface.prototype.data = function (_) {
-        if (!arguments.length) return this._content.data();
-        this._content.data(_);
-        return this;
-    };
-
-    MultiChartSurface.prototype.mode = function (_) {
-        if (!arguments.length) return this._mode;
-        this._mode = _;
-        switch (this._mode) {
-            case "2d":
-                this.menu(this._content._2dChartTypes.concat(this._content._anyChartTypes).map(function (item) { return item.display; }).sort());
-                break;
-            case "multi":
-                this.menu(this._content._multiChartTypes.concat(this._content._anyChartTypes).map(function (item) { return item.display; }).sort());
-                break;
-            case "all":
-            default:
-                this.menu(this._content._allChartTypes.map(function (item) { return item.display; }).sort());
-        }
-        return this;
-    };
-
-    return MultiChartSurface;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('chart/Pie',["d3/d3", "../common/SVGWidget", "./I2DChart", "../common/Text", "../common/FAChar", "css!./Pie"], factory);
-    } else {
-        root.chart_Pie = factory(root.d3, root.common_SVGWidget, root.chart_I2DChart, root.common_Text, root.common_FAChar);
-    }
-}(this, function (d3, SVGWidget, I2DChart, Text, FAChar) {
-    function Pie(target) {
-        SVGWidget.call(this);
-        I2DChart.call(this);
-        this._class = "chart_Pie";
-
-        this._outerText = false;  //  Put label inside pie or outside (true/false)
-        this._radius = 100;       // px
-        this._innerRadius = 0;    // px
-
-        this.labelWidgets = {};
-
-        this.d3Pie = d3.layout.pie()
-            .sort(function (a, b) {
-                return a < b ? -1 : a > b ? 1 : 0;
-            })
-            .value(function (d) { return d[1]; })
-        ;
-        this.d3Arc = d3.svg.arc()
-            .outerRadius(this._radius)
-            .innerRadius(this._innerRadius)
-        ;
-    };
-    Pie.prototype = Object.create(SVGWidget.prototype);
-    Pie.prototype.implements(I2DChart.prototype);
-
-    Pie.prototype.publish("paletteID", "default", "set", "Palette ID", Pie.prototype._palette.switch());
-
-    Pie.prototype.size = function (_) {
+    Choropleth.prototype.size = function (_) {
         var retVal = SVGWidget.prototype.size.apply(this, arguments);
         if (arguments.length) {
-            this.radius(Math.min(this._size.width, this._size.height) / 2);
+            if (this._svgZoom) {
+                this._svgZoom
+                    .attr("x", -this._size.width / 2)
+                    .attr("y", -this._size.height / 2)
+                    .attr("width", this._size.width)
+                    .attr("height", this._size.height)
+                ;
+            }
         }
         return retVal;
-    };
+    }
 
-    Pie.prototype.radius = function (_) {
-        if (!arguments.length) return this._radius;
-        this.d3Arc.outerRadius(_);
-        this._radius = _;
+    Choropleth.prototype.projection = function (_) {
+        if (!arguments.length) return this._projection;
+        this._projection = _;
+        switch (this._projection) {
+            case "albersUsaPr":
+                this.d3Projection = this.albersUsaPr();
+                break;
+            case "orthographic":
+                this.d3Projection = d3.geo.orthographic()
+                    .clipAngle(90)
+                ;
+                break;
+            case "mercator":
+                this.d3Projection = d3.geo.mercator();
+                break;
+        }
+        this.d3Path = d3.geo.path()
+            .projection(this.d3Projection)
+        ;
         return this;
-    };
+    }
 
-    Pie.prototype.innerRadius = function (_) {
-        if (!arguments.length) return this._innerRadius;
-        this.d3Arc.innerRadius(_);
-        this._innerRadius = _;
+    Choropleth.prototype.render = function () {
+        SVGWidget.prototype.render.apply(this, arguments);
+        if (this._renderCount === 1) {
+            this.zoomToFit();
+        }
         return this;
-    };
+    }
 
-    Pie.prototype.outerText = function (_) {
-        if (!arguments.length) return this._outerText;
-        this._outerText = _;
-        return this;
-    };
-
-    Pie.prototype.intersection = function (pointA, pointB) {
-        return this.intersectCircle(pointA, pointB);
-    };
-
-    Pie.prototype.update = function (domNode, element) {
+    Choropleth.prototype.enter = function (domNode, element) {
+        //  Zoom  ---
         var context = this;
+        this._svgZoom = element.append("rect")
+            .attr("class", "zoom")
+            .attr("x", -this._size.width / 2)
+            .attr("y", -this._size.height / 2)
+            .attr("width", this._size.width)
+            .attr("height", this._size.height)
+            .on("dblclick", function (d) {
+                d3.event.stopPropagation();
+                context.zoomToFit(null, 750);
+            })
+        ;
 
+        var defs = this._parentElement.insert("defs", ":first-child");
+        var g = defs.append("pattern")
+            .attr('id', 'hash')
+            .attr('patternUnits', 'userSpaceOnUse')
+            .attr('width', '10')
+            .attr('height', '10')
+            .attr("x", 0).attr("y", 0)
+            .append("g");
+        g.append("rect")
+            .attr("class", "noFill")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 5)
+            .attr("height", 5)
+        ;
+        g.append("rect")
+            .attr("class", "noFill")
+            .attr("x", 5)
+            .attr("y", 5)
+            .attr("width", 5)
+            .attr("height", 5)
+        ;
+
+        this._svg = element.append("g");
+    };
+
+    Choropleth.prototype.update = function (domNode, element) {
         this._palette = this._palette.switch(this._paletteID);
-        var arc = element.selectAll(".arc").data(this.d3Pie(this._data), function (d) { return d.data[0]; });
+    };
 
-        //  Enter  ---
-        arc.enter().append("g")
-            .attr("class", "arc")
-            .attr("opacity", 0)
-            .on("click", function (d) {
-                context.click(context.rowToObj(d.data), context._columns[1]);
-            })
-            .each(function (d) {
-                var element = d3.select(this);
-                element.append("path")
-                    .attr("d", context.d3Arc)
-                    .append("title")
-                ;
-                if (d.data.__viz_faChar) {
-                    context.labelWidgets[d.data[0]] = new FAChar()
-                        .char(d.data.__viz_faChar)
-                        .target(this)
-                        .render()
-                    ;
-                } else {
-                    context.labelWidgets[d.data[0]] = new Text()
-                        .text(d.data[0])
-                        .target(this)
-                        .render()
-                    ;
-                }
-            })
-        ;
+    // A modified d3.geo.albersUsa to include Puerto Rico.
+    Choropleth.prototype.albersUsaPr = function () {
+        var ε = 1e-6;
 
-        //  Update  ---
-        arc.transition()
-            .attr("opacity", 1)
-            .each(function (d) {
-                var pos = { x: 0, y: 1 };
-                if (context._outerText) {
-                    var xFactor = Math.cos((d.startAngle + d.endAngle - Math.PI) / 2);
-                    var yFactor = Math.sin((d.startAngle + d.endAngle - Math.PI) / 2);
+        var lower48 = d3.geo.albers();
 
-                    var textBBox = context.labelWidgets[d.data[0]].getBBox();
-                    var textOffset = Math.abs(xFactor) > Math.abs(yFactor) ? textBBox.width : textBBox.height;
-                    pos.x = xFactor * (context._radius + textOffset);
-                    pos.y = yFactor * (context._radius + textOffset);
-                } else {
-                    var centroid = context.d3Arc.centroid(d);
-                    pos = { x: centroid[0], y: centroid[1] };
-                }
+        // EPSG:3338
+        var alaska = d3.geo.conicEqualArea()
+            .rotate([154, 0])
+            .center([-2, 58.5])
+            .parallels([55, 65]);
 
-                var element = d3.select(this);
-                element.select("path").transition()
-                    .attr("d", context.d3Arc)
-                    .style("fill", function (d) { return context._palette(d.data[0]); })
-                    .select("title")
-                        .text(function (d) { return d.data[0] + " (" + d.data[1] + ")"; })
-                ;
-                context.labelWidgets[d.data[0]]
-                    .pos(pos)
-                    .render()
-                    .element()
-                        .classed("innerLabel", !context._outerText)
-                        .classed("outerLabel", context._outerText)
-                ;
-            })
-        ;
+        // ESRI:102007
+        var hawaii = d3.geo.conicEqualArea()
+            .rotate([157, 0])
+            .center([-3, 19.9])
+            .parallels([8, 18]);
 
-        //  Exit  ---
-        arc.exit().transition()
-            .style("opacity", 0)
-            .remove()
-        ;
+        // XXX? You should check that this is a standard PR projection!
+        var puertoRico = d3.geo.conicEqualArea()
+            .rotate([66, 0])
+            .center([0, 18])
+            .parallels([8, 18]);
 
-        //  Label Lines  ---
-        if (context._outerText) {
-            var lines = element.selectAll("line").data(this.d3Pie(this._data), function (d) { return d.data[0]; });
-            var r = this.radius();
-            lines.enter().append("line")
-              .attr("x1", 0)
-              .attr("x2", 0)
-              .attr("y1", -this._radius - 3)
-              .attr("y2", -this._radius - 8)
-              .attr("stroke", "gray")
-              .attr("transform", function (d) {
-                  return "rotate(" + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ")";
-              });
-            lines.transition()
-              .attr("transform", function (d) {
-                  return "rotate(" + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ")";
-              });
-            lines.exit().remove();
+        var point,
+            pointStream = { point: function (x, y) { point = [x, y]; } },
+            lower48Point,
+            alaskaPoint,
+            hawaiiPoint,
+            puertoRicoPoint;
+
+        function albersUsa(coordinates) {
+            var x = coordinates[0], y = coordinates[1];
+            point = null;
+            (lower48Point(x, y), point)
+                || (alaskaPoint(x, y), point)
+                || (hawaiiPoint(x, y), point)
+                || (puertoRicoPoint(x, y), point);
+            return point;
         }
-    };
 
-    return Pie;
-}));
+        albersUsa.invert = function (coordinates) {
+            var k = lower48.scale(),
+                t = lower48.translate(),
+                x = (coordinates[0] - t[0]) / k,
+                y = (coordinates[1] - t[1]) / k;
+            return (y >= .120 && y < .234 && x >= -.425 && x < -.214 ? alaska
+                : y >= .166 && y < .234 && x >= -.214 && x < -.115 ? hawaii
+                : y >= .204 && y < .234 && x >= .320 && x < .380 ? puertoRico
+                : lower48).invert(coordinates);
+        };
 
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('layout/Surface.js',["../common/HTMLWidget", "../chart/MultiChart", "../c3/Column", "../c3/Line", "css!./Surface"], factory);
-    } else {
-        root.layout_Surface = factory(root.common_HTMLWidget, root.chart_MultiChart, root.c3_Column, root.c3_Line);
-    }
-}(this, function (HTMLWidget, MultiChart, Column, Line) {
-    function Surface() {
-        HTMLWidget.call(this);
-        this._class = "layout_Surface";
-
-        this._tag = "div";
-    };
-    Surface.prototype = Object.create(HTMLWidget.prototype);
-
-    Surface.prototype.publish("title", "", "string", "Title");
-    Surface.prototype.publish("widget", null, "widget", "Widget");
-
-    Surface.prototype.testData = function () {
-        this.title("ABC");
-        this.widget(new Surface().widget(new MultiChart().testData()));
-        return this;
-    };
-
-    Surface.prototype.enter = function (domNode, element) {
-        HTMLWidget.prototype.enter.apply(this, arguments);
-    };
-
-    Surface.prototype.update = function (domNode, element) {
-        HTMLWidget.prototype.update.apply(this, arguments);
-        var titles = element.selectAll(".surfaceTitle").data(this._title ? [this._title] : []);
-        titles.enter().insert("h3", "div")
-            .attr("class", "surfaceTitle")
-        ;
-        titles
-            .text(function (d) { return d; })
-        ;
-        titles.exit().remove();
-
-        var widgets = element.selectAll("#" + this._id + " > .surfaceWidget").data(this._widget ? [this._widget] : [], function (d) { return d._id; });
-
-        var context = this;
-        widgets.enter().append("div")
-            .attr("class", "surfaceWidget")
-            .each(function (d) {
-                //console.log("surface enter:" + d._class + d._id);
-                d.target(this);
-            })
-        ;
-        widgets
-            .each(function (d) {
-                //console.log("surface update:" + d._class + d._id);
-                var width = context.clientWidth();
-                var height = context.clientHeight();
-                if (context._title) {
-                    height -= context.calcHeight(element.select("h3"));
+        // A naïve multi-projection stream.
+        // The projections must have mutually exclusive clip regions on the sphere,
+        // as this will avoid emitting interleaving lines and polygons.
+        albersUsa.stream = function (stream) {
+            var lower48Stream = lower48.stream(stream),
+                alaskaStream = alaska.stream(stream),
+                hawaiiStream = hawaii.stream(stream),
+                puertoRicoStream = puertoRico.stream(stream);
+            return {
+                point: function (x, y) {
+                    lower48Stream.point(x, y);
+                    alaskaStream.point(x, y);
+                    hawaiiStream.point(x, y);
+                    puertoRicoStream.point(x, y);
+                },
+                sphere: function () {
+                    lower48Stream.sphere();
+                    alaskaStream.sphere();
+                    hawaiiStream.sphere();
+                    puertoRicoStream.sphere();
+                },
+                lineStart: function () {
+                    lower48Stream.lineStart();
+                    alaskaStream.lineStart();
+                    hawaiiStream.lineStart();
+                    puertoRicoStream.lineStart();
+                },
+                lineEnd: function () {
+                    lower48Stream.lineEnd();
+                    alaskaStream.lineEnd();
+                    hawaiiStream.lineEnd();
+                    puertoRicoStream.lineEnd();
+                },
+                polygonStart: function () {
+                    lower48Stream.polygonStart();
+                    alaskaStream.polygonStart();
+                    hawaiiStream.polygonStart();
+                    puertoRicoStream.polygonStart();
+                },
+                polygonEnd: function () {
+                    lower48Stream.polygonEnd();
+                    alaskaStream.polygonEnd();
+                    hawaiiStream.polygonEnd();
+                    puertoRicoStream.polygonEnd();
                 }
-                var widgetDiv = d3.select(this);
-                height -= context.calcFrameHeight(widgetDiv);
-                width -= context.calcFrameWidth(widgetDiv);
-                d
-                    .resize({ width: width, height: height })
-                ;
-            })
+            };
+        };
+
+        albersUsa.precision = function (_) {
+            if (!arguments.length) return lower48.precision();
+            lower48.precision(_);
+            alaska.precision(_);
+            hawaii.precision(_);
+            puertoRico.precision(_);
+            return albersUsa;
+        };
+
+        albersUsa.scale = function (_) {
+            if (!arguments.length) return lower48.scale();
+            lower48.scale(_);
+            alaska.scale(_ * .35);
+            hawaii.scale(_);
+            puertoRico.scale(_);
+            return albersUsa.translate(lower48.translate());
+        };
+
+        albersUsa.translate = function (_) {
+            if (!arguments.length) return lower48.translate();
+            var k = lower48.scale(), x = +_[0], y = +_[1];
+
+            lower48Point = lower48
+                .translate(_)
+                .clipExtent([[x - .455 * k, y - .238 * k], [x + .455 * k, y + .238 * k]])
+                .stream(pointStream).point;
+
+            alaskaPoint = alaska
+                .translate([x - .307 * k, y + .201 * k])
+                .clipExtent([[x - .425 * k + ε, y + .120 * k + ε], [x - .214 * k - ε, y + .234 * k - ε]])
+                .stream(pointStream).point;
+
+            hawaiiPoint = hawaii
+                .translate([x - .205 * k, y + .212 * k])
+                .clipExtent([[x - .214 * k + ε, y + .166 * k + ε], [x - .115 * k - ε, y + .234 * k - ε]])
+                .stream(pointStream).point;
+
+            puertoRicoPoint = puertoRico
+                .translate([x + .350 * k, y + .224 * k])
+                .clipExtent([[x + .320 * k, y + .204 * k], [x + .380 * k, y + .234 * k]])
+                .stream(pointStream).point;
+
+            return albersUsa;
+        };
+
+        return albersUsa.scale(1070);
+    }
+
+    Choropleth.prototype.zoomToFit = function (node, transitionDuration, scaleFactor) {
+        var scaleFactor = scaleFactor || 0.9;
+
+        var bbox = node ? node.getBBox() : this._svg.node().getBBox();
+        var x = bbox.x + bbox.width / 2;
+        var y = bbox.y + bbox.height / 2;
+        var scale = scaleFactor / Math.max(bbox.width / this.width(), bbox.height / this.height());
+        var translate = [-scale * x, -scale * y];
+
+        (transitionDuration ? this._svg.transition().duration(transitionDuration) : this._svg)
+            .attr("transform", "translate(" + translate + ")scale(" + scale + ")")
         ;
-        widgets.exit().each(function (d) {
-            //console.log("surface exit:" + d._class + d._id);
-            d.target(null);
-        }).remove();
-    };
-
-    Surface.prototype.exit = function (domNode, element) {
-        if (this._widget) {
-            this._widget = null;
-            this.render();
-        }
-        HTMLWidget.prototype.exit.apply(this, arguments);
-    };
-
-    Surface.prototype.render = function (callback) {
-        var context = this;
-        HTMLWidget.prototype.render.call(this, function (widget) {
-            if (context._widget) {
-                context._widget.render(function (widget) {
-                    if (callback) {
-                        callback(widget);
-                    }
-                });
-            } else {
-                if (callback) {
-                    callback(widget);
-                }
-            }
-        });
     }
 
-    return Surface;
+    return Choropleth;
 }));
-
 
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('layout/Cell',["./Surface", "../chart/Pie", "../c3/Column", "../c3/Line", "css!./Cell"], factory);
+        define('map/IGMap.js',["../common/Shape", "../graph/Edge"], factory);
     } else {
-        root.layout_Cell = factory(root.layout_Surface, root.chart_Pie, root.c3_Column, root.c3_Line);
+        root.map_IGMap = factory(root.common_Shape, root.graph_Edge);
     }
-}(this, function (Surface, Pie, Column, Line) {
-    function Cell() {
-        Surface.call(this);
-        this._class = "layout_Cell";
-    };
-    Cell.prototype = Object.create(Surface.prototype);
-
-    Cell.prototype.publish("gridRow", 0, "number", "Grid Row Position");
-    Cell.prototype.publish("gridCol", 0, "number", "Grid Column Position");
-    Cell.prototype.publish("gridRowSpan", 1, "number", "Grid Row Span");
-    Cell.prototype.publish("gridColSpan", 1, "number", "Grid Column Span");
-
-    Cell.prototype.enter = function (domNode, element) {
-        Surface.prototype.enter.apply(this, arguments);
-        element.classed("layout_Surface", true);
+}(this, function (Shape, Edge) {
+    function IGMap() {
     };
 
-    return Cell;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('layout/Grid',["../common/HTMLWidget", "./Cell", "../common/Text", "../chart/Pie", "../chart/MultiChart", "../c3/Column", "../c3/Line", "css!./Grid"], factory);
-    } else {
-        root.layout_Grid = factory(root.common_HTMLWidget, root.layout_Cell, root.common_Text, root.chart_Pie, root.chart_MultiChart, root.c3_Column, root.c3_Line);
-    }
-}(this, function (HTMLWidget, Cell, Text, Pie, MultiChart, Column, Line) {
-	function Grid() {
-        HTMLWidget.call(this);
-        this._class = "layout_Grid";
-
-        this._tag = "div";
-
-        this._content = [];
-    };
-    Grid.prototype = Object.create(HTMLWidget.prototype);
-
-    Grid.prototype.publish("gutter", 4, "number", "Gap Between Widgets");
-    Grid.prototype.publish("fitTo", "all", "set", "Sizing Strategy", ["all", "width"]);
-    Grid.prototype.publish("content", [], "widgetArray", "widgets");
-
-    Grid.prototype.testData = function () {
-        this.setContent(0, 0, new Pie().testData())
-        this.setContent(0, 1, new Pie().testData())
-        this.setContent(1, 0, new Pie().testData())
-        this.setContent(1, 1, new Pie().testData())
-        this.setContent(0, 2, new MultiChart().testData(), "Title AAA", 2, 2)
-        this.setContent(2, 0, new Line().testData(), "Title BBB", 2, 4)
-        return this;
-    };
-
-    Grid.prototype.getDimensions = function () {
-        var size = { width: 0, height: 0 };
-        this._content.forEach(function (cell) {
-            if (size.width < cell.gridCol() + cell.gridColSpan()) {
-            	size.width = cell.gridCol() + cell.gridColSpan();
-            }
-            if (size.height < cell.gridRow() + cell.gridRowSpan()) {
-            	size.height = cell.gridRow() + cell.gridRowSpan();
-            }
-        }, this);
-        return size;
-    };
-
-    Grid.prototype.clearContent = function () {
-        this._content = this._content.filter(function (contentWidget) {
-            contentWidget.target(null);
-            return false;
-        });
-    };
-
-    Grid.prototype.setContent = function (row, col, widget, title, rowSpan, colSpan) {
-        rowSpan = rowSpan || 1;
-        colSpan = colSpan || 1;
-        title = title || "";
-        this._content = this._content.filter(function (contentWidget) {
-            if (contentWidget._gridRow === row && contentWidget._gridCol === col) {
-                contentWidget.target(null);
-                return false;
-            }
-            return true;
-        });
-
-        if (widget) {
-            var cell = new Cell()
-                .gridRow(row)
-                .gridCol(col)
-                .widget(widget)
-                .title(title)
-                .gridRowSpan(rowSpan)
-                .gridColSpan(colSpan)
+    //  Data ---
+    IGMap.prototype.testData = function () {
+        var addresses = [
+            { "geo_lat": "37.665074", "geo_long": "-122.384375", __viz_markerIcon: "green-dot.png" },
+            { "geo_lat": "32.690680", "geo_long": "-117.178540" },
+            { "geo_lat": "39.709455", "geo_long": "-104.969859" },
+            { "geo_lat": "41.244123", "geo_long": "-95.961610" },
+            { "geo_lat": "32.688980", "geo_long": "-117.192040" },
+            { "geo_lat": "45.786490", "geo_long": "-108.526600" },
+            { "geo_lat": "45.796180", "geo_long": "-108.535652" },
+            { "geo_lat": "45.774320", "geo_long": "-108.494370" },
+            { "geo_lat": "45.777062", "geo_long": "-108.549835", __viz_markerIcon: "red-dot.png" }
+        ];
+        var vertices = [];
+        var edges = [];
+        var prevAddr = null;
+        addresses.forEach(function (item) {
+            var newAddr = new Shape()
+                .shape("circle")
+                .radius(3)
+                .data(item)
             ;
-            this._content.push(cell);
-        }
+            vertices.push(newAddr);
+            if (prevAddr) {
+                edges.push(new Edge()
+                    .sourceVertex(prevAddr)
+                    .targetVertex(newAddr)
+                    .targetMarker("arrowHead")
+                );
+            }
+            prevAddr = newAddr;
+        });
+        this.data({ vertices: vertices, edges: edges });
         return this;
     };
 
-    Grid.prototype.getContent = function (id) {
-        var retVal = null;
-        this._content.some(function (cell) {
-            if (cell._widget._id === id) {
-                retVal = cell._widget;
-                return true;
-            }
-            return false;
-        });
-        return retVal;
+    //  Properties  ---
+
+    //  Events  ---
+    IGMap.prototype.click = function (d) {
+        console.log("Click:  " + d.label);
+    };
+
+    return IGMap;
+}));
+
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('map/GMap.js',["d3/d3", "../common/SVGWidget", "../graph/Graph", "./IGMap", "async!http://maps.google.com/maps/api/js?sensor=false", "css!./GMap"], factory);
+    } else {
+        root.map_GMap = factory(root.d3, root.common_SVGWidget, root.graph_Graph, root.map_IGMap);
     }
-
-    Grid.prototype.childMoved = Grid.prototype.debounce(function (domNode, element) {
-        this.render();
-    }, 250);
-
-    Grid.prototype.enter = function (domNode, element) {
-        HTMLWidget.prototype.enter.apply(this, arguments);
-        element.style("position", "relative");
-        this._scrollBarWidth = this.getScrollbarWidth();
+}(this, function (d3, SVGWidget, Graph, IGMap) {
+    function GMap(target) {
+        Graph.call(this);
+        IGMap.call(this);
+        this._class = "map_GMap";
     };
+    GMap.prototype = Object.create(Graph.prototype);
+    GMap.prototype.implements(IGMap.prototype);
 
-    Grid.prototype.update = function (domNode, element) {
-        HTMLWidget.prototype.update.apply(this, arguments);
-        this._parentElement.style("overflow-x", this._fitTo === "width" ? "hidden" : null);
-        this._parentElement.style("overflow-y", this._fitTo === "width" ? "scroll" : null);
-        var dimensions = this.getDimensions();
-        var cellWidth = (this.width() - (this._fitTo === "width" ? this._scrollBarWidth : 0)) / dimensions.width;
-        var cellHeight = this._fitTo === "all" ? this.height() / dimensions.height : cellWidth;
+    GMap.prototype.enter = function (domNode, element, d) {
+        Graph.prototype.enter.apply(this, arguments);
+
+        this._googleMap = new google.maps.Map(d3.select(this._target).node(), {
+            zoom: 3,
+            center: new google.maps.LatLng(41.850033, -87.6500523),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        this._gmOverlay = new google.maps.OverlayView();
 
         var context = this;
-        var rows = element.selectAll(".cell_" + this._id).data(this._content, function (d) { return d._id; });
-        rows.enter().append("div")
-            .attr("class", "cell_" + this._id)
-            .style("position", "absolute")
-            .each(function (d) {
-                //console.log("Grid :enter - " + d._class + d._id);
-                d
-                   .target(this)
-                ;
-                d.__grid_watch = d.watch(function (key, newVal, oldVal) {
-                    if (context._renderCount && key.indexOf("grid") === 0 && newVal !== oldVal) {
-                        context.childMoved();
-                    }
-                });
-            })
-        ;
-        rows
-            .style("left", function (d) { return d.gridCol() * cellWidth + context._gutter / 2 + "px"; })
-            .style("top", function (d) { return d.gridRow() * cellHeight + context._gutter / 2 + "px"; })
-            .style("width", function (d) { return d.gridColSpan() * cellWidth - context._gutter + "px"; })
-            .style("height", function (d) { return d.gridRowSpan() * cellHeight - context._gutter + "px"; })
-            .each(function (d) {
-                //console.log("Grid :update - " + d._class + d._id);
-                d
-                    .resize()
-                ;
-            })
-        ;
-        rows.exit().each(function (d) {
-            //console.log("Grid: exit - " + d._class + d._id);
-            d
-               .target(null)
+        this._gmOverlay.onAdd = function () {
+            context.layer = d3.select(this.getPanes().overlayLayer).append("div")
+                .style("position", "absolute")
+                .attr("class", "gmapLayer")
             ;
-            if (d.__grid_watch) {
-                d.__grid_watch.remove();
-            }
-        }).remove();
-    };
+            //  Move SVG into Google Map Layer  ---
+            context.layer.node().appendChild(context._parentElement.node());
 
-    Grid.prototype.exit = function (domNode, element) {
-        HTMLWidget.prototype.exit.apply(this, arguments);
-    };
+            context._gmOverlay.draw = function () {
+                var overlayProjection = context._gmOverlay.getProjection();
 
-    Grid.prototype.render = function (callback) {
-        var context = this;
-        HTMLWidget.prototype.render.call(this, function (widget) {
-            if (context._content.length) {
-                var renderCount = context._content.length;
-                context._content.forEach(function (contentWidget, idx) {
+                var bounds_ = context._googleMap.getBounds();
+                var sw = overlayProjection.fromLatLngToDivPixel(bounds_.getSouthWest());
+                var ne = overlayProjection.fromLatLngToDivPixel(bounds_.getNorthEast());
+
+                var div = context.layer.node();
+                div.style.left = sw.x + "px";
+                div.style.top = ne.y + "px";
+                div.style.width = (ne.x - sw.x) + "px";
+                div.style.height = (sw.y - ne.y) + "px";
+
+                if (!context.firstRun) {
+                    context.firstRun = true;
                     setTimeout(function () {
-                        contentWidget.render(function () {
-                            if (--renderCount === 0) {
-                                if (callback) {
-                                    callback(widget);
-                                }
-                            }
-                        });
-                    }, 0);
-                });
-            } else {
-                if (callback) {
-                    callback(widget);
+                        context.calcLatLong(sw.x, ne.y);
+                        context.zoomToFit();
+                    }, 100);
+                } else {
+                    context.calcLatLong(sw.x, ne.y);
                 }
-            }
-        });
-        return this;
-    }
+            };
+            google.maps.event.addListener(context._googleMap, "center_changed", function () {
+                context._gmOverlay.draw();
+            });
+        };
+        this._gmOverlay.setMap(this._googleMap);
+    };
 
-    return Grid;
+    GMap.prototype.calcLatLong = function (dx, dy) {
+        dx += this.width() / 2;
+        dy += this.height() / 2;
+        var projection = this._gmOverlay.getProjection();
+
+        var context = this;
+        this.graphData.nodeValues().forEach(function (item) {
+            var pos = new google.maps.LatLng(item._data.geo_lat, item._data.geo_long);
+            if (item._data.__viz_markerIcon && !item._marker) {
+                item._marker = new google.maps.Marker({
+                    position: pos,
+                    animation: google.maps.Animation.DROP,
+                    icon: "http://maps.google.com/mapfiles/ms/icons/" + item._data.__viz_markerIcon,
+                    map: context._googleMap,
+                });
+            }
+            pos = projection.fromLatLngToDivPixel(pos);
+            pos.x -= dx;
+            pos.y -= dy;
+            item.move(pos);
+        });
+        this.graphData.edgeValues().forEach(function (item) {
+            item.points([]);
+        })
+    };
+
+    GMap.prototype.zoomToFit = function () {
+        var latlngbounds = new google.maps.LatLngBounds();
+        this.graphData.nodeValues().forEach(function (item) {
+            var gLatLong = new google.maps.LatLng(item._data.geo_lat, item._data.geo_long);
+            latlngbounds.extend(gLatLong);
+        });
+        this._googleMap.setCenter(latlngbounds.getCenter());
+        this._googleMap.fitBounds(latlngbounds);
+        return this;
+    };
+
+    return GMap;
 }));
 
 
@@ -8451,397 +8947,6 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('tree/ITree.js',["../common/Palette"], factory);
-    } else {
-        root.tree_ITree = factory(root.common_Palette);
-    }
-}(this, function (Palette) {
-    function ITree() {
-    };
-
-    ITree.prototype._palette = Palette.ordinal("default");
-
-    //  Data ---
-    ITree.prototype.testData = function () {
-        var data = {label: "root", children: [{
-            label: "A",
-            children: [{
-                label: "AA",
-                children: [{
-                    label: "AAA"
-                }]
-            }, {
-                label: "AB",
-                children: [{
-                    label: "ABA"
-                }]
-            }]
-        }, {
-            label: "B",
-            children: [{
-                label: "BA",
-                children: [{
-                    label: "BAA"
-                }]
-            }, {
-                label: "BB"
-            }]
-        }]};
-        this.data(data);
-        return this;
-    };
-
-    //  Events  ---
-    ITree.prototype.click = function (d) {
-        console.log("Click:  " + d.label);
-    };
-
-    return ITree;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('tree/CirclePacking.js',["d3/d3", "../common/SVGWidget", "./ITree", "../common/Text", "../common/FAChar", "css!./CirclePacking"], factory);
-    } else {
-        root.tree_CirclePacking = factory(root.d3, root.common_SVGWidget, root.tree_ITree, root.common_Text, root.common_FAChar);
-    }
-}(this, function (d3, SVGWidget, ITree, Text, FAChar) {
-    function CirclePacking(target) {
-        SVGWidget.call(this);
-        ITree.call(this);
-        this._class = "tree_CirclePacking";
-    };
-    CirclePacking.prototype = Object.create(SVGWidget.prototype);
-    CirclePacking.prototype.implements(ITree.prototype);
-
-    CirclePacking.prototype.publish("paletteID", "default", "set", "Palette ID", CirclePacking.prototype._palette.switch());
-
-    CirclePacking.prototype.enter = function (domNode, element) {
-        var context = this;
-
-        this.diameter = Math.min(this.width(), this.height());
-
-        this.pack = d3.layout.pack()
-            .size([this.diameter - 4, this.diameter - 4])
-            .value(function (d) {
-                return 1;
-            })
-        ;
-
-        this.svg = element
-            .append("g")
-            .attr("transform", "rotate(30)")
-    };
-
-    CirclePacking.prototype.update = function (domNode, element) {
-        var context = this;
-
-        this._palette = this._palette.switch(this._paletteID);
-        this.svg.selectAll("circle").remove();
-        this.svg.selectAll("text").remove();
-
-        var root = this._data;
-        var focus = root;
-        var nodes = this.pack.nodes(root);
-
-        this.circle = this.svg.selectAll("circle")
-            .data(nodes)
-          .enter().append("circle")
-            .attr("class", function (d) { return d.parent ? d.children ? "node" : "node leaf" : "node root"; })
-            .style("fill", function (d) { return context._palette(d.label); })
-            .on("click", function (d) { context.click(d); })
-            .on("dblclick", function (d) { if (focus !== d) context.zoom(d), d3.event.stopPropagation(); })
-        ;
-        this.circle.append("title").text(function (d) { return d.label; });
-
-        var text = this.svg.selectAll("text")
-            .data(nodes)
-          .enter()
-            .append("text")
-            .attr("class", "label")
-            .style("fill-opacity", function (d) { return d.parent === root ? 1 : 0; })
-            .style("display", function (d) { return d.parent === root ? null : "none"; })
-            .text(function (d) { return d.label; })
-        ;
-
-        this.node = this.svg.selectAll("circle,text");
-
-        this.zoomTo([root.x, root.y, root.r * 2]);
-    };
-
-    CirclePacking.prototype.zoom = function (d) {
-        var context = this;
-        var focus0 = focus;
-        var focus = d;
-
-        var zoomCircleSel = this.svg.selectAll("circle")
-          .filter(function (d) { return d === focus; })
-        ;
-        var zoomTextSel = this.svg.selectAll("text")
-          .filter(function (d) { return d !== focus && this.style.display === "inline"; })
-        ;
-        zoomTextSel.transition().duration(500)
-            .style("opacity", 0)
-            .each("end", function (d) {
-                if (d !== focus) {
-                    d3.select(this)
-                        .style("display", "none")
-                        .style("opacity", 1)
-                    ;
-                }
-            })
-        ;
-
-        var transition = this.svg.transition()
-            .duration(1000)
-            .tween("zoom", function (d) {
-                var i = d3.interpolateZoom(context.view, [focus.x, focus.y, focus.r * 2]);
-                return function (t) { context.zoomTo(i(t)); };
-            });
-
-        transition.selectAll("text")
-          .filter(function (d) { return d.parent === focus || this.style.display === "inline"; })
-            .style("fill-opacity", function (d) { return d.parent === focus ? 1 : 0; })
-            .each("start", function (d) { if (d.parent === focus) this.style.display = "inline"; })
-            .each("end", function (d) {
-                if (d.parent !== focus) {
-                    this.style.display = "none";
-                }
-            })
-        ;
-    };
-
-    CirclePacking.prototype.zoomTo = function (v) {
-        var k = this.diameter / v[2];
-        this.view = v;
-        this.node.attr("transform", function (d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")rotate(-30)"; });
-        this.circle.attr("r", function (d) { return d.r * k; });
-    };
-
-    return CirclePacking;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('tree/Dendrogram.js',["d3/d3", "../common/SVGWidget", "./ITree", "css!./Dendrogram"], factory);
-    } else {
-        root.tree_Dendrogram = factory(root.d3, root.common_SVGWidget, root.tree_ITree);
-    }
-}(this, function (d3, SVGWidget, ITree) {
-    function Dendrogram(target) {
-        SVGWidget.call(this);
-        ITree.call(this);
-        this._class = "tree_Dendrogram";
-    };
-    Dendrogram.prototype = Object.create(SVGWidget.prototype);
-    Dendrogram.prototype.implements(ITree.prototype);
-
-    Dendrogram.prototype.publish("paletteID", "default", "set", "Palette ID", Dendrogram.prototype._palette.switch());
-
-    Dendrogram.prototype.enter = function (domNode, element) {
-        SVGWidget.prototype.enter.apply(this, arguments);
-
-        this.layout = d3.layout.cluster();
-
-        this.diagonal = d3.svg.diagonal()
-            .projection(function (d) { return [d.y, d.x]; })
-        ;
-
-        this.g = element.append("g");
-    };
-
-    Dendrogram.prototype.update = function (domNode, element) {
-        var context = this;
-        SVGWidget.prototype.update.apply(this, arguments);
-
-        this._palette = this._palette.switch(this._paletteID);
-        var width = this.width() - 60;  //  Pad to allow text to display
-        this.layout
-            .size([this.height(), width])
-        ;
-        this.g
-            .attr("transform", "translate(" + (-width  / 2) + "," + (-this.height() / 2) + ")");
-        ;
-
-        var nodes = this.layout.nodes(this.data());
-        var links = this.layout.links(nodes);
-
-        //  Lines  ---
-        var lines = this.g.selectAll(".link").data(links);
-        lines.enter().append("path")
-            .attr("class", "link")
-        ;
-        lines
-            .attr("d", this.diagonal)
-        ;
-        lines.exit().remove();
-
-        //  Nodes  ---
-        var nodes = this.g.selectAll(".node").data(nodes);
-        var node_enter = nodes.enter().append("g")
-            .attr("class", "node")
-        ;
-
-        node_enter.on("click", function (d) { context.click(d); });
-        node_enter.append("circle");
-        node_enter.append("text");
-
-        nodes.select("circle")
-            .attr("r", 4.5)
-            .style("fill", function (d) { return context._palette(d.label); })
-            .append("title")
-            .text(function (d) { return d.label; })
-        ;
-        nodes.select("text")
-            .attr("dx", function (d) { return d.children ? -8 : 8; })
-            .attr("dy", 3)
-        ;
-        nodes
-            .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; })
-        ;
-        nodes.select("text")
-            .style("text-anchor", function (d) { return d.children ? "end" : "start"; })
-            .text(function (d) { return d.label; })
-        ;
-        nodes.exit().remove();
-    };
-
-    return Dendrogram;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('tree/SunburstPartition.js',["d3/d3", "../common/SVGWidget", "./ITree", "../common/Text", "../common/FAChar", "css!./SunburstPartition"], factory);
-    } else {
-        root.tree_SunburstPartition = factory(root.d3, root.common_SVGWidget, root.tree_ITree, root.common_Text, root.common_FAChar);
-    }
-}(this, function (d3, SVGWidget, ITree, Text, FAChar) {
-    function SunburstPartition(target) {
-        SVGWidget.call(this);
-        ITree.call(this);
-        this._class = "tree_SunburstPartition";
-    };
-    SunburstPartition.prototype = Object.create(SVGWidget.prototype);
-    SunburstPartition.prototype.implements(ITree.prototype);
-
-    SunburstPartition.prototype.publish("paletteID", "default", "set", "Palette ID", SunburstPartition.prototype._palette.switch());
-
-    SunburstPartition.prototype.root = function (_) {
-        if (!arguments.length) return this._root || this._data;
-        this._root = _;
-
-        if (this.svg) {
-            this.svg.selectAll("path").transition()
-                .duration(750)
-                .attrTween("d", this.arcTweenFunc(this._root))
-            ;
-        }
-        return this;
-    };
-
-    SunburstPartition.prototype.data = function () {
-        var retVal = SVGWidget.prototype.data.apply(this, arguments);
-        if (arguments.length) {
-            this._resetRoot = true;
-        }
-        return this;
-    };
-
-    SunburstPartition.prototype.enter = function (domNode, element) {
-        var context = this;
-
-        this.radius = Math.min(this.width(), this.height()) / 2;
-
-        this._xScale = d3.scale.linear()
-            .range([0, 2 * Math.PI])
-        ;
-
-        this._yScale = d3.scale.sqrt()
-            .range([0, this.radius])
-        ;
-
-        this.partition = d3.layout.partition()
-            .value(function (d) {
-                return d.value !== undefined ? d.value : 1;
-            })
-        ;
-
-        this.arc = d3.svg.arc()
-            .startAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, context._xScale(d.x))); })
-            .endAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, context._xScale(d.x + d.dx))); })
-            .innerRadius(function (d) { return Math.max(0, context._yScale(d.y)); })
-            .outerRadius(function (d) { return Math.max(0, context._yScale(d.y + d.dy)); })
-        ;
-
-        this.svg = element.append("g");
-    };
-
-    SunburstPartition.prototype.update = function (domNode, element) {
-        var context = this;
-
-        this._palette = this._palette.switch(this._paletteID);
-        this.radius = Math.min(this.width(), this.height()) / 2;
-        this._xScale.range([0, 2 * Math.PI]);
-        this._yScale.range([0, this.radius]);
-
-        this._dataNodes = this.partition.nodes(this._data);
-        var paths = this.svg.selectAll("path").data(this._dataNodes, function (d, i) { return d.id !== undefined ? d.id : i; });
-        var path = paths.enter().append("path")
-            .on("click", function (d) { context.click(d); })
-            .on("dblclick", dblclick)
-            .append("title")
-        ;
-        paths
-            .attr("d", this.arc)
-            .style("fill", function (d) {
-                return d.__viz_fill ? d.__viz_fill : context._palette(d.label);
-            })
-            .style("stroke", function (d) {
-                return d.value > 16 ? "white" : "none";
-            })
-            .select("title")
-                .text(function (d) { return d.label })
-        ;
-
-        paths.exit().remove();
-
-        if (this._resetRoot) {
-            this._resetRoot = false;
-            this.root(this._dataNodes[0]);
-        }
-
-        function dblclick(d) {
-            if (d3.event) {
-                d3.event.stopPropagation();
-            }
-            context.root(d);
-        }
-    };
-
-    SunburstPartition.prototype.arcTweenFunc = function (d) {
-        var xd = d3.interpolate(this._xScale.domain(), [d.x, d.x + d.dx]),
-            yd = d3.interpolate(this._yScale.domain(), [d.y, 1]),
-            yr = d3.interpolate(this._yScale.range(), [d.y ? 20 : 0, this.radius]);
-        var context = this;
-        return function (d, i) {
-            return i
-                ? function (t) { return context.arc(d); }
-                : function (t) { context._xScale.domain(xd(t)); context._yScale.domain(yd(t)).range(yr(t)); return context.arc(d); };
-        };
-    };
-
-    return SunburstPartition;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
         define('other/Audio.js',["../common/HTMLWidget"], factory);
     } else {
         root.other_Audio = factory(root.common_HTMLWidget);
@@ -9753,6 +9858,24 @@
     };
     Table.prototype = Object.create(HTMLWidget.prototype);
 
+    Table.prototype.testData = function () {
+        this
+            .columns(["Lat", "Long", "Pin"])
+            .data([
+                [37.665074, -122.384375, "green-dot.png"],
+                [32.690680, -117.178540],
+                [39.709455, -104.969859],
+                [41.244123, -95.961610],
+                [32.688980, -117.192040],
+                [45.786490, -108.526600],
+                [45.796180, -108.535652],
+                [45.774320, -108.494370],
+                [45.777062, -108.549835, "red-dot.png"]
+            ])
+        ;
+        return this;
+    };
+
     Table.prototype.enter = function (domNode, element) {
         HTMLWidget.prototype.enter.apply(this, arguments);
         this._parentElement.style("overflow", "auto");
@@ -9950,483 +10073,411 @@
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('map/IChoropleth.js',["../common/Palette"], factory);
+        define('tree/ITree.js',["../common/Palette"], factory);
     } else {
-        root.map_IChoropleth = factory(root.common_Palette, root.usStates, root.usCounties);
+        root.tree_ITree = factory(root.common_Palette);
     }
-}(this, function (Palette, usStates, usCounties) {
-    function IChoropleth() {
-    };
-    IChoropleth.prototype._palette = Palette.rainbow("default");
-    
-    //  Events  ---
-    IChoropleth.prototype.click = function (row, column) {
-        console.log("Click:  " + JSON.stringify(row) + ", " + column);
+}(this, function (Palette) {
+    function ITree() {
     };
 
-
-    return IChoropleth;
-}));
-
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('map/Choropleth.js',["d3/d3", "../common/SVGWidget", "./IChoropleth", "css!./Choropleth"], factory);
-    } else {
-        root.map_Choropleth = factory(root.d3, root.common_SVGWidget, root.map_IChoropleth);
-    }
-}(this, function (d3, SVGWidget, IChoropleth) {
-    function Choropleth() {
-        SVGWidget.call(this);
-        IChoropleth.call(this);
-        this._class = "map_Choropleth";
-
-        this._dataMap = {};
-        this._dataMinWeight = 0;
-        this._dataMaxWeight = 0;
-    };
-    Choropleth.prototype = Object.create(SVGWidget.prototype);
-    Choropleth.prototype.implements(IChoropleth.prototype);
-    Choropleth.prototype.publish("paletteID", "YlOrRd", "set", "Palette ID", Choropleth.prototype._palette.switch());
-
-    Choropleth.prototype.data = function (_) {
-        var retVal = SVGWidget.prototype.data.apply(this, arguments);
-        if (arguments.length) {
-            this._dataMap = {};
-            this._dataMinWeight = null;
-            this._dataMaxWeight = null;
-
-            var context = this;
-            this._data.forEach(function (item) {
-                context._dataMap[item[0]] = item;
-                if (!context._dataMinWeight || item[1] < context._dataMinWeight) {
-                    context._dataMinWeight = item[1];
-                }
-                if (!context._dataMaxWeight || item[1] > context._dataMaxWeight) {
-                    context._dataMaxWeight = item[1];
-                }
-            });
-        }
-        return retVal;
-    };
-
-    Choropleth.prototype.size = function (_) {
-        var retVal = SVGWidget.prototype.size.apply(this, arguments);
-        if (arguments.length) {
-            if (this._svgZoom) {
-                this._svgZoom
-                    .attr("x", -this._size.width / 2)
-                    .attr("y", -this._size.height / 2)
-                    .attr("width", this._size.width)
-                    .attr("height", this._size.height)
-                ;
-            }
-        }
-        return retVal;
-    }
-
-    Choropleth.prototype.projection = function (_) {
-        if (!arguments.length) return this._projection;
-        this._projection = _;
-        switch (this._projection) {
-            case "albersUsaPr":
-                this.d3Projection = this.albersUsaPr();
-                break;
-            case "orthographic":
-                this.d3Projection = d3.geo.orthographic()
-                    .clipAngle(90)
-                ;
-                break;
-            case "mercator":
-                this.d3Projection = d3.geo.mercator();
-                break;
-        }
-        this.d3Path = d3.geo.path()
-            .projection(this.d3Projection)
-        ;
-        return this;
-    }
-
-    Choropleth.prototype.render = function () {
-        SVGWidget.prototype.render.apply(this, arguments);
-        if (this._renderCount === 1) {
-            this.zoomToFit();
-        }
-        return this;
-    }
-
-    Choropleth.prototype.enter = function (domNode, element) {
-        //  Zoom  ---
-        var context = this;
-        this._svgZoom = element.append("rect")
-            .attr("class", "zoom")
-            .attr("x", -this._size.width / 2)
-            .attr("y", -this._size.height / 2)
-            .attr("width", this._size.width)
-            .attr("height", this._size.height)
-            .on("dblclick", function (d) {
-                d3.event.stopPropagation();
-                context.zoomToFit(null, 750);
-            })
-        ;
-
-        var defs = this._parentElement.insert("defs", ":first-child");
-        var g = defs.append("pattern")
-            .attr('id', 'hash')
-            .attr('patternUnits', 'userSpaceOnUse')
-            .attr('width', '10')
-            .attr('height', '10')
-            .attr("x", 0).attr("y", 0)
-            .append("g");
-        g.append("rect")
-            .attr("class", "noFill")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("width", 5)
-            .attr("height", 5)
-        ;
-        g.append("rect")
-            .attr("class", "noFill")
-            .attr("x", 5)
-            .attr("y", 5)
-            .attr("width", 5)
-            .attr("height", 5)
-        ;
-
-        this._svg = element.append("g");
-    };
-
-    Choropleth.prototype.update = function (domNode, element) {
-        this._palette = this._palette.switch(this._paletteID);
-    };
-
-    // A modified d3.geo.albersUsa to include Puerto Rico.
-    Choropleth.prototype.albersUsaPr = function () {
-        var ε = 1e-6;
-
-        var lower48 = d3.geo.albers();
-
-        // EPSG:3338
-        var alaska = d3.geo.conicEqualArea()
-            .rotate([154, 0])
-            .center([-2, 58.5])
-            .parallels([55, 65]);
-
-        // ESRI:102007
-        var hawaii = d3.geo.conicEqualArea()
-            .rotate([157, 0])
-            .center([-3, 19.9])
-            .parallels([8, 18]);
-
-        // XXX? You should check that this is a standard PR projection!
-        var puertoRico = d3.geo.conicEqualArea()
-            .rotate([66, 0])
-            .center([0, 18])
-            .parallels([8, 18]);
-
-        var point,
-            pointStream = { point: function (x, y) { point = [x, y]; } },
-            lower48Point,
-            alaskaPoint,
-            hawaiiPoint,
-            puertoRicoPoint;
-
-        function albersUsa(coordinates) {
-            var x = coordinates[0], y = coordinates[1];
-            point = null;
-            (lower48Point(x, y), point)
-                || (alaskaPoint(x, y), point)
-                || (hawaiiPoint(x, y), point)
-                || (puertoRicoPoint(x, y), point);
-            return point;
-        }
-
-        albersUsa.invert = function (coordinates) {
-            var k = lower48.scale(),
-                t = lower48.translate(),
-                x = (coordinates[0] - t[0]) / k,
-                y = (coordinates[1] - t[1]) / k;
-            return (y >= .120 && y < .234 && x >= -.425 && x < -.214 ? alaska
-                : y >= .166 && y < .234 && x >= -.214 && x < -.115 ? hawaii
-                : y >= .204 && y < .234 && x >= .320 && x < .380 ? puertoRico
-                : lower48).invert(coordinates);
-        };
-
-        // A naïve multi-projection stream.
-        // The projections must have mutually exclusive clip regions on the sphere,
-        // as this will avoid emitting interleaving lines and polygons.
-        albersUsa.stream = function (stream) {
-            var lower48Stream = lower48.stream(stream),
-                alaskaStream = alaska.stream(stream),
-                hawaiiStream = hawaii.stream(stream),
-                puertoRicoStream = puertoRico.stream(stream);
-            return {
-                point: function (x, y) {
-                    lower48Stream.point(x, y);
-                    alaskaStream.point(x, y);
-                    hawaiiStream.point(x, y);
-                    puertoRicoStream.point(x, y);
-                },
-                sphere: function () {
-                    lower48Stream.sphere();
-                    alaskaStream.sphere();
-                    hawaiiStream.sphere();
-                    puertoRicoStream.sphere();
-                },
-                lineStart: function () {
-                    lower48Stream.lineStart();
-                    alaskaStream.lineStart();
-                    hawaiiStream.lineStart();
-                    puertoRicoStream.lineStart();
-                },
-                lineEnd: function () {
-                    lower48Stream.lineEnd();
-                    alaskaStream.lineEnd();
-                    hawaiiStream.lineEnd();
-                    puertoRicoStream.lineEnd();
-                },
-                polygonStart: function () {
-                    lower48Stream.polygonStart();
-                    alaskaStream.polygonStart();
-                    hawaiiStream.polygonStart();
-                    puertoRicoStream.polygonStart();
-                },
-                polygonEnd: function () {
-                    lower48Stream.polygonEnd();
-                    alaskaStream.polygonEnd();
-                    hawaiiStream.polygonEnd();
-                    puertoRicoStream.polygonEnd();
-                }
-            };
-        };
-
-        albersUsa.precision = function (_) {
-            if (!arguments.length) return lower48.precision();
-            lower48.precision(_);
-            alaska.precision(_);
-            hawaii.precision(_);
-            puertoRico.precision(_);
-            return albersUsa;
-        };
-
-        albersUsa.scale = function (_) {
-            if (!arguments.length) return lower48.scale();
-            lower48.scale(_);
-            alaska.scale(_ * .35);
-            hawaii.scale(_);
-            puertoRico.scale(_);
-            return albersUsa.translate(lower48.translate());
-        };
-
-        albersUsa.translate = function (_) {
-            if (!arguments.length) return lower48.translate();
-            var k = lower48.scale(), x = +_[0], y = +_[1];
-
-            lower48Point = lower48
-                .translate(_)
-                .clipExtent([[x - .455 * k, y - .238 * k], [x + .455 * k, y + .238 * k]])
-                .stream(pointStream).point;
-
-            alaskaPoint = alaska
-                .translate([x - .307 * k, y + .201 * k])
-                .clipExtent([[x - .425 * k + ε, y + .120 * k + ε], [x - .214 * k - ε, y + .234 * k - ε]])
-                .stream(pointStream).point;
-
-            hawaiiPoint = hawaii
-                .translate([x - .205 * k, y + .212 * k])
-                .clipExtent([[x - .214 * k + ε, y + .166 * k + ε], [x - .115 * k - ε, y + .234 * k - ε]])
-                .stream(pointStream).point;
-
-            puertoRicoPoint = puertoRico
-                .translate([x + .350 * k, y + .224 * k])
-                .clipExtent([[x + .320 * k, y + .204 * k], [x + .380 * k, y + .234 * k]])
-                .stream(pointStream).point;
-
-            return albersUsa;
-        };
-
-        return albersUsa.scale(1070);
-    }
-
-    Choropleth.prototype.zoomToFit = function (node, transitionDuration, scaleFactor) {
-        var scaleFactor = scaleFactor || 0.9;
-
-        var bbox = node ? node.getBBox() : this._svg.node().getBBox();
-        var x = bbox.x + bbox.width / 2;
-        var y = bbox.y + bbox.height / 2;
-        var scale = scaleFactor / Math.max(bbox.width / this.width(), bbox.height / this.height());
-        var translate = [-scale * x, -scale * y];
-
-        (transitionDuration ? this._svg.transition().duration(transitionDuration) : this._svg)
-            .attr("transform", "translate(" + translate + ")scale(" + scale + ")")
-        ;
-    }
-
-    return Choropleth;
-}));
-
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define('map/IGMap.js',["../common/Shape", "../graph/Edge"], factory);
-    } else {
-        root.map_IGMap = factory(root.common_Shape, root.graph_Edge);
-    }
-}(this, function (Shape, Edge) {
-    function IGMap() {
-    };
+    ITree.prototype._palette = Palette.ordinal("default");
 
     //  Data ---
-    IGMap.prototype.testData = function () {
-        var addresses = [
-            { "geo_lat": "37.665074", "geo_long": "-122.384375", __viz_markerIcon: "green-dot.png" },
-            { "geo_lat": "32.690680", "geo_long": "-117.178540" },
-            { "geo_lat": "39.709455", "geo_long": "-104.969859" },
-            { "geo_lat": "41.244123", "geo_long": "-95.961610" },
-            { "geo_lat": "32.688980", "geo_long": "-117.192040" },
-            { "geo_lat": "45.786490", "geo_long": "-108.526600" },
-            { "geo_lat": "45.796180", "geo_long": "-108.535652" },
-            { "geo_lat": "45.774320", "geo_long": "-108.494370" },
-            { "geo_lat": "45.777062", "geo_long": "-108.549835", __viz_markerIcon: "red-dot.png" }
-        ];
-        var vertices = [];
-        var edges = [];
-        var prevAddr = null;
-        addresses.forEach(function (item) {
-            var newAddr = new Shape()
-                .shape("circle")
-                .radius(3)
-                .data(item)
-            ;
-            vertices.push(newAddr);
-            if (prevAddr) {
-                edges.push(new Edge()
-                    .sourceVertex(prevAddr)
-                    .targetVertex(newAddr)
-                    .targetMarker("arrowHead")
-                );
-            }
-            prevAddr = newAddr;
-        });
-        this.data({ vertices: vertices, edges: edges });
+    ITree.prototype.testData = function () {
+        var data = {label: "root", children: [{
+            label: "A",
+            children: [{
+                label: "AA",
+                children: [{
+                    label: "AAA"
+                }]
+            }, {
+                label: "AB",
+                children: [{
+                    label: "ABA"
+                }]
+            }]
+        }, {
+            label: "B",
+            children: [{
+                label: "BA",
+                children: [{
+                    label: "BAA"
+                }]
+            }, {
+                label: "BB"
+            }]
+        }]};
+        this.data(data);
         return this;
     };
 
-    //  Properties  ---
-
     //  Events  ---
-    IGMap.prototype.click = function (d) {
+    ITree.prototype.click = function (d) {
         console.log("Click:  " + d.label);
     };
 
-    return IGMap;
+    return ITree;
 }));
-
 
 
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define('map/GMap.js',["d3/d3", "../common/SVGWidget", "../graph/Graph", "./IGMap", "async!http://maps.google.com/maps/api/js?sensor=false", "css!./GMap"], factory);
+        define('tree/CirclePacking.js',["d3/d3", "../common/SVGWidget", "./ITree", "../common/Text", "../common/FAChar", "css!./CirclePacking"], factory);
     } else {
-        root.map_GMap = factory(root.d3, root.common_SVGWidget, root.graph_Graph, root.map_IGMap);
+        root.tree_CirclePacking = factory(root.d3, root.common_SVGWidget, root.tree_ITree, root.common_Text, root.common_FAChar);
     }
-}(this, function (d3, SVGWidget, Graph, IGMap) {
-    function GMap(target) {
-        Graph.call(this);
-        IGMap.call(this);
-        this._class = "map_GMap";
+}(this, function (d3, SVGWidget, ITree, Text, FAChar) {
+    function CirclePacking(target) {
+        SVGWidget.call(this);
+        ITree.call(this);
+        this._class = "tree_CirclePacking";
     };
-    GMap.prototype = Object.create(Graph.prototype);
-    GMap.prototype.implements(IGMap.prototype);
+    CirclePacking.prototype = Object.create(SVGWidget.prototype);
+    CirclePacking.prototype.implements(ITree.prototype);
 
-    GMap.prototype.enter = function (domNode, element, d) {
-        Graph.prototype.enter.apply(this, arguments);
+    CirclePacking.prototype.publish("paletteID", "default", "set", "Palette ID", CirclePacking.prototype._palette.switch());
 
-        this._googleMap = new google.maps.Map(d3.select(this._target).node(), {
-            zoom: 3,
-            center: new google.maps.LatLng(41.850033, -87.6500523),
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
-        this._gmOverlay = new google.maps.OverlayView();
-
+    CirclePacking.prototype.enter = function (domNode, element) {
         var context = this;
-        this._gmOverlay.onAdd = function () {
-            context.layer = d3.select(this.getPanes().overlayLayer).append("div")
-                .style("position", "absolute")
-                .attr("class", "gmapLayer")
-            ;
-            //  Move SVG into Google Map Layer  ---
-            context.layer.node().appendChild(context._parentElement.node());
 
-            context._gmOverlay.draw = function () {
-                var overlayProjection = context._gmOverlay.getProjection();
+        this.diameter = Math.min(this.width(), this.height());
 
-                var bounds_ = context._googleMap.getBounds();
-                var sw = overlayProjection.fromLatLngToDivPixel(bounds_.getSouthWest());
-                var ne = overlayProjection.fromLatLngToDivPixel(bounds_.getNorthEast());
+        this.pack = d3.layout.pack()
+            .size([this.diameter - 4, this.diameter - 4])
+            .value(function (d) {
+                return 1;
+            })
+        ;
 
-                var div = context.layer.node();
-                div.style.left = sw.x + "px";
-                div.style.top = ne.y + "px";
-                div.style.width = (ne.x - sw.x) + "px";
-                div.style.height = (sw.y - ne.y) + "px";
+        this.svg = element
+            .append("g")
+            .attr("transform", "rotate(30)")
+    };
 
-                if (!context.firstRun) {
-                    context.firstRun = true;
-                    setTimeout(function () {
-                        context.calcLatLong(sw.x, ne.y);
-                        context.zoomToFit();
-                    }, 100);
-                } else {
-                    context.calcLatLong(sw.x, ne.y);
+    CirclePacking.prototype.update = function (domNode, element) {
+        var context = this;
+
+        this._palette = this._palette.switch(this._paletteID);
+        this.svg.selectAll("circle").remove();
+        this.svg.selectAll("text").remove();
+
+        var root = this._data;
+        var focus = root;
+        var nodes = this.pack.nodes(root);
+
+        this.circle = this.svg.selectAll("circle")
+            .data(nodes)
+          .enter().append("circle")
+            .attr("class", function (d) { return d.parent ? d.children ? "node" : "node leaf" : "node root"; })
+            .style("fill", function (d) { return context._palette(d.label); })
+            .on("click", function (d) { context.click(d); })
+            .on("dblclick", function (d) { if (focus !== d) context.zoom(d), d3.event.stopPropagation(); })
+        ;
+        this.circle.append("title").text(function (d) { return d.label; });
+
+        var text = this.svg.selectAll("text")
+            .data(nodes)
+          .enter()
+            .append("text")
+            .attr("class", "label")
+            .style("fill-opacity", function (d) { return d.parent === root ? 1 : 0; })
+            .style("display", function (d) { return d.parent === root ? null : "none"; })
+            .text(function (d) { return d.label; })
+        ;
+
+        this.node = this.svg.selectAll("circle,text");
+
+        this.zoomTo([root.x, root.y, root.r * 2]);
+    };
+
+    CirclePacking.prototype.zoom = function (d) {
+        var context = this;
+        var focus0 = focus;
+        var focus = d;
+
+        var zoomCircleSel = this.svg.selectAll("circle")
+          .filter(function (d) { return d === focus; })
+        ;
+        var zoomTextSel = this.svg.selectAll("text")
+          .filter(function (d) { return d !== focus && this.style.display === "inline"; })
+        ;
+        zoomTextSel.transition().duration(500)
+            .style("opacity", 0)
+            .each("end", function (d) {
+                if (d !== focus) {
+                    d3.select(this)
+                        .style("display", "none")
+                        .style("opacity", 1)
+                    ;
                 }
-            };
-            google.maps.event.addListener(context._googleMap, "center_changed", function () {
-                context._gmOverlay.draw();
+            })
+        ;
+
+        var transition = this.svg.transition()
+            .duration(1000)
+            .tween("zoom", function (d) {
+                var i = d3.interpolateZoom(context.view, [focus.x, focus.y, focus.r * 2]);
+                return function (t) { context.zoomTo(i(t)); };
             });
-        };
-        this._gmOverlay.setMap(this._googleMap);
+
+        transition.selectAll("text")
+          .filter(function (d) { return d.parent === focus || this.style.display === "inline"; })
+            .style("fill-opacity", function (d) { return d.parent === focus ? 1 : 0; })
+            .each("start", function (d) { if (d.parent === focus) this.style.display = "inline"; })
+            .each("end", function (d) {
+                if (d.parent !== focus) {
+                    this.style.display = "none";
+                }
+            })
+        ;
     };
 
-    GMap.prototype.calcLatLong = function (dx, dy) {
-        dx += this.width() / 2;
-        dy += this.height() / 2;
-        var projection = this._gmOverlay.getProjection();
+    CirclePacking.prototype.zoomTo = function (v) {
+        var k = this.diameter / v[2];
+        this.view = v;
+        this.node.attr("transform", function (d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")rotate(-30)"; });
+        this.circle.attr("r", function (d) { return d.r * k; });
+    };
 
+    return CirclePacking;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('tree/Dendrogram.js',["d3/d3", "../common/SVGWidget", "./ITree", "css!./Dendrogram"], factory);
+    } else {
+        root.tree_Dendrogram = factory(root.d3, root.common_SVGWidget, root.tree_ITree);
+    }
+}(this, function (d3, SVGWidget, ITree) {
+    function Dendrogram(target) {
+        SVGWidget.call(this);
+        ITree.call(this);
+
+        this._class = "tree_Dendrogram";
+
+        this._drawStartPos = "origin";
+        this._maxTextWidth = 0;
+    };
+    Dendrogram.prototype = Object.create(SVGWidget.prototype);
+    Dendrogram.prototype.implements(ITree.prototype);
+	
+    Dendrogram.prototype.publish("paletteID", "default", "set", "Palette ID", Dendrogram.prototype._palette.switch());
+    Dendrogram.prototype.publish("textOffset", 8, "number", "Text offset from circle");
+
+    Dendrogram.prototype.enter = function (domNode, element) {
+        SVGWidget.prototype.enter.apply(this, arguments);
+
+        this.layout = d3.layout.cluster();
+
+        this.diagonal = d3.svg.diagonal()
+            .projection(function (d) { return [d.y, d.x]; })
+        ;
+    };
+
+    Dendrogram.prototype.update = function (domNode, element, secondPass) {
         var context = this;
-        this.graphData.nodeValues().forEach(function (item) {
-            var pos = new google.maps.LatLng(item._data.geo_lat, item._data.geo_long);
-            if (item._data.__viz_markerIcon && !item._marker) {
-                item._marker = new google.maps.Marker({
-                    position: pos,
-                    animation: google.maps.Animation.DROP,
-                    icon: "http://maps.google.com/mapfiles/ms/icons/" + item._data.__viz_markerIcon,
-                    map: context._googleMap,
-                });
-            }
-            pos = projection.fromLatLngToDivPixel(pos);
-            pos.x -= dx;
-            pos.y -= dy;
-            item.move(pos);
-        });
-        this.graphData.edgeValues().forEach(function (item) {
-            item.points([]);
-        })
+        SVGWidget.prototype.update.apply(this, arguments);
+		
+        this._palette = this._palette.switch(this._paletteID);
+
+        //  Pad to allow text to display  ---
+        this.x(this._maxTextWidth);
+        var width = this.width() - this._maxTextWidth * 2;
+        this.layout
+            .size([this.height(), width])
+        ;
+
+        var nodes = this.layout.nodes(this.data());
+        var links = this.layout.links(nodes);
+
+        //  Lines  ---
+        var lines = element.selectAll(".link").data(links);
+        lines.enter().append("path")
+            .attr("class", "link")
+        ;
+        lines
+            .attr("d", this.diagonal)
+        ;
+        lines.exit().remove();
+
+        //  Nodes  ---
+        var nodes = element.selectAll(".node").data(nodes);
+
+        nodes.enter().append("g")
+            .attr("class", "node")
+            .on("click", function (d) { context.click(d); })
+            .each(function (d) {
+                var element = d3.select(this);
+                element.append("circle");
+                element.append("text");
+            })
+        ;
+
+        var maxTextWidth = 0;
+        nodes
+            .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; })
+        ;
+        nodes.select("circle")
+            .attr("r", 4.5)
+            .style("fill", function (d) { return context._palette(d.label); })
+            .append("title")
+            .text(function (d) { return d.label; })
+        ;
+        nodes.select("text")
+            .style("text-anchor", function (d) { return d.children ? "end" : "start"; })
+            .attr("dx", function (d) { return d.children ? -context._textOffset : context._textOffset; })
+            .attr("dy", 3)
+            .text(function (d) { return d.label; })
+            .each(function (d) {
+                if (!secondPass) {
+                    var bbox = d3.select(this).node().getBBox();
+                    if (bbox.width > maxTextWidth) {
+                        maxTextWidth = bbox.width;
+                    }
+                }
+            })
+        ;
+        maxTextWidth += this._textOffset;
+
+        nodes.exit().remove();
+
+        if (!secondPass && this._maxTextWidth !== maxTextWidth) {
+            this._maxTextWidth = maxTextWidth;
+            this.update(domNode, element, true);
+        }
     };
 
-    GMap.prototype.zoomToFit = function () {
-        var latlngbounds = new google.maps.LatLngBounds();
-        this.graphData.nodeValues().forEach(function (item) {
-            var gLatLong = new google.maps.LatLng(item._data.geo_lat, item._data.geo_long);
-            latlngbounds.extend(gLatLong);
-        });
-        this._googleMap.setCenter(latlngbounds.getCenter());
-        this._googleMap.fitBounds(latlngbounds);
+    return Dendrogram;
+}));
+
+
+
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define('tree/SunburstPartition.js',["d3/d3", "../common/SVGWidget", "./ITree", "../common/Text", "../common/FAChar", "css!./SunburstPartition"], factory);
+    } else {
+        root.tree_SunburstPartition = factory(root.d3, root.common_SVGWidget, root.tree_ITree, root.common_Text, root.common_FAChar);
+    }
+}(this, function (d3, SVGWidget, ITree, Text, FAChar) {
+    function SunburstPartition(target) {
+        SVGWidget.call(this);
+        ITree.call(this);
+        this._class = "tree_SunburstPartition";
+    };
+    SunburstPartition.prototype = Object.create(SVGWidget.prototype);
+    SunburstPartition.prototype.implements(ITree.prototype);
+
+    SunburstPartition.prototype.publish("paletteID", "default", "set", "Palette ID", SunburstPartition.prototype._palette.switch());
+
+    SunburstPartition.prototype.root = function (_) {
+        if (!arguments.length) return this._root || this._data;
+        this._root = _;
+
+        if (this.svg) {
+            this.svg.selectAll("path").transition()
+                .duration(750)
+                .attrTween("d", this.arcTweenFunc(this._root))
+            ;
+        }
         return this;
     };
 
-    return GMap;
+    SunburstPartition.prototype.data = function () {
+        var retVal = SVGWidget.prototype.data.apply(this, arguments);
+        if (arguments.length) {
+            this._resetRoot = true;
+        }
+        return this;
+    };
+
+    SunburstPartition.prototype.enter = function (domNode, element) {
+        var context = this;
+
+        this.radius = Math.min(this.width(), this.height()) / 2;
+
+        this._xScale = d3.scale.linear()
+            .range([0, 2 * Math.PI])
+        ;
+
+        this._yScale = d3.scale.sqrt()
+            .range([0, this.radius])
+        ;
+
+        this.partition = d3.layout.partition()
+            .value(function (d) {
+                return d.value !== undefined ? d.value : 1;
+            })
+        ;
+
+        this.arc = d3.svg.arc()
+            .startAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, context._xScale(d.x))); })
+            .endAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, context._xScale(d.x + d.dx))); })
+            .innerRadius(function (d) { return Math.max(0, context._yScale(d.y)); })
+            .outerRadius(function (d) { return Math.max(0, context._yScale(d.y + d.dy)); })
+        ;
+
+        this.svg = element.append("g");
+    };
+
+    SunburstPartition.prototype.update = function (domNode, element) {
+        var context = this;
+
+        this._palette = this._palette.switch(this._paletteID);
+        this.radius = Math.min(this.width(), this.height()) / 2;
+        this._xScale.range([0, 2 * Math.PI]);
+        this._yScale.range([0, this.radius]);
+
+        this._dataNodes = this.partition.nodes(this._data);
+        var paths = this.svg.selectAll("path").data(this._dataNodes, function (d, i) { return d.id !== undefined ? d.id : i; });
+        var path = paths.enter().append("path")
+            .on("click", function (d) { context.click(d); })
+            .on("dblclick", dblclick)
+            .append("title")
+        ;
+        paths
+            .attr("d", this.arc)
+            .style("fill", function (d) {
+                return d.__viz_fill ? d.__viz_fill : context._palette(d.label);
+            })
+            .style("stroke", function (d) {
+                return d.value > 16 ? "white" : "none";
+            })
+            .select("title")
+                .text(function (d) { return d.label })
+        ;
+
+        paths.exit().remove();
+
+        if (this._resetRoot) {
+            this._resetRoot = false;
+            this.root(this._dataNodes[0]);
+        }
+
+        function dblclick(d) {
+            if (d3.event) {
+                d3.event.stopPropagation();
+            }
+            context.root(d);
+        }
+    };
+
+    SunburstPartition.prototype.arcTweenFunc = function (d) {
+        var xd = d3.interpolate(this._xScale.domain(), [d.x, d.x + d.dx]),
+            yd = d3.interpolate(this._yScale.domain(), [d.y, 1]),
+            yr = d3.interpolate(this._yScale.range(), [d.y ? 20 : 0, this.radius]);
+        var context = this;
+        return function (d, i) {
+            return i
+                ? function (t) { return context.arc(d); }
+                : function (t) { context._xScale.domain(xd(t)); context._yScale.domain(yd(t)).range(yr(t)); return context.arc(d); };
+        };
+    };
+
+    return SunburstPartition;
 }));
 
