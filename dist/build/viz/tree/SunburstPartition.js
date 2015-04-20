@@ -1,1 +1,124 @@
-(function(e,t){typeof define=="function"&&define.amd?define(["d3/d3","../common/SVGWidget","./ITree","../common/Text","../common/FAChar","css!./SunburstPartition"],t):e.tree_SunburstPartition=t(e.d3,e.common_SVGWidget,e.tree_ITree,e.common_Text,e.common_FAChar)})(this,function(e,t,n,r,i){function s(e){t.call(this),n.call(this),this._class="tree_SunburstPartition"}return s.prototype=Object.create(t.prototype),s.prototype.implements(n.prototype),s.prototype.publish("paletteID","default","set","Palette ID",s.prototype._palette.switch()),s.prototype.root=function(e){return arguments.length?(this._root=e,this.svg&&this.svg.selectAll("path").transition().duration(750).attrTween("d",this.arcTweenFunc(this._root)),this):this._root||this._data},s.prototype.data=function(){var e=t.prototype.data.apply(this,arguments);return arguments.length&&(this._resetRoot=!0),this},s.prototype.enter=function(t,n){var r=this;this.radius=Math.min(this.width(),this.height())/2,this._xScale=e.scale.linear().range([0,2*Math.PI]),this._yScale=e.scale.sqrt().range([0,this.radius]),this.partition=e.layout.partition().value(function(e){return e.value!==undefined?e.value:1}),this.arc=e.svg.arc().startAngle(function(e){return Math.max(0,Math.min(2*Math.PI,r._xScale(e.x)))}).endAngle(function(e){return Math.max(0,Math.min(2*Math.PI,r._xScale(e.x+e.dx)))}).innerRadius(function(e){return Math.max(0,r._yScale(e.y))}).outerRadius(function(e){return Math.max(0,r._yScale(e.y+e.dy))}),this.svg=n.append("g")},s.prototype.update=function(t,n){function o(t){e.event&&e.event.stopPropagation(),r.root(t)}var r=this;this._palette=this._palette.switch(this._paletteID),this.radius=Math.min(this.width(),this.height())/2,this._xScale.range([0,2*Math.PI]),this._yScale.range([0,this.radius]),this._dataNodes=this.partition.nodes(this._data);var i=this.svg.selectAll("path").data(this._dataNodes,function(e,t){return e.id!==undefined?e.id:t}),s=i.enter().append("path").on("click",function(e){r.click(e)}).on("dblclick",o).append("title");i.attr("d",this.arc).style("fill",function(e){return e.__viz_fill?e.__viz_fill:r._palette(e.label)}).style("stroke",function(e){return e.value>16?"white":"none"}).select("title").text(function(e){return e.label}),i.exit().remove(),this._resetRoot&&(this._resetRoot=!1,this.root(this._dataNodes[0]))},s.prototype.arcTweenFunc=function(t){var n=e.interpolate(this._xScale.domain(),[t.x,t.x+t.dx]),r=e.interpolate(this._yScale.domain(),[t.y,1]),i=e.interpolate(this._yScale.range(),[t.y?20:0,this.radius]),s=this;return function(e,t){return t?function(t){return s.arc(e)}:function(t){return s._xScale.domain(n(t)),s._yScale.domain(r(t)).range(i(t)),s.arc(e)}}},s});
+"use strict";
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define(["d3/d3", "../common/SVGWidget", "./ITree", "../common/Text", "../common/FAChar", "css!./SunburstPartition"], factory);
+    } else {
+        root.tree_SunburstPartition = factory(root.d3, root.common_SVGWidget, root.tree_ITree, root.common_Text, root.common_FAChar);
+    }
+}(this, function (d3, SVGWidget, ITree, Text, FAChar) {
+    function SunburstPartition(target) {
+        SVGWidget.call(this);
+        ITree.call(this);
+        this._class = "tree_SunburstPartition";
+    };
+    SunburstPartition.prototype = Object.create(SVGWidget.prototype);
+    SunburstPartition.prototype.implements(ITree.prototype);
+
+    SunburstPartition.prototype.publish("paletteID", "default", "set", "Palette ID", SunburstPartition.prototype._palette.switch());
+
+    SunburstPartition.prototype.root = function (_) {
+        if (!arguments.length) return this._root || this._data;
+        this._root = _;
+
+        if (this.svg) {
+            this.svg.selectAll("path").transition()
+                .duration(750)
+                .attrTween("d", this.arcTweenFunc(this._root))
+            ;
+        }
+        return this;
+    };
+
+    SunburstPartition.prototype.data = function () {
+        var retVal = SVGWidget.prototype.data.apply(this, arguments);
+        if (arguments.length) {
+            this._resetRoot = true;
+        }
+        return this;
+    };
+
+    SunburstPartition.prototype.enter = function (domNode, element) {
+        var context = this;
+
+        this.radius = Math.min(this.width(), this.height()) / 2;
+
+        this._xScale = d3.scale.linear()
+            .range([0, 2 * Math.PI])
+        ;
+
+        this._yScale = d3.scale.sqrt()
+            .range([0, this.radius])
+        ;
+
+        this.partition = d3.layout.partition()
+            .value(function (d) {
+                return d.value !== undefined ? d.value : 1;
+            })
+        ;
+
+        this.arc = d3.svg.arc()
+            .startAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, context._xScale(d.x))); })
+            .endAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, context._xScale(d.x + d.dx))); })
+            .innerRadius(function (d) { return Math.max(0, context._yScale(d.y)); })
+            .outerRadius(function (d) { return Math.max(0, context._yScale(d.y + d.dy)); })
+        ;
+
+        this.svg = element.append("g");
+    };
+
+    SunburstPartition.prototype.update = function (domNode, element) {
+        var context = this;
+
+        this._palette = this._palette.switch(this._paletteID);
+        this.radius = Math.min(this.width(), this.height()) / 2;
+        this._xScale.range([0, 2 * Math.PI]);
+        this._yScale.range([0, this.radius]);
+
+        this._dataNodes = this.partition.nodes(this._data);
+        var paths = this.svg.selectAll("path").data(this._dataNodes, function (d, i) { return d.id !== undefined ? d.id : i; });
+        var path = paths.enter().append("path")
+            .on("click", function (d) { context.click(d); })
+            .on("dblclick", dblclick)
+            .append("title")
+        ;
+        paths
+            .attr("d", this.arc)
+            .style("fill", function (d) {
+                return d.__viz_fill ? d.__viz_fill : context._palette(d.label);
+            })
+            .style("stroke", function (d) {
+                return d.value > 16 ? "white" : "none";
+            })
+            .select("title")
+                .text(function (d) { return d.label })
+        ;
+
+        paths.exit().remove();
+
+        if (this._resetRoot) {
+            this._resetRoot = false;
+            this.root(this._dataNodes[0]);
+        }
+
+        function dblclick(d) {
+            if (d3.event) {
+                d3.event.stopPropagation();
+            }
+            context.root(d);
+        }
+    };
+
+    SunburstPartition.prototype.arcTweenFunc = function (d) {
+        var xd = d3.interpolate(this._xScale.domain(), [d.x, d.x + d.dx]),
+            yd = d3.interpolate(this._yScale.domain(), [d.y, 1]),
+            yr = d3.interpolate(this._yScale.range(), [d.y ? 20 : 0, this.radius]);
+        var context = this;
+        return function (d, i) {
+            return i
+                ? function (t) { return context.arc(d); }
+                : function (t) { context._xScale.domain(xd(t)); context._yScale.domain(yd(t)).range(yr(t)); return context.arc(d); };
+        };
+    };
+
+    return SunburstPartition;
+}));

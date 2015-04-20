@@ -1,1 +1,165 @@
-(function(e,t){typeof define=="function"&&define.amd?define(["require"],t):e.other_Persist=t(e.common_Widget.prototype.require)})(this,function(e){return{discover:function(e,t){var n=[];for(var r in e)if(r.indexOf("__meta_")>=0){var i=e,s=i[r];if(s.type||t){while(s.type==="proxy")i=i[s.proxy],s=i["__meta_"+s.method];s.id!==e[r].id&&(s=JSON.parse(JSON.stringify(s)),s.id=e[r].id),n.push(s)}}return n},serializeToObject:function(e,t,n){var r={__version:3,__class:e._class,__id:e._id,__properties:{}};t&&t.length?t.forEach.forEach(function(t){e[t.id+"_modified"]()&&(r.__properties[t]=e[t]())}):this.discover(e,!0).forEach(function(t){if(e[t.id+"_modified"]())switch(t.type){case"widget":r.__properties[t.id]=this.serializeToObject(e[t.id](),null,n);break;case"widgetArray":r.__properties[t.id]=[];var i=e[t.id]();i.forEach(function(e,i){r.__properties[t.id].push(this.serializeToObject(e,null,n))},this);break;default:r.__properties[t.id]=e[t.id]()}},this);if(e._class==="marshaller_Graph"){var i=e.data().vertices;i&&(this.__vertices=i.map(function(e){return this.serializeToObject(e,null,n)},this))}return n&&(r.__data={},r.__data.columns=e.columns(),r.__data.data=e.data()),r},serialize:function(e,t,n){return JSON.stringify(this.serializeToObject(e,t,n))},deserialize:function(t,n){var r=this,i="../"+t.__class.split("_").join("/");e([i],function(e){var i=new e;t instanceof String&&(t=JSON.parse(t)),t.__id.indexOf("_w")!==0&&(i._id=t.__id);var s=[],o=0;for(var u in t.__properties)if(i["__meta_"+u])switch(i["__meta_"+u].type){case"widget":++o,r.deserialize(t.__properties[u],function(e){i[u](e),--o});break;case"widgetArray":++o;var a=t.__properties[u],f=[];f.length=a.length;var l=0;a.forEach(function(e,t){++l,r.deserialize(e,function(e){f[t]=e,--l});var n=setInterval(function(){l<=0&&(clearInterval(n),l=undefined,i[u](f),--o)},20)});break;default:i[u](t.__properties[u])}else var c=0;var h=setInterval(function(){if(o<=0){clearInterval(h),o=undefined;if(t.__data)for(var e in t.__data)i[e](t.__data[e]);n(i)}},20)})},create:function(e,t){typeof e=="string"&&(e=JSON.parse(e)),this.deserialize(e,t)},clone:function(e,t){this.create(this.serializeToObject(e,[],!0),t)}}});
+"use strict";
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define(["require"], factory);
+    } else {
+        root.other_Persist = factory(root.common_Widget.prototype.require);
+    }
+}(this, function (require) {
+    return {
+        discover: function (widget, includePrivate) {
+            var retVal = [];
+            for (var key in widget) {
+                if (key.indexOf("__meta_") >= 0) {
+                    var item = widget;
+                    var meta = item[key];
+                    if (meta.type || includePrivate) {
+                        while (meta.type === "proxy") {
+                            item = item[meta.proxy];
+                            meta = item["__meta_" + meta.method];
+                        }
+                        if (meta.id !== widget[key].id) {
+                            meta = JSON.parse(JSON.stringify(meta));  //  Clone meta so we can safely replace the id.
+                            meta.id = widget[key].id;
+                        }
+                        retVal.push(meta);
+                    }
+                }
+            }
+            return retVal;
+        },
+
+        serializeToObject: function (widget, properties, includeData) {
+            var retVal = {
+                __version: 3,
+                __class: widget._class,
+                __id: widget._id,
+                __properties: {}
+            };
+            if (properties && properties.length) {
+                properties.forEach.forEach(function (item) {
+                    if (widget[item.id + "_modified"]()) {
+                        retVal.__properties[item] = widget[item]();
+                    }
+                });
+            } else {
+                this.discover(widget, true).forEach(function (item) {
+                    if (widget[item.id + "_modified"]()) {
+                        switch (item.type) {
+                            case "widget":
+                                retVal.__properties[item.id] = this.serializeToObject(widget[item.id](), null, includeData);
+                                break;
+                            case "widgetArray":
+                                retVal.__properties[item.id] = [];
+                                var widgetArray = widget[item.id]();
+                                widgetArray.forEach(function (widget, idx) {
+                                    retVal.__properties[item.id].push(this.serializeToObject(widget, null, includeData));
+                                }, this);
+                                break;
+                            default:
+                                retVal.__properties[item.id] = widget[item.id]();
+                                break;
+                        }
+                    }
+                }, this);
+            }
+            if (widget._class === "marshaller_Graph") {
+                var vertices = widget.data().vertices;
+                if (vertices) {
+                    this.__vertices = vertices.map(function (item) {
+                        return this.serializeToObject(item, null, includeData);
+                    }, this);
+                }
+            }
+            if (includeData) {
+                retVal.__data = {};
+                retVal.__data.columns = widget.columns();
+                retVal.__data.data = widget.data();
+            }
+            return retVal;
+        },
+
+        serialize: function (widget, properties, includeData) {
+            return JSON.stringify(this.serializeToObject(widget, properties, includeData));
+        },
+
+        deserialize: function (state, callback) {
+            var context = this;
+            var path = "../" + state.__class.split("_").join("/");
+            require([path], function (Widget) {
+                var widget = new Widget();
+                if (state instanceof String) {
+                    state = JSON.parse(state)
+                }
+                if (state.__id.indexOf("_w") !== 0) {
+                    widget._id = state.__id;
+                }
+                var widgets = [];
+                var createCount = 0;
+                for (var key in state.__properties) {
+                    if (widget["__meta_" + key]) {
+                        switch (widget["__meta_" + key].type) {
+                            case "widget":
+                                ++createCount;
+                                context.deserialize(state.__properties[key], function (widgetItem) {
+                                    widget[key](widgetItem);
+                                    --createCount;
+                                });
+                                break;
+                            case "widgetArray":
+                                ++createCount;
+                                var widgetStateArray = state.__properties[key];
+                                var widgetArray = [];
+                                widgetArray.length = widgetStateArray.length;
+                                var arrayCreateCount = 0;
+                                widgetStateArray.forEach(function (widgetState, idx) {
+                                    ++arrayCreateCount;
+                                    context.deserialize(widgetState, function (widgetItem) {
+                                        widgetArray[idx] = widgetItem;
+                                        --arrayCreateCount;
+                                    });
+                                    var arrayIntervalHandler = setInterval(function () {
+                                        if (arrayCreateCount <= 0) {
+                                            clearInterval(arrayIntervalHandler);
+                                            arrayCreateCount = undefined;
+                                            widget[key](widgetArray);
+                                            --createCount;
+                                        }
+                                    }, 20);
+                                });
+                                break;
+                            default:
+                                widget[key](state.__properties[key]);
+                                break;
+                        }
+                    } else {
+                        var d = 0;
+                    }
+                }
+                var intervalHandler = setInterval(function () {
+                    if (createCount <= 0) {
+                        clearInterval(intervalHandler);
+                        createCount = undefined;
+                        if (state.__data) {
+                            for (var key in state.__data) {
+                                widget[key](state.__data[key]);
+                            }
+                        }
+                        callback(widget);
+                    }
+                }, 20);
+            });
+        },
+
+        create: function (state, callback) {
+            if (typeof state === "string") {
+                state = JSON.parse(state)
+            }
+            this.deserialize(state, callback);
+        },
+
+        clone: function (widget, callback) {
+            this.create(this.serializeToObject(widget, [], true), callback);
+        }
+    };
+}));

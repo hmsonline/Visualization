@@ -1,1 +1,453 @@
-(function(e,t){typeof define=="function"&&define.amd?define(["d3/d3","../common/SVGWidget","../common/TextBox","../common/Surface","../common/ResizeSurface","../chart/MultiChartSurface","../common/Palette","../graph/Graph","../graph/Vertex","../graph/Edge","./HipieDDL"],t):e.marshaller_Graph=t(e.d3,e.common_SVGWidget,e.common_TextBox,e.common_Surface,e.common_ResizeSurface,e.chart_MultiChartSurface,e.common_Palette,e.graph_Graph,e.graph_Vertex,e.graph_Edge,e.marshaller_HipieDDL)})(this,function(e,t,n,r,i,s,o,u,a,f,l){function c(e,t,s){function h(e,t,n,r,i,s){r=r||"",i=i||"",s=s||"",t&&n&&e.vertexMap[t]&&e.vertexMap[n]?e.edges.push((new f).sourceVertex(e.vertexMap[t]).targetVertex(e.vertexMap[n]).sourceMarker(r).targetMarker(i).text(s)):(e.vertexMap[t]||console.log("Unknown Vertex:  "+t),e.vertexMap[n]||console.log("Unknown Vertex:  "+n))}t instanceof Object||t&&(t=JSON.parse(t));var u=null,c={};return e.accept({_visualizeRoxie:s,visit:function(e){if(e instanceof l.Dashboard)u={dashboard:e,vertexMap:{},edges:[]},c[e.getQualifiedID()]=u;else if(e instanceof l.DataSource){e.databomb&&t[e.id]&&e.comms.databomb(t[e.id]);if(this._visualizeRoxie){var s="";e.filter.forEach(function(e){s.length>0&&(s+=", "),s+=e}),s=" ("+s+")",u.vertexMap[e.getQualifiedID()]=(new a).class("vertexLabel").faChar("").text(e.id+s)}}else if(e instanceof l.Output)this._visualizeRoxie&&(u.vertexMap[e.getQualifiedID()]=(new a).class("vertexLabel").faChar("").text(e.id+"\n["+e.from+"]"));else if(e instanceof l.Visualization&&e.widget){var f=null;if(e.widget instanceof r)f=e.widget.size({width:210,height:210});else if(e.widget instanceof n)f=e.widget;else{var h=280,p=210;e.type==="GRAPH"&&(h=800,p=600),f=(new i).size({width:h,height:p}).title(e.title).content(e.widget)}if(f){e.widgetSurface=f,u.vertexMap[e.getQualifiedID()]=f;switch(e.type){case"2DCHART":case"PIE":case"BUBBLE":case"BAR":case"WORD_CLOUD":f.menu(e.widget._2dChartTypes.concat(e.widget._anyChartTypes).map(function(e){return e.display}).sort()),f._menu.click=function(t){e.widget.chart_type(t).render()};break;case"LINE":f.menu(e.widget._multiChartTypes.concat(e.widget._anyChartTypes).map(function(e){return e.display}).sort()),f._menu.click=function(t){e.widget.chart_type(t).render()};break;case"CHORO":f._menu.data(o.rainbow()),f._menu.click=function(e){f._content.paletteID(e).render(e)};break;case"GRAPH":f._menu.data(["Circle","ForceDirected","ForceDirected2","Hierarchy"]),f._menu.click=function(e){f._content.layout(e)}}}}}}),u=null,e.accept({_visualizeRoxie:s,visit:function(e){e instanceof l.Dashboard?u=c[e.getQualifiedID()]:e instanceof l.DataSource||(e instanceof l.Output?this._visualizeRoxie&&h(u,e.dataSource.getQualifiedID(),e.getQualifiedID(),"circleFoot","circleHead"):e instanceof l.Visualization&&(this._visualizeRoxie&&(e.source.getDatasource()&&h(u,e.getQualifiedID(),e.source.getDatasource().getQualifiedID(),"","arrowHead","update"),e.source.getOutput()&&h(u,e.source.getOutput().getQualifiedID(),e.getQualifiedID(),"","arrowHead","notify")),e.onSelect.getUpdatesVisualizations().forEach(function(t){h(u,e.getQualifiedID(),t.getQualifiedID(),undefined,"arrowHead","on Select")})))}}),c}function p(){u.call(this),this._class="marshaller_Graph",this._design_mode=!1,this._dashboards=[],this.graphAttributes=["snapToGrid","showEdges"],this.widgetAttributes=["layout","chartType","palette","title","columns","data"]}var h=2;return p.prototype=Object.create(u.prototype),p.prototype.publish("ddl_url","","string","DDL URL"),p.prototype.publish("databomb","","string","Data Bomb"),p.prototype.publish("proxy_mappings",[],"array","Proxy Mappings"),p.prototype.publish("visualize_roxie",!1,"boolean","Show Roxie Data Sources"),p.prototype.publish(),p.prototype.testData=function(){return this.ddl_url("http://10.173.147.1:8002/WsEcl/submit/query/roxie/drealeed_testaddressclean.ins002_service/json"),this},p.prototype.design_mode=function(e){return arguments.length?(this._design_mode=e,this.showEdges(this._designMode).snapToGrid(this._designMode?12:0).allowDragging(this._designMode),this._data.vertices&&this._data.vertices.forEach(function(e){e.show_title(this._design_mode).render()},this),this):this._design_mode},p.prototype.dashboards=function(e){return arguments.length?(this._dashboards=e,this):this._dashboards},p.prototype.title=function(){var e="";return this._dashboards.forEach(function(t){e&&(e+=", "),e+=t.dashboard.title}),e},p.prototype.renderDashboards=function(e){this.data({vertices:[],edges:[]});var t=this,n=[],r=[];for(var i in this._dashboards){for(var s in this._dashboards[i].vertexMap)n.push(this._dashboards[i].vertexMap[s]);r=r.concat(this._dashboards[i].edges)}this.data({vertices:n,edges:r});var o=e?this.load():{changed:!1,dataChanged:!1};return o.changed&&this.layout(""),o.dataChanged||this.fetchData(),this},p.prototype.fetchData=function(){for(var e in this._dashboards){var t=this._dashboards[e].dashboard;for(var e in t.datasources)t.datasources[e].fetchData({},!0)}return this},p.prototype.checksum=function(e){var t=0,n=e.length,r,i;if(n===0)return t;for(r=0;r<n;r++)i=e.charCodeAt(r),t=(t<<5)-t+i,t&=t;return t},p.prototype.calcHash=function(){var e=this,t=h;for(var n in this._dashboards){var r=this._dashboards[n].dashboard;r.accept({visit:function(n){n instanceof l.Visualization&&(t+=e.checksum(n.getQualifiedID()))}})}return t},p.prototype.clear=function(){localStorage.setItem("Graph_"+this.calcHash(),"")},p.prototype.serialize=function(e,t){e=e||[],t=t||[];var n={};n.zoom={translation:this.zoom.translate(),scale:this.zoom.scale()},e.forEach(function(e){this[e]&&(n[e]=this[e]())},this);for(var r in this._dashboards){var i=this._dashboards[r].dashboard,s=i.getQualifiedID();n[s]={},i.accept({visit:function(e){if(e instanceof l.Visualization&&e.widgetSurface){var r={pos:e.widgetSurface.pos(),size:e.widgetSurface.size()};t.forEach(function(t){e.widget[t]?r[t]=e.widget[t]():e.widgetSurface[t]&&(r[t]=e.widgetSurface[t]())}),n[s][e.getQualifiedID()]=r}}})}return JSON.stringify(n)},p.prototype.save=function(){localStorage.setItem("Graph_"+this.calcHash(),this.serialize(this.graphAttributes,this.widgetAttributes))},p.prototype.deserialize=function(e,t,n){t=t||[],n=n||[];var r=!1,i=!1;t.forEach(function(t){this[t]&&e[t]!==undefined&&this[t](e[t])},this),e.zoom&&(this.setZoom(e.zoom.translation,e.zoom.scale),r=!0);for(var s in this._dashboards){var o=this._dashboards[s].dashboard,u=o.getQualifiedID();o.accept({visit:function(t){if(t instanceof l.Visualization&&e[u]&&e[u][t.getQualifiedID()]){var s=e[u][t.getQualifiedID()];t.widgetSurface.pos(s.pos).size(s.size),r=!0,n.forEach(function(e){t.widget[e]&&s[e]!==undefined?(t.widget[e](s[e]),e==="data"&&(i=!0)):t.widgetSurface[e]&&s[e]&&t.widgetSurface[e](s[e])})}}})}return{changed:r,dataChanged:i}},p.prototype.load=function(){var e={changed:!1,dataChanged:!1},t=localStorage.getItem("Graph_"+this.calcHash());return t&&(e=this.deserialize(JSON.parse(t),this.graphAttributes,this.widgetAttributes)),e},p.prototype.enter=function(e,t){u.prototype.enter.apply(this,arguments),t.classed("graph_Graph",!0)},p.prototype.update=function(e,t){u.prototype.update.apply(this,arguments)},p.prototype.render=function(e){function i(){var r=c(t,n._databomb,n._visualize_roxie);n.dashboards(r),n.shrinkToFitOnLayout(!0).layout("Hierarchy").renderDashboards(!0),u.prototype.render.call(n,function(t){e&&e(t)})}if(this._ddl_url===""||this._ddl_url===this._prev_ddl_url)return u.prototype.render.apply(this,arguments);this._prev_ddl_url=this._ddl_url;var t=(new l.Marshaller).proxyMappings(this._proxy_mappings),n=this,r=arguments;return this._ddl_url[0]==="["||this._ddl_url[0]==="{"?t.parse(this._ddl_url,function(){i()}):t.url(this._ddl_url,function(){i()}),this},p});
+"use strict";
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define(["d3/d3", "../common/SVGWidget", "../common/TextBox", "../common/Surface", "../common/ResizeSurface", "../chart/MultiChartSurface", "../common/Palette", "../graph/Graph", "../graph/Vertex", "../graph/Edge", "./HipieDDL"], factory);
+    } else {
+        root.marshaller_Graph = factory(root.d3, root.common_SVGWidget, root.common_TextBox, root.common_Surface, root.common_ResizeSurface, root.chart_MultiChartSurface, root.common_Palette, root.graph_Graph, root.graph_Vertex, root.graph_Edge, root.marshaller_HipieDDL);
+    }
+}(this, function (d3, SVGWidget, TextBox, Surface, ResizeSurface, MultiChartSurface, Palette, GraphWidget, Vertex, Edge, HipieDDL) {
+    function createGraphData(marshaller, databomb, visualizeRoxie) {
+        if (databomb instanceof Object) {
+        } else if (databomb){
+            databomb = JSON.parse(databomb);
+        }
+        var curr = null;
+        var dashboards = {};
+        marshaller.accept({
+            _visualizeRoxie: visualizeRoxie,
+            visit: function (item) {
+                if (item instanceof HipieDDL.Dashboard) {
+                    curr = {
+                        dashboard: item,
+                        vertexMap: {},
+                        edges: [],
+                    };
+                    dashboards[item.getQualifiedID()] = curr;
+                } else if (item instanceof HipieDDL.DataSource) {
+                    if (item.databomb && databomb[item.id]) {
+                        item.comms.databomb(databomb[item.id]);
+                    }
+                    if (this._visualizeRoxie) {
+                        var params = "";
+                        item.filter.forEach(function (item) {
+                            if (params.length > 0) {
+                                params += ", ";
+                            }
+                            params += item;
+                        });
+                        params = " (" + params + ")";
+                        curr.vertexMap[item.getQualifiedID()] = new Vertex()
+                            .class("vertexLabel")
+                            .faChar("\uf1c0")
+                            .text(item.id + params)
+                        ;
+                    }
+                } else if (item instanceof HipieDDL.Output) {
+                    if (this._visualizeRoxie) {
+                        curr.vertexMap[item.getQualifiedID()] = new Vertex()
+                            .class("vertexLabel")
+                            .faChar("\uf0ce")
+                            .text(item.id + "\n[" + item.from + "]")
+                        ;
+                    }
+                } else if (item instanceof HipieDDL.Visualization) {
+                    if (item.widget) {
+                        var newSurface = null;
+                        if (item.widget instanceof Surface) {
+                            newSurface = item.widget
+                                .size({ width: 210, height: 210 })
+                            ;
+                        } else if (item.widget instanceof TextBox) {
+                            newSurface = item.widget;
+                        } else {
+                            var width = 280;
+                            var height = 210;
+                            if (item.type === "GRAPH") {
+                                width = 800;
+                                height = 600;
+                            }
+                            newSurface = new ResizeSurface()
+                                .size({ width: width, height: height })
+                                .title(item.title)
+                                .content(item.widget)
+                            ;
+                        }
+                        if (newSurface) {
+                            item.widgetSurface = newSurface;
+                            curr.vertexMap[item.getQualifiedID()] = newSurface;
+
+                            switch (item.type) {
+                                case "2DCHART":
+                                case "PIE":
+                                case "BUBBLE":
+                                case "BAR":
+                                case "WORD_CLOUD":
+                                    newSurface.menu(item.widget._2dChartTypes.concat(item.widget._anyChartTypes).map(function (item) { return item.display; }).sort());
+                                    newSurface._menu.click = function (d) {
+                                        item.widget
+                                            .chart_type(d)
+                                            .render()
+                                        ;
+                                    }
+                                    break;
+                                case "LINE":
+                                    newSurface.menu(item.widget._multiChartTypes.concat(item.widget._anyChartTypes).map(function (item) { return item.display; }).sort());
+                                    newSurface._menu.click = function (d) {
+                                        item.widget
+                                            .chart_type(d)
+                                            .render()
+                                        ;
+                                    }
+                                    break;
+                                case "CHORO":
+                                    newSurface._menu
+                                        .data(Palette.rainbow())
+                                    ;
+                                    newSurface._menu.click = function (d) {
+                                        newSurface._content
+                                            .paletteID(d)
+                                            .render(d)
+                                        ;
+                                    }
+                                    break;
+                                case "GRAPH":
+                                    newSurface._menu
+                                        .data(["Circle", "ForceDirected", "ForceDirected2", "Hierarchy"])
+                                    ;
+                                    newSurface._menu.click = function (d) {
+                                        newSurface._content
+                                            .layout(d)
+                                        ;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        function addEdge(curr, sourceID, targetID, sourceMarker, targetMarker, text) {
+            sourceMarker = sourceMarker || "";
+            targetMarker = targetMarker || "";
+            text = text || "";
+            if (sourceID && targetID && curr.vertexMap[sourceID] && curr.vertexMap[targetID]) {
+                curr.edges.push(new Edge()
+                    .sourceVertex(curr.vertexMap[sourceID])
+                    .targetVertex(curr.vertexMap[targetID])
+                    .sourceMarker(sourceMarker)
+                    .targetMarker(targetMarker)
+                    .text(text)
+                );
+            } else {
+                if (!curr.vertexMap[sourceID]) {
+                    console.log("Unknown Vertex:  " + sourceID);
+                }
+                if (!curr.vertexMap[targetID]) {
+                    console.log("Unknown Vertex:  " + targetID);
+                }
+            }
+        };
+
+        curr = null;
+        marshaller.accept({
+            _visualizeRoxie: visualizeRoxie,
+            visit: function (item) {
+                if (item instanceof HipieDDL.Dashboard) {
+                    curr = dashboards[item.getQualifiedID()];
+                } else if (item instanceof HipieDDL.DataSource) {
+                } else if (item instanceof HipieDDL.Output) {
+                    if (this._visualizeRoxie) {
+                        addEdge(curr, item.dataSource.getQualifiedID(), item.getQualifiedID(), "circleFoot", "circleHead");
+                    }
+                } else if (item instanceof HipieDDL.Visualization) {
+                    if (this._visualizeRoxie) {
+                        if (item.source.getDatasource()) {
+                            addEdge(curr, item.getQualifiedID(), item.source.getDatasource().getQualifiedID(), "", "arrowHead", "update");
+                        }
+                        if (item.source.getOutput()) {
+                            addEdge(curr, item.source.getOutput().getQualifiedID(), item.getQualifiedID(), "", "arrowHead", "notify");
+                        }
+                    }
+
+                    item.onSelect.getUpdatesVisualizations().forEach(function (vizItem) {
+                        addEdge(curr, item.getQualifiedID(), vizItem.getQualifiedID(), undefined, "arrowHead", "on Select");
+                    });
+                }
+            }
+        });
+        return dashboards;
+    };
+
+    var PERSIST_VER = 2;
+    function Graph() {
+        GraphWidget.call(this);
+        this._class = "marshaller_Graph";
+
+        this._design_mode = false;
+        this._dashboards = [];
+        this.graphAttributes = ["snapToGrid", "showEdges"];
+        this.widgetAttributes = ["layout", "chartType", "palette", "title", "columns", "data"];
+    };
+    Graph.prototype = Object.create(GraphWidget.prototype);
+    Graph.prototype.publish("ddl_url", "", "string", "DDL URL");
+    Graph.prototype.publish("databomb", "", "string", "Data Bomb");
+    Graph.prototype.publish("proxy_mappings", [], "array", "Proxy Mappings");
+    Graph.prototype.publish("visualize_roxie", false, "boolean", "Show Roxie Data Sources");
+
+    Graph.prototype.publish()
+    
+    Graph.prototype.testData = function () {
+        this.ddl_url("http://10.173.147.1:8002/WsEcl/submit/query/roxie/drealeed_testaddressclean.ins002_service/json");
+        return this;
+    };
+
+    Graph.prototype.design_mode = function (_) {
+        if (!arguments.length) return this._design_mode;
+        this._design_mode = _;
+        this
+            .showEdges(this._designMode)
+            .snapToGrid(this._designMode ? 12 : 0)
+            .allowDragging(this._designMode)
+        ;
+        if (this._data.vertices) {
+            this._data.vertices.forEach(function (row) {
+                row.show_title(this._design_mode)
+                    .render()
+                ;
+            }, this);
+        }
+        return this;
+    };
+
+    Graph.prototype.dashboards = function (_) {
+        if (!arguments.length) return this._dashboards;
+        this._dashboards = _;
+        return this;
+    };
+
+    Graph.prototype.title = function () {
+        var retVal = "";
+        this._dashboards.forEach(function (item) {
+            if (retVal) {
+                retVal += ", ";
+            }
+            retVal += item.dashboard.title;
+        });
+        return retVal;
+    };
+
+    Graph.prototype.renderDashboards = function (restorePersist) {
+        this.data({ vertices: [], edges: []});
+        var context = this;
+        var vertices = [];
+        var edges = [];
+        for (var key in this._dashboards) {
+            for (var vm_key in this._dashboards[key].vertexMap) {
+                vertices.push(this._dashboards[key].vertexMap[vm_key]);
+            }
+            edges = edges.concat(this._dashboards[key].edges);
+        }
+        this.data({ vertices: vertices, edges: edges });
+        var loadResult = restorePersist ? this.load() : { changed: false, dataChanged: false };
+        if (loadResult.changed) {
+            this.layout("");
+        }
+        if (!loadResult.dataChanged) {
+            this.fetchData();
+        }
+        return this;
+    };
+
+    Graph.prototype.fetchData = function () {
+        for (var key in this._dashboards) {
+            var dashboard = this._dashboards[key].dashboard;
+            for (var key in dashboard.datasources) {
+                dashboard.datasources[key].fetchData({}, true);
+            }
+        }
+        return this;
+    };
+
+    Graph.prototype.checksum = function (s) {
+        var hash = 0,
+        strlen = s.length,
+        i,
+        c;
+        if ( strlen === 0 ) {
+            return hash;
+        }
+        for ( i = 0; i < strlen; i++ ) {
+            c = s.charCodeAt( i );
+            hash = ((hash << 5) - hash) + c;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return hash;
+    };
+
+    Graph.prototype.calcHash = function () {
+        var context = this;
+        var hash = PERSIST_VER;
+        for (var key in this._dashboards) {
+            var currDashboard = this._dashboards[key].dashboard;
+            currDashboard.accept({
+                visit: function (item) {
+                    if (item instanceof HipieDDL.Visualization) {
+                        hash += context.checksum(item.getQualifiedID());
+                    }
+                }
+            });
+        }
+        return hash;
+    },
+
+    Graph.prototype.clear = function () {
+        localStorage.setItem("Graph_" + this.calcHash(), "");
+    };
+
+    Graph.prototype.serialize = function (graphAttributes, widgetAttributes) {
+        graphAttributes = graphAttributes || [];
+        widgetAttributes = widgetAttributes || [];
+
+        var state = {};
+        state["zoom"] = {
+            translation: this.zoom.translate(),
+            scale: this.zoom.scale()
+        };
+        graphAttributes.forEach(function (attr) {
+            if (this[attr]) {
+                state[attr] = this[attr]();
+            }
+        }, this);
+        for (var key in this._dashboards) {
+            var currDashboard = this._dashboards[key].dashboard;
+            var currDashboardID = currDashboard.getQualifiedID();
+            state[currDashboardID] = {};
+            currDashboard.accept({
+                visit: function (item) {
+                    if (item instanceof HipieDDL.Visualization) {
+                        if (item.widgetSurface) {
+                            var vizState = {
+                                pos: item.widgetSurface.pos(),
+                                size: item.widgetSurface.size()
+                            };
+                            widgetAttributes.forEach(function (attr) {
+                                if (item.widget[attr]) {
+                                    vizState[attr] = item.widget[attr]();
+                                } else if (item.widgetSurface[attr]) {
+                                    vizState[attr] = item.widgetSurface[attr]();
+                                }
+                            });
+                            state[currDashboardID][item.getQualifiedID()] = vizState;
+                        }
+                    }
+                }
+            });
+        }
+        return JSON.stringify(state);
+    };
+
+    Graph.prototype.save = function () {
+        localStorage.setItem("Graph_" + this.calcHash(), this.serialize(this.graphAttributes, this.widgetAttributes));
+    };
+
+    Graph.prototype.deserialize = function (state, graphAttributes, widgetAttributes) {
+        graphAttributes = graphAttributes || [];
+        widgetAttributes = widgetAttributes || [];
+
+        var changed = false;
+        var dataChanged = false;
+
+        graphAttributes.forEach(function (attr) {
+            if (this[attr] && state[attr] !== undefined) {
+                this[attr](state[attr]);
+            }
+        }, this);
+        if (state.zoom) {
+            this.setZoom(state.zoom.translation, state.zoom.scale);
+            changed = true;
+        }
+
+        for (var key in this._dashboards) {
+            var currDashboard = this._dashboards[key].dashboard;
+            var currDashboardID = currDashboard.getQualifiedID();
+            currDashboard.accept({
+                visit: function (item) {
+                    if (item instanceof HipieDDL.Visualization && state[currDashboardID] && state[currDashboardID][item.getQualifiedID()]) {
+                        var vizState = state[currDashboardID][item.getQualifiedID()];
+                        item.widgetSurface
+                            .pos(vizState.pos)
+                            .size(vizState.size)
+                        ;
+                        changed = true;
+                        widgetAttributes.forEach(function (attr) {
+                            if (item.widget[attr] && vizState[attr] !== undefined) {
+                                item.widget[attr](vizState[attr]);
+                                if (attr === "data") {
+                                    dataChanged = true;
+                                }
+                            } else if (item.widgetSurface[attr] && vizState[attr]) {
+                                item.widgetSurface[attr](vizState[attr]);
+                            };
+                        });
+                    }
+                }
+            });
+        }
+        return { changed: changed, dataChanged: dataChanged };
+    };
+
+    Graph.prototype.load = function () {
+        var retVal = { changed: false, dataChanged: false };
+        var stateJSON = localStorage.getItem("Graph_" + this.calcHash());
+        if (stateJSON) {
+            retVal = this.deserialize(JSON.parse(stateJSON), this.graphAttributes, this.widgetAttributes);
+        }
+        return retVal;
+    }
+
+    Graph.prototype.enter = function (domNode, element) {
+        GraphWidget.prototype.enter.apply(this, arguments);
+        element.classed("graph_Graph", true);
+    };
+
+    Graph.prototype.update = function (domNode, element) {
+        GraphWidget.prototype.update.apply(this, arguments);
+    };
+
+    Graph.prototype.render = function (callback) {
+        if (this._ddl_url === "" || this._ddl_url === this._prev_ddl_url) {
+            return GraphWidget.prototype.render.apply(this, arguments);
+        }
+        this._prev_ddl_url = this._ddl_url;
+        var marshaller = new HipieDDL.Marshaller().proxyMappings(this._proxy_mappings);
+        var context = this;
+        var args = arguments;
+        if (this._ddl_url[0] === "[" || this._ddl_url[0] === "{") {
+            marshaller.parse(this._ddl_url, function () {
+                postParse();
+            });
+        } else {
+            marshaller.url(this._ddl_url, function () {
+                postParse();
+            });
+        }
+        function postParse() {
+            var dashboards = createGraphData(marshaller, context._databomb, context._visualize_roxie);
+            context.dashboards(dashboards);
+            context
+                .shrinkToFitOnLayout(true)
+                .layout("Hierarchy")
+                .renderDashboards(true)
+            ;
+            GraphWidget.prototype.render.call(context, function (widget) {
+                if (callback) {
+                    callback(widget);
+                }
+            });
+        }
+        return this;
+    }
+
+    return Graph;
+}));

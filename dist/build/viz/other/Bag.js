@@ -1,1 +1,68 @@
-(function(e,t){typeof define=="function"&&define.amd?define([],t):e.other_Bag=t()})(this,function(){function e(){this.items={}}return e.prototype={clear:function(){for(var e in this.items)this.items[e].element().classed("selected",!1);this.items={}},isEmpty:function(){for(var e in this.items)return!1;return!0},append:function(e){this.items[e._id]=e,e.element().classed("selected",!0)},remove:function(e){this.items[e._id].element().classed("selected",!1),delete this.items[e._id]},isSelected:function(e){return this.items[e._id]},get:function(){var e=[];for(var t in this.items)e.push(this.items[t]);return e},set:function(e){this.clear(),e.forEach(function(e,t){this.append(e)},this)},click:function(e,t){t.ctrlKey?this.items[e._id]?this.remove(e):this.append(e):(this.clear(),this.append(e))}},{Selection:e,Navigation:null}});
+"use strict";
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define([], factory);
+    } else {
+        root.other_Bag = factory();
+    }
+}(this, function () {
+    function SelectionBag() {
+        this.items = {};
+    };
+
+    SelectionBag.prototype = {
+        clear: function () {
+            for (var key in this.items) {
+                this.items[key].element().classed("selected", false);
+            }
+            this.items = {};
+        },
+        isEmpty: function() {
+            for (var key in this.items) {
+                return false;
+            }
+            return true;
+        },
+        append: function (item) {
+            this.items[item._id] = item;
+            item.element().classed("selected", true);
+        },
+        remove: function (item) {
+            this.items[item._id].element().classed("selected", false);
+            delete this.items[item._id];
+        },
+        isSelected: function(item) {
+            return this.items[item._id];
+        },
+        get: function () {
+            var retVal = [];
+            for (var key in this.items) {
+                retVal.push(this.items[key]);
+            }
+            return retVal;
+        },
+        set: function (itemArray) {
+            this.clear();
+            itemArray.forEach(function (item, idx) {
+                this.append(item);
+            }, this);
+        },
+        click: function (item, d3Event) {
+            if (d3Event.ctrlKey) {
+                if (this.items[item._id]) {
+                    this.remove(item);
+                } else {
+                    this.append(item);
+                }
+            } else {
+                this.clear();
+                this.append(item);
+            }
+        }
+    };
+
+    return {
+        Selection: SelectionBag,
+        Navigation: null
+    };
+}));

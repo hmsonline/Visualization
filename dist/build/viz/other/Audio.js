@@ -1,1 +1,94 @@
-(function(e,t){typeof define=="function"&&define.amd?define(["../common/HTMLWidget"],t):e.other_Audio=t(e.common_HTMLWidget)})(this,function(e){function t(){e.call(this),this._class="other_Audio",this._tag="audio",this._source=[],this._sections={}}return t.prototype=Object.create(e.prototype),t.prototype.source=function(e){return arguments.length?(this._source=e,this):this._source},t.prototype.section=function(e,t,n,r){return arguments.length?arguments.length===1?this._sections[e]:(this._sections[e]={label:e,offset:t,beatLength:n,beatCount:r,endOffset:t+r*n},this):this._sections},t.prototype.getType=function(e){switch(e){case"mp3":return"audio/mpeg; codecs='mp3'";case"ogg":return"audio/ogg; codecs='vorbis'"}return""},t.prototype.enter=function(e,t){var n=this;t.on("play",function(e){n.onPlay(e)})},t.prototype.update=function(e,t){var n=this,r=t.selectAll("source").data(this._source,function(e){return e});r.enter().append("source").attr("src",function(e){return e})},t.prototype.createTimer=function(e,t,n){var r=this;d3.timer(function(){return r.onTick(e.label,n,e),!0},n*e.beatLength,t+e.offset)},t.prototype.onTick=function(e,t,n){},t.prototype.onPlay=function(e){var t=Date.now();for(var n in this._sections){var r=this._sections[n];for(var i=0;i<r.beatCount;++i)this.createTimer(r,t,i)}},t.prototype.play=function(e){var t=this;this._element.on("canplaythrough",function(e){t.node().play()}),this.node().load()},t});
+"use strict";
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define(["../common/HTMLWidget"], factory);
+    } else {
+        root.other_Audio = factory(root.common_HTMLWidget);
+    }
+}(this, function (HTMLWidget) {
+    function Audio() {
+        HTMLWidget.call(this);
+        this._class = "other_Audio";
+
+        this._tag = "audio";
+
+        this._source = [];
+        this._sections = {};
+    };
+    Audio.prototype = Object.create(HTMLWidget.prototype);
+
+    Audio.prototype.source = function (_) {
+        if (!arguments.length) return this._source;
+        this._source = _;
+        return this;
+    };
+
+    Audio.prototype.section = function (label, offset, beatLength, beatCount) {
+        if (!arguments.length) return this._sections;
+        if (arguments.length === 1) return this._sections[label];
+        this._sections[label] = {
+            label: label,
+            offset: offset,
+            beatLength: beatLength,
+            beatCount: beatCount,
+            endOffset: offset + beatCount * beatLength
+        };
+        return this;
+    };
+
+    Audio.prototype.getType = function (fileExt) {
+        switch(fileExt) {
+            case "mp3":
+                return "audio/mpeg; codecs='mp3'";
+            case "ogg":
+                return "audio/ogg; codecs='vorbis'";
+        }
+        return "";
+    };
+
+
+    Audio.prototype.enter = function (domNode, element) {
+        var context = this;
+        element.on("play", function (d) { context.onPlay(d); })
+    };
+
+    Audio.prototype.update = function (domNode, element) {
+        var context = this;
+
+        var source = element.selectAll("source").data(this._source, function (d) { return d; });
+        source.enter().append("source")
+            .attr("src", function (d) { return d; })
+        ;
+    }
+
+    Audio.prototype.createTimer = function (params, startTime, beat) {
+        var context = this;
+        d3.timer(function () {
+            context.onTick(params.label, beat, params);
+            return true;
+        }, beat * params.beatLength, startTime + params.offset);
+    };
+
+    Audio.prototype.onTick = function (label, beat, params) {
+    };
+
+    Audio.prototype.onPlay = function (d) {
+        var startTime = Date.now();
+        for (var key in this._sections) {
+            var section = this._sections[key];
+            for (var i = 0; i < section.beatCount; ++i) {
+                this.createTimer(section, startTime, i);
+            }
+        }
+    };
+
+    Audio.prototype.play = function (d) {
+        var context = this;
+        this._element.on("canplaythrough", function (d) {
+            context.node().play();
+        })
+        this.node().load();
+    };
+
+    return Audio;
+}));

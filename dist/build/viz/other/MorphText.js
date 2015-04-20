@@ -1,1 +1,115 @@
-(function(e,t){typeof define=="function"&&define.amd?define(["../common/SVGWidget","css!./MorphText"],t):e.other_MorphText=t(e.common_SVGWidget)})(this,function(e){function t(){e.call(this),this._class="other_MorphText",this._text="",this._anchor="middle",this._reverse=!1}return t.prototype=Object.create(e.prototype),t.prototype.text=function(e){if(!arguments.length)return this._text;this._text=e;var t={},n=this._text.split("");return this.data(n.map(function(e){var n="_"+e;return t[n]===undefined&&(t[n]=0),t[n]++,{text:e,id:e.charCodeAt(0)+1024*t[n]}})),this},t.prototype.anchor=function(e){return arguments.length?(this._anchor=e,this):this._anchor},t.prototype.fontSize=function(e){return arguments.length?(this._fontSize=e,this):this._fontSize},t.prototype.reverse=function(e){return arguments.length?(this._reverse=e,this):this._reverse},t.prototype.enter=function(e,t){if(!this._fontSize){var n=window.getComputedStyle(e,null);this._fontSize=parseInt(n.fontSize)}this._fontWidth=this._fontSize*32/48,this._textElement=t.append("g")},t.prototype.dateTime=function(){var e=new Date,t=e.getSeconds().toString().length==1?"0"+e.getSeconds():e.getSeconds(),n=e.getMinutes().toString().length==1?"0"+e.getMinutes():e.getMinutes(),r=e.getHours().toString().length==1?"0"+e.getHours():e.getHours(),i=e.getHours()>=12?"pm":"am",s=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],o=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];return o[e.getDay()]+" "+s[e.getMonth()]+" "+e.getDate()+" "+e.getFullYear()+" "+r+":"+n+":"+t+i},t.prototype.update=function(e,t){var n=this,r=this._textElement.selectAll("text").data(this.data(),function(e){return e.id});r.attr("class","update"),this.transition.apply(r).attr("x",function(e,t){return(-n._data.length/2+t)*n._fontWidth+n._fontWidth/2});var i=r.enter().append("text").attr("class","enter").attr("font-size",this._fontSize).attr("dy",".35em").attr("y",(this._reverse?1:-1)*this._fontWidth*2).attr("x",function(e,t){return(-n._data.length/2+t)*n._fontWidth+n._fontWidth/2}).style("fill-opacity",1e-6).style("text-anchor",this._anchor).text(function(e){return e.text});this.transition.apply(i).attr("y",0).style("fill-opacity",1),r.exit().attr("class","exit"),this.transition.apply(r.exit()).attr("y",(this._reverse?-1:1)*this._fontWidth*2).style("fill-opacity",1e-6).remove()},t});
+"use strict";
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define(["../common/SVGWidget", "css!./MorphText"], factory);
+    } else {
+        root.other_MorphText = factory(root.common_SVGWidget);
+    }
+}(this, function (SVGWidget) {
+    function MorphText() {
+        SVGWidget.call(this);
+        this._class = "other_MorphText";
+
+        this._text = "";
+        this._anchor = "middle";
+        this._reverse = false;
+    };
+    MorphText.prototype = Object.create(SVGWidget.prototype);
+
+    MorphText.prototype.text = function (_) {
+        if (!arguments.length) return this._text;
+        this._text = _;
+
+        var usedChars = {};
+        var chars = this._text.split("");
+        this.data(chars.map(function(d) {
+            var id = "_" + d;
+            if (usedChars[id] === undefined) {
+                usedChars[id] = 0;
+            }
+            usedChars[id]++;
+            return {text: d, id: d.charCodeAt(0) + (1024 * usedChars[id])};
+        }));
+
+        return this;
+    };
+
+    MorphText.prototype.anchor = function (_) {
+        if (!arguments.length) return this._anchor;
+        this._anchor = _;
+        return this;
+    };
+
+    MorphText.prototype.fontSize = function (_) {
+        if (!arguments.length) return this._fontSize;
+        this._fontSize = _;
+        return this;
+    };
+
+    MorphText.prototype.reverse = function (_) {
+        if (!arguments.length) return this._reverse;
+        this._reverse = _;
+        return this;
+    };
+
+    MorphText.prototype.enter = function (domNode, element) {
+        if (!this._fontSize) {
+            var style = window.getComputedStyle(domNode, null);
+            this._fontSize = parseInt(style.fontSize);
+        }
+        this._fontWidth = this._fontSize * 32 / 48;
+        this._textElement = element.append("g")
+        ;
+    };
+
+    MorphText.prototype.dateTime = function() {
+        var d = new Date(),
+            seconds = d.getSeconds().toString().length == 1 ? '0' + d.getSeconds() : d.getSeconds(),
+            minutes = d.getMinutes().toString().length == 1 ? '0' + d.getMinutes() : d.getMinutes(),
+            hours = d.getHours().toString().length == 1 ? '0' + d.getHours() : d.getHours(),
+            ampm = d.getHours() >= 12 ? 'pm' : 'am',
+            months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        return days[d.getDay()] + ' ' + months[d.getMonth()] + ' ' + d.getDate() + ' ' + d.getFullYear() + ' ' + hours + ':' + minutes + ':' + seconds + ampm;
+    }
+
+
+    MorphText.prototype.update = function (domNode, element) {
+        var context = this;
+        var text = this._textElement.selectAll("text")
+            .data(this.data(), function (d) { return d.id; })
+        ;
+        text
+          .attr("class", "update")
+        ;
+        this.transition.apply(text)
+            .attr("x", function (d, i) { return (-context._data.length / 2 + i) * context._fontWidth + context._fontWidth / 2; })
+        ;
+
+        var newText = text.enter().append("text")
+            .attr("class", "enter")
+            .attr("font-size", this._fontSize)
+            .attr("dy", ".35em")
+            .attr("y", (this._reverse ? +1 : -1) * this._fontWidth * 2)
+            .attr("x", function (d, i) { return (-context._data.length / 2 + i) * context._fontWidth + context._fontWidth / 2; })
+            .style("fill-opacity", 1e-6)
+            .style("text-anchor", this._anchor)
+            .text(function (d) { return d.text; })
+        ;
+        this.transition.apply(newText)
+            .attr("y", 0)
+            .style("fill-opacity", 1)
+        ;
+
+        text.exit()
+            .attr("class", "exit")
+        ;
+        this.transition.apply(text.exit())
+            .attr("y", (this._reverse ? -1 : +1) * this._fontWidth * 2)
+            .style("fill-opacity", 1e-6)
+            .remove()
+        ;
+    };
+
+    return MorphText;
+}));

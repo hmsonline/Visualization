@@ -1,1 +1,121 @@
-(function(e,t){typeof define=="function"&&define.amd?define(["d3/d3","../layout/Grid","./HipieDDL","../layout/Surface","../layout/Cell"],t):e.marshaller_HTML=t(e.d3,e.layout_Grid,e.marshaller_HipieDDL,e.layout_Surface,e.layout_Cell)})(this,function(e,t,n,r,i){function s(){t.call(this),this._class="marshaller_HTML"}function o(e,t){t instanceof Object||t&&(t=JSON.parse(t));var r=null,i={};return e.accept({visit:function(e){e instanceof n.Dashboard?(r={dashboard:e,visualizations:[]},i[e.getQualifiedID()]=r):e instanceof n.DataSource?e.databomb&&t[e.id]&&e.comms.databomb(t[e.id]):e instanceof n.Output||e instanceof n.Visualization&&e.widget&&r.visualizations.push(e)}}),i}return s.prototype=Object.create(t.prototype),s.prototype.publish("ddl_url","","string","DDL URL"),s.prototype.publish("proxy_mappings",[],"array","Proxy Mappings"),s.prototype.publish("databomb","","string","Data Bomb"),s.prototype.testData=function(){return this},s.prototype.content=function(){return t.prototype.content.apply(this,arguments)},s.prototype.setContent=function(e,n,r,i,s,o){return t.prototype.setContent.apply(this,arguments)},s.prototype.enter=function(e,n){t.prototype.enter.apply(this,arguments)},s.prototype.render=function(e){function u(){var n=o(r,i._databomb),s=0;for(var u in n){var a=0,f=0,l=Math.floor(Math.sqrt(n[u].visualizations.length));n[u].visualizations.forEach(function(e,t){t&&t%l===0&&(a++,f=0),e.widget.size({width:0,height:0});var n=i.getContent(e.widget._id);if(n)e.setWidget(n,!0);else{var r=0;i.setContent(a,f,e.widget,e.title)}f++});for(var c in n[u].dashboard.datasources)n[u].dashboard.datasources[c].fetchData({},!0)}t.prototype.render.call(i,function(t){e&&e(t)})}if(this._ddl_url===""||this._ddl_url===this._prev_ddl_url)return t.prototype.render.apply(this,arguments);this._prev_ddl_url=this._ddl_url;var r=(new n.Marshaller).proxyMappings(this._proxy_mappings),i=this,s=arguments;return this._ddl_url[0]==="["||this._ddl_url[0]==="{"?r.parse(this._ddl_url,function(){u()}):r.url(this._ddl_url,function(){u()}),this},s});
+"use strict";
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define(["d3/d3", "../layout/Grid", "./HipieDDL", "../layout/Surface", "../layout/Cell"], factory);
+    } else {
+        root.marshaller_HTML = factory(root.d3, root.layout_Grid, root.marshaller_HipieDDL, root.layout_Surface, root.layout_Cell);
+    }
+}(this, function (d3, Grid, HipieDDL, Surface, Cell) {
+    function HTML() {
+        Grid.call(this);
+        this._class = "marshaller_HTML";
+    };
+    HTML.prototype = Object.create(Grid.prototype);
+
+    HTML.prototype.publish("ddl_url", "", "string", "DDL URL");
+    HTML.prototype.publish("proxy_mappings", [], "array", "Proxy Mappings");
+    HTML.prototype.publish("databomb", "", "string", "Data Bomb");
+
+    HTML.prototype.testData = function () {
+        //this.ddl_url("http://10.239.227.24:8010/WsWorkunits/WUResult?Wuid=W20150311-200229&ResultName=leeddx_issue_652_nestedfunctions_Comp_Ins002_DDL");
+        return this;
+    };
+
+    HTML.prototype.content = function () {
+        return Grid.prototype.content.apply(this, arguments);
+    };
+
+    HTML.prototype.setContent = function (row, col, widget, title, rowSpan, colSpan) {
+        return Grid.prototype.setContent.apply(this, arguments);
+    };
+
+    HTML.prototype.enter = function (domNode, element) {
+        Grid.prototype.enter.apply(this, arguments);
+    };
+
+    function createGraphData(marshaller, databomb) {
+        if (databomb instanceof Object) {
+        } else if (databomb){
+            databomb = JSON.parse(databomb);
+        }
+        var curr = null;
+        var dashboards = {};
+        marshaller.accept({
+            visit: function (item) {
+                if (item instanceof HipieDDL.Dashboard) {
+                    curr = {
+                        dashboard: item,
+                        visualizations: [],
+                    };
+                    dashboards[item.getQualifiedID()] = curr;
+                } else if (item instanceof HipieDDL.DataSource) {
+                    if (item.databomb && databomb[item.id]) {
+                        item.comms.databomb(databomb[item.id]);
+                    }
+                } else if (item instanceof HipieDDL.Output) {
+                } else if (item instanceof HipieDDL.Visualization) {
+                    if (item.widget) {
+                        curr.visualizations.push(item);
+                    }
+                }
+            }
+        });
+        return dashboards;
+    };
+
+    HTML.prototype.render = function (callback) {
+        if (this._ddl_url === "" || this._ddl_url === this._prev_ddl_url) {
+            return Grid.prototype.render.apply(this, arguments);
+        }
+
+        this._prev_ddl_url = this._ddl_url;
+        var marshaller = new HipieDDL.Marshaller().proxyMappings(this._proxy_mappings);
+        var context = this;
+        var args = arguments;
+        //this.clearContent();
+        if (this._ddl_url[0] === "[" || this._ddl_url[0] === "{") {
+            marshaller.parse(this._ddl_url, function () {
+                postParse();
+            });
+        } else {
+            marshaller.url(this._ddl_url, function () {
+                postParse();
+            });
+        }
+        function postParse() {
+            var dashboards = createGraphData(marshaller, context._databomb);
+            var row = 0;
+            for (var key in dashboards) {
+                var cellRow = 0;
+                var cellCol = 0;
+                var maxCol = Math.floor(Math.sqrt(dashboards[key].visualizations.length));
+                dashboards[key].visualizations.forEach(function (viz, idx) {
+                    if (idx && (idx % maxCol === 0)) {
+                        cellRow++;
+                        cellCol = 0;
+                    }
+                    viz.widget.size({ width: 0, height: 0 });
+                    var existingWidget = context.getContent(viz.widget._id);
+                    if (existingWidget) {
+                        viz.setWidget(existingWidget, true);
+                    } else {
+                        var d = 0;
+                        context.setContent(cellRow, cellCol, viz.widget, viz.title);
+                    }
+                    cellCol++;
+                });
+                for (var key2 in dashboards[key].dashboard.datasources) {
+                    dashboards[key].dashboard.datasources[key2].fetchData({}, true);
+                }
+            }
+            Grid.prototype.render.call(context, function (widget) {
+                if (callback) {
+                    callback(widget);
+                }
+            });
+        }
+        return this;
+    }
+
+    return HTML;
+}));
