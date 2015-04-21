@@ -7,7 +7,16 @@
   ],
   "main": [
     "dist/optimized/viz.min.css",
-    "dist/optimized/viz.min.js"
+    "dist/optimized/viz.common.min.js",
+    "dist/optimized/viz.other.min.js",
+    "dist/optimized/viz.tree.min.js",
+    "dist/optimized/viz.chart.min.js",
+    "dist/optimized/viz.graph.min.js",
+    "dist/optimized/viz.c3.min.js",
+    "dist/optimized/viz.google.min.js",
+    "dist/optimized/viz.map.min.js",
+    "dist/optimized/viz.layout.js",
+    "dist/optimized/viz.marshaller.js"
   ],
   "ignore": [
     ".gitignore",

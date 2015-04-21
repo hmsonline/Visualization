@@ -9,68 +9,86 @@ const concatCss = require('gulp-concat-css')
 const sort = require('gulp-natural-sort')
 const dir = require('node-dir')
 
-function css(minify) {
-  return gulp.src('src/**/*.css')
-    .pipe(sort())
-    .pipe(concatCss(minify ? 'viz.min.css' : 'viz.css'))
-    .pipe(minify ? minifyCss({keepBreaks:true}) : gutil.noop())
-    .pipe(gulp.dest('dist/optimized'))
+// Consts
+const appPaths = {
+  src: 'src',
+  dist: 'dist'
 }
 
-gulp.task('css-combine', css.bind(null, false))
-gulp.task('css-optimize', css.bind(null, true))
+const modules = {
+  common: ['d3/d3', 'colorbrewer/colorbrewer', 'font-awesome', 'require'],
 
-gulp.task('optimize', ['css-combine', 'css-optimize'], function (done) {
-  dir.files('src', function (err, files) {
+  other: ['common'],
+  tree: ['common'],
+
+  chart: ['other'],
+  graph: ['dagre/dagre', 'other'],
+
+  c3: ['c3/c3', 'chart'],
+  google: ['chart' /* Google Visualization */],
+  map: ['graph', 'topojson/topojson' /* , Google Map */],
+  
+  layout: ['c3'],
+  marshaller: ['chart', 'graph', 'layout']
+}
+
+// Helpers
+function getModuleDeps(module) {
+  if (!modules[module]) return []
+
+  return modules[module]
+    .reduce(function (deps, dep) { 
+      return deps.concat(dep).concat(getModuleDeps(dep)) 
+    }, [])
+    .filter(function (dep, index, col) { 
+      return col.indexOf(dep) === index 
+    })
+}
+
+function buildModule(module, cb) {
+  gutil.log('Building ' + module + '...')
+
+  dir.files(appPaths.src, function (err, files) {
     if (err) return done(err)
+    
+    const deps = getModuleDeps(module).reduce(function (dict, dep) { 
+      return (dict[dep] = 'empty:') && dict 
+    }, {})
 
-    const excludes = {
-      // TODO: exclude only data files
-      'src/map/ChoroplethCountries.js': true,
-      'src/map/countries.js': true,
-      'src/map/ChoroplethCounties.js': true,
-      'src/map/us-counties.js': true,
-      'src/map/ChoroplethStates.js': true,
-      'src/map/us-states.js': true
+    const plugins = {
+      'async': '../rjs.noop',
+      'css': '../rjs.noop',
+      'goog': '../rjs.noop',
+      'propertyParser': '../rjs.noop',
     }
 
     const opts = {
-      baseUrl: 'src',
-      paths: {
-        // plugins
-        'async': '../rjs.noop',
-        'css': '../rjs.noop',
-        'goog': '../rjs.noop',
-        'propertyParser': '../rjs.noop',
-
-        // vendors
-        'd3/d3': 'empty:',
-        'c3/c3': 'empty:',
-        'dagre/dagre': 'empty:',
-        'colorbrewer/colorbrewer': 'empty:',
-        'font-awesome': 'empty:',
-        'topojson/topojson': 'empty:'
-      },
+      baseUrl: appPaths.src,
+      paths: _.extend({}, plugins, deps),
       include: files
-        .filter(function (file) { return path.extname(file) === '.js' && !excludes[file] })
-        .map(function (file) { return file.substring('src/'.length) })
+        .map(function (file) { 
+          return file.substring((appPaths.src + '/').length) 
+        })
+        .filter(function (file) { 
+          return path.extname(file) === '.js' && 
+                 file.indexOf(module) === 0 
+        })
     }
 
     async.parallel([
-      optimize.bind(null, _.extend({out: 'dist/optimized/viz.min.js'}, opts)),
-      optimize.bind(null, _.extend({out: 'dist/optimized/viz.js', optimize: 'none'}, opts))
-    ], done)
-  })
-})
+      optimize.bind(null, _.extend({out: (appPaths.dist + '/optimized/viz.' + module + '.min.js')}, opts)),
+      optimize.bind(null, _.extend({out: (appPaths.dist + '/optimized/viz.' + module + '.js'), optimize: 'none'}, opts))
+    ], cb)
+  }) 
+}
 
-gulp.task('default', ['optimize'], function (done) {
-  var opts = {
-    dir: 'dist/build/viz',
-    appDir: 'src',
-    baseUrl: '.'
-  }
-  optimize(opts, done)
-})
+function css(minify) {
+  return gulp.src(appPaths.src + '/**/*.css')
+    .pipe(sort())
+    .pipe(concatCss(minify ? 'viz.min.css' : 'viz.css'))
+    .pipe(minify ? minifyCss({keepBreaks:true}) : gutil.noop())
+    .pipe(gulp.dest(appPaths.dist + '/optimized'))
+}
 
 function optimize(opts, cb) {
   rjs.optimize(opts,
@@ -78,3 +96,22 @@ function optimize(opts, cb) {
     cb
   )
 }
+
+
+// Tasks
+gulp.task('build-css', css.bind(null, false))
+
+gulp.task('optimize-css', css.bind(null, true))
+
+gulp.task('build-all', ['build-css', 'optimize-css'], function (cb) {
+  async.each(Object.keys(modules), buildModule, cb) 
+})
+
+gulp.task('default', ['build-all'], function (done) {
+  var opts = {
+    dir: appPaths.dist + '/build/viz',
+    appDir: appPaths.src,
+    baseUrl: '.'
+  }
+  optimize(opts, done)
+})
