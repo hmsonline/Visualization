@@ -1107,7 +1107,7 @@ if (typeof define === "function" && define.amd) {
     if (typeof define === "function" && define.amd) {
         define('other/Persist',["require"], factory);
     } else {
-        root.other_Persist = factory(root.common_Widget.prototype.require);
+        root.other_Persist = factory(root.require);
     }
 }(this, function (require) {
     return {

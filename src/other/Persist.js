@@ -3,7 +3,7 @@
     if (typeof define === "function" && define.amd) {
         define(["require"], factory);
     } else {
-        root.other_Persist = factory(root.common_Widget.prototype.require);
+        root.other_Persist = factory(root.require);
     }
 }(this, function (require) {
     return {

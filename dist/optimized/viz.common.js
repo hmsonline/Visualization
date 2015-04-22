@@ -122,7 +122,7 @@
     };
 
     // Serialization  ---
-    Widget.prototype.require = require || function (paths, cb) {
+    Widget.prototype.require = window.require || function (paths, cb) {
         if (typeof paths === 'function') {
             cb = paths
             paths = []
@@ -134,6 +134,9 @@
         })
         
         cb.apply(null, objs)
+    }
+    if (!window.require) {
+        window.require = Widget.prototype.require;
     }
 
     Widget.prototype.publish = function (id, defaultValue, type, description, set, ext) {
