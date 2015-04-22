@@ -1,9 +1,9 @@
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["../other/Comms", "../common/Widget"], factory);
+        define(["../other/Comms", "../common/Widget", "require"], factory);
     } else {
-        root.marshaller_HipieDDL = factory(root.other_Comms, root.common_Widget);
+        root.marshaller_HipieDDL = factory(root.other_Comms, root.common_Widget, root.require);
     }
 }(this, function (Comms, Widget) {
     var Vertex = null;
