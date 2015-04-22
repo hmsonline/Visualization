@@ -3,7 +3,7 @@
     if (typeof define === "function" && define.amd) {
         define([], factory);
     } else {
-        root.map_usCounties = factory();
+        root.map_countries = factory();
     }
 }(this, function () {
     return {
