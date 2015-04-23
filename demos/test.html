@@ -7,17 +7,13 @@
     <link rel="stylesheet" href="test.css">
     <script src="../bower_components/requirejs/require.js"></script> 
     <script src="./config.js"></script>
+    <!--  Uncomment to test build
+    <script src="../dist/amd/layers/all.js"></script>
+    -->
     <script>
         var graph = null;
 
         function doTest() {
-            require(["lodash"], function (_) {
-                window._ = _;
-                require(["graphlib"], _doTest)
-            })
-        }
-
-        function _doTest() {
             require(["d3/d3",
                 "viz/common/Surface", "viz/common/ResizeSurface", "viz/common/Text", "viz/common/TextBox", "viz/common/Shape", "viz/common/FAChar", "viz/common/Icon", "viz/common/List", "viz/common/Menu", "viz/common/Palette",
                 "viz/graph/Edge", "viz/graph/Vertex",

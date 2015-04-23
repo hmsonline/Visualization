@@ -27,18 +27,16 @@
     "rjs.noop.js"
   ],
   "dependencies": {
-    "requirejs": "2.1.17",
-    "requirejs-plugins": "1.0.3",
-    "require-css": "0.1.8",
-    "c3": "0.4.9",
-    "colorbrewer": "1.0.0",
-    "d3": "3.5.0",
-    "dagre": "0.7.1",
-    "font-awesome": "4.3.0",
-    "lodash": "3.0.0",
-    "topojson": "1.6.18",
-    "crossfilter": "git@github.com:square/crossfilter.git",
-    "d3-cloud": "git@github.com:jasondavies/d3-cloud.git"
+    "requirejs": "~2.1.17",
+    "requirejs-plugins": "~1.0.3",
+    "require-css": "~0.1.8",
+    "c3": "~0.4.9",
+    "colorbrewer": "~1.0.0",
+    "d3": "~3.5.0",
+    "font-awesome": "~4.3.0",
+    "topojson": "~1.6.18",
+    "dagre": "https://raw.githubusercontent.com/cpettitt/dagre/v0.7.1/dist/dagre.js",
+    "d3-cloud": "git://github.com/jasondavies/d3-cloud.git#v1.0.5"
   },
   "license": "Apache",
   "authors": [

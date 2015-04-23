@@ -67,11 +67,11 @@
             fill: white;
         }
     </style>
-    <script src="../../widgets/lib/requirejs/require.js"></script>
-    <script src="../../widgets/config.js"></script>
+    <script src="../../bower_components/requirejs/require.js"></script>
+    <script src="../config.js"></script>
     <script>
         requirejs.config({
-            baseUrl: "../../widgets"
+            baseUrl: ".."
         });
     </script>
 </head>
@@ -104,7 +104,7 @@
         var tables = [];
         var transitionDuration = 250;
         var doRandom = null;
-        require(["src/other/Comms", "src/graph/Graph", "src/graph/Edge", "src/graph/Vertex", "src/other/Table"], function (Comms, Graph, Edge, Vertex, Table) {
+        require(["viz/other/Comms", "viz/graph/Graph", "viz/graph/Edge", "viz/graph/Vertex", "viz/other/Table"], function (Comms, Graph, Edge, Vertex, Table) {
             var vertices = [];
             var vertexMap = [];
             var edges = [];
