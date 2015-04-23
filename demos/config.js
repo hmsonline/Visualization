@@ -1,7 +1,7 @@
-var debug_mode = false;
-var lib_folder = debug_mode ? "../bower_components" : "../dist/amd/lib";
-var third_party_folder = debug_mode ? "../third_party" : "../dist/amd/lib";
-var src_folder = debug_mode ? "../src" : "../dist/amd/src";
+var develop_mode = true;
+var lib_folder = develop_mode ? "../bower_components" : "../dist/amd/lib";
+var third_party_folder = develop_mode ? "../third_party" : "../dist/amd/lib";
+var src_folder = develop_mode ? "../src" : "../dist/amd/src";
 
 require.config({
     baseUrl: ".",
@@ -11,6 +11,8 @@ require.config({
         'text': '../bower_components/text/text',
         'goog': '../bower_components/requirejs-plugins/src/goog',
         'propertyParser': '../bower_components/requirejs-plugins/src/propertyParser',
+
+        "lodash": "./bower_components/lodash-compat",
 
         'dagre': third_party_folder + "/dagre",
         'topojson': lib_folder + "/topojson",
