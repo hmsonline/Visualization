@@ -110,9 +110,6 @@ gulp.task('build-all', ['build-css', 'optimize-css'], function (cb) {
 
 //  AMD Tasks  ---
 const plugin_paths = {
-    //'bower_components': '../bower_components',
-    //"third_party": "../third_party",
-
     'css': '../bower_components/require-css/css',
     'css-builder': '../bower_components/require-css/css-builder',
     'normalize': '../bower_components/require-css/normalize',
@@ -127,6 +124,7 @@ gulp.task('amd_bower_stage', function () {
         "bower_components/c3/c3.css",
         "bower_components/d3/d3.js",
         "bower_components/colorbrewer/colorbrewer.js",
+        "bower_components/dagre/index.js",
         "bower_components/topojson/topojson.js",
         "bower_components/d3-cloud/d3.layout.cloud.js",
         'bower_components/font-awesome/css/font-awesome.css',
@@ -136,15 +134,7 @@ gulp.task('amd_bower_stage', function () {
     ;
 });
 
-gulp.task('amd_third_party_stage', function () {
-    return gulp.src([
-        "third_party/dagre/dagre.js"
-    ], { base: 'third_party/' })
-        .pipe(gulp.dest(appPaths.dist + "/amd/stage"))
-    ;
-});
-
-gulp.task("amd_third_party", ["amd_bower_stage", "amd_third_party_stage"], function (done) {
+gulp.task("amd_third_party", ["amd_bower_stage"], function (done) {
     var opts = {
         baseUrl: '.',
         appDir: appPaths.dist + '/amd/stage',
@@ -187,7 +177,7 @@ gulp.task("amd_layers", ["amd_third_party", "amd_src"], function (done) {
             'viz': '../dist/amd/src',
             'd3': '../dist/amd/lib/d3',
             'c3': '../dist/amd/lib/c3',
-            'dagre': '../dist/amd/lib/dagre',
+            'dagre/dagre': '../dist/amd/lib/dagre/index',
             'topojson': '../dist/amd/lib/topojson',
             'colorbrewer': '../dist/amd/lib/colorbrewer',
             'd3-cloud': '../dist/amd/lib/d3-cloud',

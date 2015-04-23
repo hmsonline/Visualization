@@ -35,7 +35,8 @@
     "d3": "~3.5.0",
     "font-awesome": "~4.3.0",
     "topojson": "~1.6.18",
-    "d3-cloud": "git://github.com/jasondavies/d3-cloud.git"
+    "dagre": "https://raw.githubusercontent.com/cpettitt/dagre/v0.7.1/dist/dagre.js",
+    "d3-cloud": "git://github.com/jasondavies/d3-cloud.git#v1.0.5"
   },
   "license": "Apache",
   "authors": [

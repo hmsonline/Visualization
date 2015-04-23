@@ -1,6 +1,5 @@
 var develop_mode = true;
 var lib_folder = develop_mode ? "../bower_components" : "../dist/amd/lib";
-var third_party_folder = develop_mode ? "../third_party" : "../dist/amd/lib";
 var src_folder = develop_mode ? "../src" : "../dist/amd/src";
 
 require.config({
@@ -14,7 +13,7 @@ require.config({
 
         "lodash": "./bower_components/lodash-compat",
 
-        'dagre': third_party_folder + "/dagre",
+        'dagre/dagre': lib_folder + "/dagre/index",
         'topojson': lib_folder + "/topojson",
         'colorbrewer': lib_folder + "/colorbrewer",
         'd3-cloud': lib_folder + "/d3-cloud",
