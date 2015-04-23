@@ -15,8 +15,8 @@
     "dist/optimized/viz.c3.min.js",
     "dist/optimized/viz.google.min.js",
     "dist/optimized/viz.map.min.js",
-    "dist/optimized/viz.layout.js",
-    "dist/optimized/viz.marshaller.js"
+    "dist/optimized/viz.layout.min.js",
+    "dist/optimized/viz.marshaller.min.js"
   ],
   "ignore": [
     ".gitignore",
