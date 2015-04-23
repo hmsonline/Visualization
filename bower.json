@@ -20,7 +20,7 @@
   ],
   "ignore": [
     ".gitignore",
-    "viz",
+    "src",
     "package.json",
     "demos",
     "gulpfile.js",
