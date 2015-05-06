@@ -13,7 +13,7 @@
                 if (path === "d3-cloud/d3.layout.cloud") {
                     return root.d3.layout.cloud;
                 }
-                var prop = path.substring("../".length).split("/").join("_");
+                var prop = path.substring("src/".length).split("/").join("_");
                 return root[prop];
             })
 
@@ -601,7 +601,7 @@
     //  Util  ---
     Widget.prototype.debounce = function (func, threshold, execAsap) {
         return function debounced() {
-            var obj = this, args = arguments;
+            var obj = this || {}, args = arguments;
             function delayed() {
                 if (!execAsap)
                     func.apply(obj, args);
