@@ -96,6 +96,8 @@
         }
     };
 
+    Edge.prototype.publish("dr", 2, "number", "", null, {tags:['Intermediate','Shared']});
+
     Edge.prototype.update = function (domNode, element, transitionDuration, skipPushMarkers) {
         SVGWidget.prototype.update.apply(this, arguments);
         var context = this;
@@ -113,7 +115,7 @@
         }
         var points = context._calculateEdgePoints(this._sourceVertex, this._targetVertex, this._points);
         var line = "";
-        if (this._points.length || transitionDuration || true) {
+        if (this._points.length || transitionDuration/* || true*/) {
             line = d3.svg.line()
                 .x(function (d) { return d.x; })
                 .y(function (d) { return d.y; })
@@ -125,7 +127,8 @@
             //  Faster but does not transition as well  ---
             var dx = points[2].x - points[0].x,
                         dy = points[2].y - points[0].y,
-                        dr = Math.sqrt(dx * dx + dy * dy) * 2;
+                        dr = Math.sqrt(dx * dx + dy * dy) * this.dr();
+                        
             line = "M" +
                         points[0].x + "," +
                         points[0].y + "A" +
@@ -148,7 +151,6 @@
             ;
         }
     };
-
     Edge.prototype._findMidPoint = function (points) {
         var midIdx = points.length / 2;
         if (points.length % 2) {

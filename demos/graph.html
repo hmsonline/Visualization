@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>HPCC Systems - Visualization Framework</title>
+    <link rel="stylesheet" href="test.css">
+    <link rel="stylesheet" href="../bower_components/c3/c3.css" />
+    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="../dist/hpcc-viz.min.css">
+    
+    <script src="../bower_components/d3/d3.js"></script>
+    <script src="../bower_components/c3/c3.js"></script>
+    <script src="../bower_components/dagre/index.js"></script>
+    <script src="../bower_components/colorbrewer/colorbrewer.js"></script>
+
+    <script src="../dist/hpcc-viz-common.min.js"></script>
+    <script src="../dist/hpcc-viz-api.min.js"></script>
+    <script src="../dist/hpcc-viz-other.min.js"></script>
+    <script src="../dist/hpcc-viz-tree.min.js"></script>
+    <script src="../dist/hpcc-viz-chart.min.js"></script>
+    <script src="../dist/hpcc-viz-graph.min.js"></script>
+    <script src="../dist/hpcc-viz-c3chart.min.js"></script>
+    <script src="../dist/hpcc-viz-amchart.min.js"></script>
+    <script src="../dist/hpcc-viz-google.min.js"></script>
+    <script src="../dist/hpcc-viz-map.min.js"></script>
+    <script src="../dist/hpcc-viz-layout.min.js"></script>
+    <script src="../dist/hpcc-viz-marshaller.min.js"></script>
+
+    <script>
+    function createEdge(source, target, label) {
+        return new graph_Edge()
+            .sourceVertex(source)
+            .targetVertex(target)
+            .sourceMarker("circleFoot")
+            .targetMarker("arrowHead")
+            .text(label || "test");
+    }
+
+    function  doLayout(graph, layout) {
+        graph.layout(layout);
+    }
+
+    function render() {
+        var vertices = [
+            new common_Shape().shape("circle").size({ width: 32, height: 32 }),
+            new common_Shape().shape("rect").size({ width: 48, height: 22 })
+        ];
+        var edges = [
+            createEdge(vertices[0], vertices[1]).dr(1), 
+            createEdge(vertices[0], vertices[1]).dr(2)
+        ];
+        graph = new graph_Graph()
+            .target("composition")
+            .data({ vertices: vertices, edges: edges })
+            .layout("Hierarchy")
+            .render()
+        ;
+    }
+    </script>
+</head>
+<body onload="render()">
+    <div id="composition" class="thumb" style="width: 640px; height: 440px">
+        <div style="float:right;position:relative;top:4px;right:4px;z-index:99">
+            <button onclick="doLayout(graph, 'Circle')">C</button>
+            <button onclick="doLayout(graph, 'ForceDirected')">F</button>
+            <button onclick="doLayout(graph, 'ForceDirected2')">F2</button>
+            <button onclick="doLayout(graph, 'Hierarchy')">H</button>
+        </div>
+    </div>
+</body>
+</html>
